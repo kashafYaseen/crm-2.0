@@ -132,13 +132,13 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Campaigns',
-        to: '/buttons/buttons',
+        name: 'Countries',
+        to: '/countries',
       },
       {
         component: CNavItem,
-        name: 'All Countries',
-        to: '/buttons/button-groups',
+        name: 'Accommodations',
+        to: '/lodgings',
       },
       {
         component: CNavItem,

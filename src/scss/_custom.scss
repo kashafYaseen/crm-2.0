@@ -1,1 +1,13 @@
 // Here you can add other styles
+/* CustomTable.css */
+.custom-table {
+  --rft-main-color: #3C4B64;
+  --rft-button-color: #596f94;
+}
+.custom-table thead th:hover {
+  background-color: #303C50;
+}
+
+.custom-table tr:nth-child(even):hover {
+  color: #818895;
+}
