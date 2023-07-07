@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import ReactFlexyTable from 'react-flexy-table'
 import 'react-flexy-table/dist/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Select from 'react-select'
 import './../../scss/_custom.scss'
+import { DataTables } from '@/components/UI/dataTables'
 
 const Lodgings = () => {
   const [data, setData] = useState([
@@ -56,12 +56,9 @@ const Lodgings = () => {
           />
         </div>
       </div>
-      <ReactFlexyTable
-        data={filteredData}
-        sortable
-        additionalCols={additionalCols}
-        className="custom-table table table-striped table-bordered"
-      />
+      <div>
+        <DataTables data={filteredData} additionalCols={additionalCols} />
+      </div>
     </div>
   )
 }

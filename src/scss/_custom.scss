@@ -11,3 +11,7 @@
 .custom-table tr:nth-child(even):hover {
   color: #818895;
 }
+
+.custom-table td:last-child svg {
+  margin-right: 12px; /* Adjust the margin as needed */
+}
