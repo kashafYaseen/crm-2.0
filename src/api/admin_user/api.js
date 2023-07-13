@@ -15,6 +15,6 @@ export async function request(method, endpoint, data) {
 
     return handleResponse(response)
   } catch (error) {
-    handleError(error)
+    throw error
   }
 }

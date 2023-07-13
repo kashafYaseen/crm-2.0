@@ -12,6 +12,104 @@
   color: #818895;
 }
 
+.custom-table {
+  /* Set table-layout to fixed */
+  table-layout: fixed;
+  /* Set a fixed width for the table */
+  width: 100%;
+}
+
+.custom-table td {
+  /* Set word wrap to break long words and wrap text */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.custom-table td:last-child {
+  /* Set center-align for the last column */
+  text-align: center;
+}
+
 .custom-table td:last-child svg {
   margin-right: 12px; /* Adjust the margin as needed */
 }
+
+.button-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+
+.custom-button {
+  background-color: #586f94;
+  color: #fff;
+}
+
+.custom-button:hover {
+  background-color: #303c50;
+}
+
+// display search box and create button in line
+
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.custom-search-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.create-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #586f94;
+  color: #fff;
+  font-size: 14px;
+}
+
+.create-button:hover {
+  background-color: #303c50;
+
+}
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.display {
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-top: 3rem;
+}
+
+/* Styles for the dropdown menu */
+.form-select {
+  max-height: 200px; /* Adjust the height as needed */
+  overflow-y: auto;
+}
+
+.server-error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+
+
+
+
