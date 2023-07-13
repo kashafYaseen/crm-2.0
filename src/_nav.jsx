@@ -145,6 +145,16 @@ const _nav = [
         name: 'All Regions',
         to: '/buttons/dropdowns',
       },
+      {
+        component: CNavItem,
+        name: 'All Places',
+        to: '/places',
+      },
+      {
+        component: CNavItem,
+        name: 'Place Categories',
+        to: '/place-categories',
+      },
     ],
   },
   // {
