@@ -23,20 +23,25 @@ import { places_data } from '@/api/config/resources/places'
 import { Toast } from '@/components/UI/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { useNavigate } from 'react-router-dom'
 
 const Form = (props) => {
   const [placeCategoriesData, setPlaceCategoriesData] = useState([])
   const [regionsData, setRegionsData] = useState([])
   const [countriesData, setCountriesData] = useState([])
   const short_desc_editor = useRef(null)
-  const desc_editor = useRef(null)
+  const desc_editor_en = useRef(null)
+  const desc_editor_nl = useRef(null)
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
+  const navigate = useNavigate()
 
   const defaultValues = {
     place: {
-      name: props.place_to_update?.name || '',
+      name_nl: props.place_to_update?.name_nl || '',
+      name_en: props.place_to_update?.name_en || '',
+      address: props.place_to_update?.address || '',
       publish: props.place_to_update?.publish || '',
       place_category_id: props.place_to_update?.place_category_id || '',
       region_id: props.place_to_update?.region_id || '',
@@ -44,10 +49,14 @@ const Form = (props) => {
       header_dropdown: props.place_to_update?.header_dropdown || '',
       short_desc_nav: props.place_to_update?.short_desc_nav || '',
       short_desc: props.place_to_update?.short_desc || '',
-      description: props.place_to_update?.description || '',
+      description_nl: props.place_to_update?.description_nl || '',
+      description_en: props.place_to_update?.description_en || '',
+
       spotlight: props.place_to_update?.spotlight || '',
       longitude: props.place_to_update?.longitude || '',
-      slug: props.place_to_update?.slug || '',
+      slug_en: props.place_to_update?.slug_en || '',
+      slug_nl: props.place_to_update?.slug_nl || '',
+
       latitude: props.place_to_update?.latitude || '',
     },
     // images_attributes: [{ image: '' }],
@@ -61,14 +70,10 @@ const Form = (props) => {
     }),
   })
 
-  const [formField, setFormField] = useState(defaultValues)
-
   const formik = useFormik({
     initialValues: defaultValues,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log('values', values)
-
       await formik.validateForm()
       if (formik.isValid) {
         if (props.place_to_update) {
@@ -81,16 +86,21 @@ const Form = (props) => {
             setShowToast(true)
             setErrorType('success')
             setError('Record Updated Successfully')
+            setTimeout(() => {
+              navigate('/places')
+            }, 1000)
           } catch (error) {
             console.error('FORM_ERROR', error)
           }
         } else {
           try {
             const extractedData = await places_data('post', 'places', values)
-            console.log('success', extractedData)
             setShowToast(true)
             setErrorType('success')
             setError('Record Created Successfully')
+            setTimeout(() => {
+              navigate('/places')
+            }, 1000)
           } catch (error) {
             console.error('FORM_ERROR', error)
           }
@@ -100,6 +110,7 @@ const Form = (props) => {
   })
 
   useEffect(() => {
+    clearTimeout()
     const fetchData = async () => {
       try {
         const [placeCategories, regions, countries] = await Promise.all([
@@ -141,13 +152,24 @@ const Form = (props) => {
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputName">Name</CFormLabel>
+                  <CFormLabel htmlFor="inputName">Name (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputName"
-                    value={formik.values.place.name}
+                    value={formik.values.place.name_nl}
                     onChange={formik.handleChange}
-                    name="place.name"
+                    name="place.name_nl"
+                  />
+                </CCol>
+
+                <CCol md={6}>
+                  <CFormLabel htmlFor="inputName">Name (EN)</CFormLabel>
+                  <CFormInput
+                    type="text"
+                    id="inputName"
+                    value={formik.values.place.name_en}
+                    onChange={formik.handleChange}
+                    name="place.name_en"
                   />
                 </CCol>
 
@@ -260,7 +282,7 @@ const Form = (props) => {
                   </select>
                 </CCol>
 
-                <CCol xs={12}>
+                <CCol md={6}>
                   <CFormCheck
                     type="checkbox"
                     id="gridCheck"
@@ -270,6 +292,18 @@ const Form = (props) => {
                       formik.handleChange(event)
                       formik.setFieldValue('place.spotlight', event.target.checked)
                     }}
+                  />
+                </CCol>
+
+                <CCol xs={12}>
+                  <CFormLabel htmlFor="inputSlug">Address</CFormLabel>
+                  <CFormTextarea
+                    id="exampleFormControlTextarea1"
+                    rows="3"
+                    type="text"
+                    value={formik.values.place.address}
+                    onChange={formik.handleChange}
+                    name="place.address"
                   />
                 </CCol>
 
@@ -301,35 +335,61 @@ const Form = (props) => {
                   />
                 </CCol>
 
-                <CCol xs={12}>
-                  <CFormLabel htmlFor="Desc">Description </CFormLabel>
+                <CCol md={6}>
+                  <CFormLabel htmlFor="Desc">Description (NL) </CFormLabel>
                   <JoditEditor
-                    ref={desc_editor}
+                    ref={desc_editor_nl}
                     tabIndex={1}
                     onBlur={() => {
-                      const value = desc_editor.current.value
-                      formik.setFieldValue('place.description', value)
+                      const value = desc_editor_nl.current.value
+                      formik.setFieldValue('place.description_nl', value)
                     }}
-                    value={formik.values.place.description}
+                    value={formik.values.place.description_nl}
                     onChange={(value) => {
-                      formik.setFieldValue('place.description', value)
+                      formik.setFieldValue('place.description_nl', value)
                     }}
                   />
                 </CCol>
 
-                <CRow>
-                  <CCol md={6}>
-                    <CFormLabel htmlFor="inputSlug">Slug</CFormLabel>
-                    <CFormTextarea
-                      id="exampleFormControlTextarea1"
-                      rows="3"
-                      type="text"
-                      value={formik.values.place.slug}
-                      onChange={formik.handleChange}
-                      name="place.slug"
-                    />
-                  </CCol>
-                </CRow>
+                <CCol md={6}>
+                  <CFormLabel htmlFor="Desc">Description (EN) </CFormLabel>
+                  <JoditEditor
+                    ref={desc_editor_en}
+                    tabIndex={1}
+                    onBlur={() => {
+                      const value = desc_editor_en.current.value
+                      formik.setFieldValue('place.description_en', value)
+                    }}
+                    value={formik.values.place.description_en}
+                    onChange={(value) => {
+                      formik.setFieldValue('place.description_en', value)
+                    }}
+                  />
+                </CCol>
+
+                <CCol md={6}>
+                  <CFormLabel htmlFor="inputSlug">Slug (NL)</CFormLabel>
+                  <CFormTextarea
+                    id="exampleFormControlTextarea1"
+                    rows="3"
+                    type="text"
+                    value={formik.values.place.slug_nl}
+                    onChange={formik.handleChange}
+                    name="place.slug_nl"
+                  />
+                </CCol>
+
+                <CCol md={6}>
+                  <CFormLabel htmlFor="inputSlug">Slug (EN)</CFormLabel>
+                  <CFormTextarea
+                    id="exampleFormControlTextarea1"
+                    rows="3"
+                    type="text"
+                    value={formik.values.place.slug_en}
+                    onChange={formik.handleChange}
+                    name="place.slug_en"
+                  />
+                </CCol>
 
                 <CRow>
                   <CFormLabel htmlFor="selectPublish4">Geo Location</CFormLabel>

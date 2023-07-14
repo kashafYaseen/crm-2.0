@@ -32,7 +32,6 @@ const Form = (props) => {
     // images_attributes: [{ image: '' }],
   }
 
-  console.log('props', props)
   const validationSchema = Yup.object().shape({
     place_category: Yup.object().shape({
       name_en: Yup.string().required('*Name is required'),
@@ -69,21 +68,21 @@ const Form = (props) => {
             setShowToast(true)
             setErrorType('success')
             setError('Record Updated Successfully')
-            props.onSubmitCallback()
+            setTimeout(() => {
+              setShowToast(false)
+              props.onSubmitCallback()
+            }, 2000)
           } catch (error) {
-            console.error('FORM_ERROR', error)
             serverErrorHandler(error)
           }
         } else {
           try {
             const extractedData = await place_categories_data('post', 'place_categories', values)
-            console.log('success', extractedData)
             setShowToast(true)
             setErrorType('success')
             setError('Record Created Successfully')
             props.onSubmitCallback()
           } catch (error) {
-            console.error('FORM_ERROR', error)
             serverErrorHandler(error)
           }
         }

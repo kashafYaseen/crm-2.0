@@ -27,14 +27,17 @@ const Index = () => {
   })
 
   const deletePlace = async (id) => {
-    try {
-      const response = await places_data('DELETE', `places/${id}`)
-      fetch_places_data()
-      setShowToast(true)
-      setErrorType('danger')
-      setError('Record Deleted Successfully')
-    } catch (error) {
-      console.error('Error updating place:', error)
+    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
+    if (confirmDelete) {
+      try {
+        const response = await places_data('DELETE', `places/${id}`)
+        fetch_places_data()
+        setShowToast(true)
+        setErrorType('success')
+        setError('Record Deleted Successfully')
+      } catch (error) {
+        console.error('Error updating place:', error)
+      }
     }
   }
 

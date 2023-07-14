@@ -29,14 +29,17 @@ const Index = () => {
   })
 
   const deletePlace = async (id) => {
-    try {
-      const response = await place_categories_data('DELETE', `place_categories/${id}`)
-      setShowToast(true)
-      setErrorType('danger')
-      setError('Record Deleted Successfully')
-      await fetch_place_categories_data()
-    } catch (error) {
-      console.error('Error updating place:', error)
+    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
+    if (confirmDelete) {
+      try {
+        const response = await place_categories_data('DELETE', `place_categories/${id}`)
+        setShowToast(true)
+        setErrorType('success')
+        setError('Record Deleted Successfully')
+        fetch_place_categories_data()
+      } catch (error) {
+        console.error('Error updating place:', error)
+      }
     }
   }
 
