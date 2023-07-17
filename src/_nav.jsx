@@ -137,6 +137,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Regions',
+        to: '/regions',
+      },
+      {
+        component: CNavItem,
         name: 'Accommodations',
         to: '/lodgings',
       },

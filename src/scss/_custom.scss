@@ -109,6 +109,30 @@
   margin-bottom: 10px;
 }
 
+// for form validation
+
+.input-error{
+  border-color: #fc8181;
+}
+select.input-error{
+  border-color: #fc8181;
+}
+.formik-errors {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.server-error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.rft-pagination {
+  display: none;
+}
+
 
 
 
