@@ -1,40 +1,39 @@
 import React, { useEffect, useState } from 'react'
 import 'react-flexy-table/dist/index.css'
-import './../../scss/_custom.scss'
+import '../../../scss/_custom.scss'
 import { Link } from 'react-router-dom'
-import { countries_data } from '../../api/config/resources/countries'
-import { DataTables } from '../../components/UI/dataTables'
+import { regions_data } from '../../../api/admin_user/config/resources/regions'
+import { DataTables } from '../../../components/admin_user/UI/dataTables'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 
-const Countries = () => {
-  const [countries, setCountries] = useState([])
+const Regions = () => {
+  const [regions, setRegions] = useState([])
 
   useEffect(() => {
-    const fetchCountries = async () => {
+    const fetchRegions = async () => {
       try {
-        const extractedData = await countries_data('GET', 'countries')
-        setCountries(extractedData)
+        const extractedData = await regions_data('GET', 'regions')
+        setRegions(extractedData)
       } catch (error) {
         throw error
       }
     }
 
-    fetchCountries()
+    fetchRegions()
   }, [])
 
   const [searchQuery, setSearchQuery] = useState('')
 
   const columns = [
     { header: 'Name', key: 'name' },
-    { header: 'Disable', key: 'disable', td: (row) => row.disable ?? 'N/A' },
+    { header: 'Country', key: 'region_country', td: (row) => row.region_country ?? 'N/A' },
     { header: 'Content', key: 'content', td: (row) => row.content ?? 'N/A' },
-
     {
       header: 'Actions',
       td: (row) => (
         <>
-          <Link to="/country-form" state={{ record: row }}>
+          <Link to="/admin-user/regions/region-form" state={{ record: row }}>
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </>
@@ -46,15 +45,15 @@ const Countries = () => {
     setSearchQuery(event.target.value)
   }
 
-  const filteredData = countries.filter((item) => {
+  const filteredData = regions.filter((item) => {
     const searchData = Object.values(item).join('').toLowerCase()
     return searchData.includes(searchQuery.toLowerCase())
   })
 
   return (
     <div className="display">
-      <h2 className="mb-3">Countries</h2>
-      {countries.length > 0 ? (
+      <h2 className="mb-3">Regions</h2>
+      {regions.length > 0 ? (
         <div>
           <div className="search-container">
             <input
@@ -64,7 +63,7 @@ const Countries = () => {
               placeholder="Search..."
               className="custom-search-input"
             />
-            <Link to="/country-form">
+            <Link to="/admin-user/regions/region-form">
               <button className="create-button">Create</button>
             </Link>
           </div>
@@ -77,4 +76,4 @@ const Countries = () => {
   )
 }
 
-export default Countries
+export default Regions

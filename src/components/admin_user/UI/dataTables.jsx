@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactFlexyTable from 'react-flexy-table'
 import 'react-flexy-table/dist/index.css'
-import './../../scss/_custom.scss'
+import '../../../scss/_custom.scss'
 
 export const DataTables = ({ data, columns }) => {
   return (

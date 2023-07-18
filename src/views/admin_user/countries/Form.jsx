@@ -15,11 +15,11 @@ import {
   CBreadcrumb,
   CBreadcrumbItem,
 } from '@coreui/react'
-import { countries_data } from '../../api/config/resources/countries'
-import { Toast } from '../../components/UI/Toast/Toast'
+import { countries_data } from '../../../api/admin_user/config/resources/countries'
+import { Toast } from '../../../components/admin_user/UI/Toast/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import './../../scss/_custom.scss'
+import '../../../scss/_custom.scss'
 import JoditEditor from 'jodit-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -151,7 +151,7 @@ const Form = (props) => {
   return (
     <div className="display">
       <CBreadcrumb>
-        <CBreadcrumbItem href="#/countries">Country</CBreadcrumbItem>
+        <CBreadcrumbItem href="/admin-user/countries">Country</CBreadcrumbItem>
         <CBreadcrumbItem active>New Country</CBreadcrumbItem>
       </CBreadcrumb>
       {serverError && <div className="server-error-message">{serverError}</div>}

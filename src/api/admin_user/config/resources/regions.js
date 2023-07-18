@@ -1,4 +1,4 @@
-import { request } from '../../admin_user/api'
+import { request } from '../../api'
 
 export const regions_data = async (method, endpoint, payload = null) => {
   try {
