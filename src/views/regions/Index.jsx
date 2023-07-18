@@ -36,7 +36,6 @@ const Regions = () => {
           <Link to="/region-form" state={{ record: row }}>
             <FontAwesomeIcon icon={faEdit} />
           </Link>
-          {/* <button className="create-button">Add Temp</button> */}
         </>
       ),
     },

@@ -52,12 +52,11 @@ const Form = (props) => {
       villas_desc: region_data?.villas_desc || '',
       apartment_desc: region_data?.apartment_desc || '',
       bb_desc: region_data?.bb_desc || '',
-      // image: region_data?.image || '',
     },
   }
 
   useEffect(() => {
-    // clearTimeout()
+    clearTimeout()
     const fetch_data = async () => {
       try {
         const extractCountriesData = await countries_data('get', 'countries')
@@ -372,26 +371,14 @@ const Form = (props) => {
                   )}
                 </CCol>
 
+                {/* This attribute is not saving at backend temporarily */}
                 <CCol md={12}>
                   <CFormLabel htmlFor="inputMetaDescription">Meta Description</CFormLabel>
                   <JoditEditor
                     id="inputMetaDescription"
                     tabIndex={1}
-                    // value={formik.values.region.meta_description}
-                    // onChange={handleInputChange}
-                    // onBlur={formik.handleBlur}
                     name="region.meta_description"
-                    // className={
-                    //   formik.errors.region?.meta_description &&
-                    //   formik.touched.region?.meta_description
-                    //     ? 'input-error'
-                    //     : ''
-                    // }
                   />
-                  {/* {formik.touched.region?.meta_description && */}
-                  {/* formik.errors.region?.meta_description && ( */}
-                  {/* <div className="formik-errors">{formik.errors.region?.meta_description}</div> */}
-                  {/* )} */}
                 </CCol>
 
                 <CCol md={6}>
@@ -479,24 +466,9 @@ const Form = (props) => {
                   )}
                 </CCol>
 
+                {/* This attribute is not saving at backend temporarily */}
                 <CCol md={12}>
-                  <CFormInput
-                    type="file"
-                    id="inputImage"
-                    // value={formik.values.region.image}
-                    // onChange={handleInputChange}
-                    // onBlur={formik.handleBlur}
-                    name="region.image"
-                    // className={
-                    //   formik.errors.region?.image && formik.touched.region?.image
-                    //     ? 'input-error'
-                    //     : ''
-                    // }
-                  />
-                  {/* {formik.touched.region?.image && */}
-                  {/* formik.errors.region?.image && ( */}
-                  {/* <div className="formik-errors">{formik.errors.region?.image}</div> */}
-                  {/* )} */}
+                  <CFormInput type="file" id="inputImage" name="region.image" />
                 </CCol>
 
                 <CCol md={6}>

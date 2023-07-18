@@ -50,7 +50,6 @@ const Form = (props) => {
       bb_desc: country_data?.bb_desc || '',
       dropdown: country_data?.dropdown || '',
       sidebar: country_data?.sidebar || '',
-      // image: country_data?.image || '',
     },
   }
 
@@ -330,26 +329,14 @@ const Form = (props) => {
                   )}
                 </CCol>
 
+                {/* This attribute is not saving at backend temporarily */}
                 <CCol md={12}>
                   <CFormLabel htmlFor="inputMetaDescription">Meta Description</CFormLabel>
                   <JoditEditor
                     id="inputMetaDescription"
                     tabIndex={1}
-                    // value={formik.values.country.meta_description}
-                    // onChange={handleInputChange}
-                    // onBlur={formik.handleBlur}
                     name="country.meta_description"
-                    // className={
-                    //   formik.errors.country?.meta_description &&
-                    //   formik.touched.country?.meta_description
-                    //     ? 'input-error'
-                    //     : ''
-                    // }
                   />
-                  {/* {formik.touched.country?.meta_description && */}
-                  {/* formik.errors.country?.meta_description && ( */}
-                  {/* <div className="formik-errors">{formik.errors.country?.meta_description}</div> */}
-                  {/* )} */}
                 </CCol>
 
                 <CCol md={12}>
@@ -464,24 +451,9 @@ const Form = (props) => {
                   />
                 </CCol>
 
+                {/* This attribute is not saving at backend temporarily */}
                 <CCol md={12}>
-                  <CFormInput
-                    type="file"
-                    id="inputImage"
-                    // value={formik.values.country.image}
-                    // onChange={handleInputChange}
-                    // onBlur={formik.handleBlur}
-                    name="country.image"
-                    // className={
-                    //   formik.errors.country?.image && formik.touched.country?.image
-                    //     ? 'input-error'
-                    //     : ''
-                    // }
-                  />
-                  {/* {formik.touched.country?.image && */}
-                  {/* formik.errors.country?.image && ( */}
-                  {/* <div className="formik-errors">{formik.errors.country?.image}</div> */}
-                  {/* )} */}
+                  <CFormInput type="file" id="inputImage" name="country.image" />
                 </CCol>
 
                 <CCol md={6}>
