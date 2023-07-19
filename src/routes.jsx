@@ -2,7 +2,10 @@ import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Lodgings = React.lazy(() => import('./views/lodgings/Lodgings'))
-const Countries = React.lazy(() => import('./views/countries/Countries'))
+const Countries = React.lazy(() => import('./views/countries/Index'))
+const Regions = React.lazy(() => import('./views/regions/Index'))
+const CountryForm = React.lazy(() => import('./views/countries/Form'))
+const RegionForm = React.lazy(() => import('./views/regions/Form'))
 
 const Places = React.lazy(() => import('./views/places/Index'))
 const NewPlace = React.lazy(() => import('./views/places/newPlace'))
@@ -21,6 +24,9 @@ const routes = [
   { path: '/edit-place', name: 'EditPlace', element: EditPlace },
 
   { path: '/place-categories', name: 'PlaceCategories', element: PlaceCategories },
+  { path: '/regions', name: 'Regions', element: Regions },
+  { path: '/country-form', name: 'Country Form', element: CountryForm },
+  { path: '/region-form', name: 'Region Form', element: RegionForm },
 ]
 
 export default routes
