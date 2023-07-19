@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppContent, AppSidebar, AppFooter, AppHeader } from '../../components/admin_user/index'
+import { AppContent, AppSidebar, AppFooter, AppHeader } from '@admin_user_components/index'
 
 const DefaultLayout = () => {
   return (

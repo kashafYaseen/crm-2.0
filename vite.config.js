@@ -14,6 +14,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.join(__dirname, './src'),
+      '@admin_user_components': path.resolve(__dirname, 'src/components/admin_user'),
+      '@business_owner_components': path.resolve(__dirname, 'src/components/business_owner'),
+      '@admin_user_views': path.resolve(__dirname, 'src/views/admin_user'),
+      '@business_owner_views': path.resolve(__dirname, 'src/views/business_owner'),
     },
   },
   plugins: [

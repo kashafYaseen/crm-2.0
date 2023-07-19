@@ -1,8 +1,8 @@
 import React, { Component, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import './scss/style.scss'
-import AdminUserRoutes from './routes/admin_user_routes'
-import BusinessOwnerRoutes from './routes/business_owner_routes'
+import '@/scss/style.scss'
+import AdminUserRoutes from '@/routes/admin_user_routes'
+import BusinessOwnerRoutes from '@/routes/business_owner_routes'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -11,8 +11,8 @@ const loading = (
 )
 
 // Containers
-const DefaultLayout = React.lazy(() => import('./layout/business_owner/DefaultLayout'))
-const AdminDefaultLayout = React.lazy(() => import('./layout/admin_user/DefaultLayout'))
+const DefaultLayout = React.lazy(() => import('@/layout/business_owner/DefaultLayout'))
+const AdminDefaultLayout = React.lazy(() => import('@/layout/admin_user/DefaultLayout'))
 
 class App extends Component {
   render() {

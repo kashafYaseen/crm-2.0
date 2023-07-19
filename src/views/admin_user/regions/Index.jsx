@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import 'react-flexy-table/dist/index.css'
-import '../../../scss/_custom.scss'
+import '@/scss/_custom.scss'
 import { Link } from 'react-router-dom'
-import { regions_data } from '../../../api/admin_user/config/resources/regions'
-import { DataTables } from '../../../components/admin_user/UI/dataTables'
+import { regions_data } from '@/api/admin_user/config/resources/regions'
+import { DataTables } from '@admin_user_components/UI/dataTables'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 

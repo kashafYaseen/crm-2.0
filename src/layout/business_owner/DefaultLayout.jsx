@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppContent, AppSidebar, AppFooter, AppHeader } from '../../components/business_owner/index'
+import { AppContent, AppSidebar, AppFooter, AppHeader } from '@business_owner_components/index'
 
 const DefaultLayout = () => {
   return (

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes, Navigate, Outlet } from 'react-router-dom'
-import routes from '../routes'
+import routes from '@/routes'
 
 const BusinessOwnerRoutes = () => {
   return (
