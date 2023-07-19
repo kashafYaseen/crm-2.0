@@ -3,11 +3,12 @@ import 'react-flexy-table/dist/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import './../../scss/_custom.scss'
-import { DataTables } from '@/components/UI/dataTables'
+import { DataTable } from '@/components/UI/DataTable'
 import { Toast } from '@/components/UI/Toast'
 import { place_categories_data } from '@/api/config/resources/place_categories'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
 import Form from './Form'
+import { CSpinner } from '@coreui/react'
 
 const Index = () => {
   const [data, setData] = useState([])
@@ -15,6 +16,9 @@ const Index = () => {
   const [showToast, setShowToast] = useState(false)
   const [errorType, setErrorType] = useState()
   const [error, setError] = useState()
+  const [totalPlacesRecords, setTotalPlacesRecords] = useState(0)
+  const [perPageNumber, setPerPageNumber] = useState(10)
+  const [loading, setLoading] = useState(false)
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
@@ -23,10 +27,9 @@ const Index = () => {
     setSearchQuery(event.target.value)
   }
 
-  const filteredData = data.filter((item) => {
-    const searchData = Object.values(item).join('').toLowerCase()
-    return searchData.includes(searchQuery.toLowerCase())
-  })
+  const searchQueryHandler = async () => {
+    fetch_place_categories_data()
+  }
 
   const deletePlace = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
@@ -61,21 +64,39 @@ const Index = () => {
     },
   ]
 
-  const fetch_place_categories_data = async () => {
+  const fetch_place_categories_data = async (pageNumber) => {
+    setLoading(true)
+
     try {
-      const extractedData = await place_categories_data('get', 'place_categories')
-      setData(extractedData)
+      const { data, totalRecords } = await place_categories_data('get', 'place_categories', null, {
+        page: pageNumber,
+        per_page: perPageNumber,
+        query: searchQuery,
+      })
+
+      setData(data)
+      setTotalPlacesRecords(totalRecords)
+      setLoading(false)
     } catch (error) {
       console.error(error)
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     fetch_place_categories_data()
-  }, [])
+  }, [perPageNumber])
 
   const handleToastHide = () => {
     setShowToast(false)
+  }
+
+  const onPageChangeHandler = (value) => {
+    fetch_place_categories_data(value)
+  }
+
+  const onPerPageChangeHandler = (value) => {
+    setPerPageNumber(value)
   }
 
   const handleFormSubmit = async () => {
@@ -97,6 +118,18 @@ const Index = () => {
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
       <h2 className="mb-3">Place Categories</h2>
+      <div className="create-button-div">
+        <button
+          className="create-button"
+          onClick={() => {
+            setModal(true)
+            setSelectedRecord(null)
+          }}
+        >
+          Create New Place Category
+        </button>
+      </div>
+
       <div className="search-container">
         <input
           type="text"
@@ -105,18 +138,24 @@ const Index = () => {
           placeholder="Search..."
           className="custom-search-input"
         />
-
-        <button
-          className="create-button"
-          onClick={() => {
-            setModal(true)
-            setSelectedRecord(null)
-          }}
-        >
-          Create
+        <button className="create-button" onClick={searchQueryHandler}>
+          Search
         </button>
       </div>
-      {data.length > 0 ? <DataTables data={filteredData} columns={columns} /> : <p>Loading...</p>}
+
+      {data.length > 0 ? (
+        <DataTable
+          data={data}
+          columns={columns}
+          totalPlacesRecords={totalPlacesRecords}
+          onPageChange={onPageChangeHandler}
+          onPerPageChange={onPerPageChangeHandler}
+          perPageNumber={perPageNumber}
+          loading={loading}
+        />
+      ) : (
+        <div>{loading ? <CSpinner color="secondary" variant="grow" /> : 'No records found'}</div>
+      )}
     </div>
   )
 }

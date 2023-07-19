@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import ReactFlexyTable from 'react-flexy-table'
 import 'react-flexy-table/dist/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import './../../scss/_custom.scss'
 import { places_data } from '@/api/config/resources/places'
-import { DataTables } from '@/components/UI/dataTables'
+import { DataTable } from '@/components/UI/DataTable'
 import { Toast } from '@/components/UI/Toast'
+import { CSpinner } from '@coreui/react'
 
 const Index = () => {
   const [data, setData] = useState([])
-  // const [selectedRecord, setSelectedRecord] = useState()
   const [searchQuery, setSearchQuery] = useState('')
   const [showToast, setShowToast] = useState(false)
   const [errorType, setErrorType] = useState()
   const [error, setError] = useState()
+  const [totalPlacesRecords, setTotalPlacesRecords] = useState(0)
+  const [perPageNumber, setPerPageNumber] = useState(10)
+  const [loading, setLoading] = useState(false)
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
   }
 
-  const filteredData = data.filter((item) => {
-    const searchData = Object.values(item).join('').toLowerCase()
-    return searchData.includes(searchQuery.toLowerCase())
-  })
+  const searchQueryHandler = async () => {
+    fetch_places_data()
+  }
 
   const deletePlace = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
@@ -61,21 +62,38 @@ const Index = () => {
     },
   ]
 
-  const fetch_places_data = async () => {
+  const fetch_places_data = async (pageNumber) => {
+    setLoading(true)
     try {
-      const extractedData = await places_data('get', 'places')
-      setData(extractedData)
+      const { data, totalRecords } = await places_data('get', 'places', null, {
+        page: pageNumber,
+        per_page: perPageNumber,
+        query: searchQuery,
+      })
+
+      setData(data)
+      setTotalPlacesRecords(totalRecords)
+      setLoading(false)
     } catch (error) {
       console.error(error)
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     fetch_places_data()
-  }, [])
+  }, [perPageNumber])
 
   const handleToastHide = () => {
     setShowToast(false)
+  }
+
+  const onPageChangeHandler = (value) => {
+    fetch_places_data(value)
+  }
+
+  const onPerPageChangeHandler = (value) => {
+    setPerPageNumber(value)
   }
 
   return (
@@ -85,6 +103,13 @@ const Index = () => {
       </div>
 
       <h2 className="mb-3">Places</h2>
+
+      <div className="create-button-div">
+        <Link to="/new-place">
+          <button className="create-button">Create New Place</button>
+        </Link>
+      </div>
+
       <div className="search-container">
         <input
           type="text"
@@ -93,11 +118,24 @@ const Index = () => {
           placeholder="Search..."
           className="custom-search-input"
         />
-        <Link to="/new-place">
-          <button className="create-button">Create</button>
-        </Link>
+        <button className="create-button" onClick={searchQueryHandler}>
+          Search
+        </button>
       </div>
-      {data.length > 0 ? <DataTables data={filteredData} columns={columns} /> : <p>Loading...</p>}
+
+      {data.length > 0 ? (
+        <DataTable
+          data={data}
+          columns={columns}
+          totalPlacesRecords={totalPlacesRecords}
+          onPageChange={onPageChangeHandler}
+          onPerPageChange={onPerPageChangeHandler}
+          perPageNumber={perPageNumber}
+          loading={loading}
+        />
+      ) : (
+        <div>{loading ? <CSpinner color="secondary" variant="grow" /> : 'No records found'}</div>
+      )}
     </div>
   )
 }

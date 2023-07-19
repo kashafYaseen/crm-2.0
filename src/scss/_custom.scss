@@ -37,7 +37,7 @@
 .search-container {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-bottom: 20px;
 }
 
@@ -48,6 +48,13 @@
   width: 300px;
   font-size: 14px;
   margin-right: 10px;
+}
+
+.create-button-div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 10px;
 }
 
 .create-button {
@@ -97,3 +104,27 @@ select.input-error{
   margin-bottom: 10px;
 }
 
+.rft-pagination {
+  display: none;
+}
+
+// for pagination
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.row-per-page {
+margin-bottom: 5px;
+}
+
+.row-per-page-selector{
+  width: 70px;
+  height: 30px;
+}
+
+.rows-per-page-label{
+  margin-right: 5px;
+}

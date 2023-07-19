@@ -25,6 +25,8 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useNavigate } from 'react-router-dom'
 
+import { request } from '@/api/admin_user/api'
+
 const Form = (props) => {
   const [placeCategoriesData, setPlaceCategoriesData] = useState([])
   const [regionsData, setRegionsData] = useState([])
@@ -118,8 +120,7 @@ const Form = (props) => {
           regions_data('get', 'regions'),
           countries_data('get', 'countries'),
         ])
-
-        setPlaceCategoriesData(placeCategories)
+        setPlaceCategoriesData(placeCategories.data)
         setRegionsData(regions)
         setCountriesData(countries)
       } catch (error) {

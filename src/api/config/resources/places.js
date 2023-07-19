@@ -1,9 +1,11 @@
 import { request } from '@/api/admin_user/api'
 
-export const places_data = async (method, endpoint, payload = null) => {
+export const places_data = async (method, endpoint, payload = null, params = {}) => {
   try {
-    const response = await request(method, endpoint, payload)
+    const response = await request(method, endpoint, payload, params)
+
     if (Array.isArray(response.data)) {
+      const totalRecords = response.count
       const extractedData = response.data.map(({ id, attributes }) => ({
         id: id,
         name: attributes.name,
@@ -30,7 +32,7 @@ export const places_data = async (method, endpoint, payload = null) => {
         slug_en: attributes.slug_en,
         slug_nl: attributes.slug_nl,
       }))
-      return extractedData
+      return { data: extractedData, totalRecords: totalRecords }
     } else {
       return response
     }
