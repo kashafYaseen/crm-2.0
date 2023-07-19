@@ -147,12 +147,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'All Regions',
-        to: '/buttons/dropdowns',
-      },
-      {
-        component: CNavItem,
-        name: 'All Places',
+        name: 'Places',
         to: '/places',
       },
       {
