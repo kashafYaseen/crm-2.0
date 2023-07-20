@@ -29,7 +29,6 @@ const Form = (props) => {
       name_nl: props.place_category_to_update?.name_nl || '',
       color_code: props.place_category_to_update?.color_code || '',
     },
-    // images_attributes: [{ image: '' }],
   }
 
   const validationSchema = Yup.object().shape({

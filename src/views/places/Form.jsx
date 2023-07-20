@@ -61,7 +61,6 @@ const Form = (props) => {
 
       latitude: props.place_to_update?.latitude || '',
     },
-    // images_attributes: [{ image: '' }],
   }
 
   const validationSchema = Yup.object().shape({
