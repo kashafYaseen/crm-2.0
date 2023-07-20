@@ -17,7 +17,7 @@ const Index = () => {
   const [error, setError] = useState()
   const [totalPlacesRecords, setTotalPlacesRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -37,7 +37,7 @@ const Index = () => {
         setErrorType('success')
         setError('Record Deleted Successfully')
       } catch (error) {
-        console.error('Error updating place:', error)
+        console.error('Error Deleting place:', error)
       }
     }
   }

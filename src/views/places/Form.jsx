@@ -120,8 +120,8 @@ const Form = (props) => {
           countries_data('get', 'countries'),
         ])
         setPlaceCategoriesData(placeCategories.data)
-        setRegionsData(regions)
-        setCountriesData(countries)
+        setRegionsData(regions.data)
+        setCountriesData(countries.data)
       } catch (error) {
         console.error(error)
       }
@@ -137,7 +137,7 @@ const Form = (props) => {
   return (
     <div className="display">
       <CBreadcrumb>
-        <CBreadcrumbItem href="#/place">Place</CBreadcrumbItem>
+        <CBreadcrumbItem href="#/places">Place</CBreadcrumbItem>
         <CBreadcrumbItem active>New Place</CBreadcrumbItem>
       </CBreadcrumb>
       <div className="toast-container">

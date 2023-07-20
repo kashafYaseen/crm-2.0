@@ -18,7 +18,7 @@ const Index = () => {
   const [error, setError] = useState()
   const [totalPlacesRecords, setTotalPlacesRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
@@ -41,7 +41,7 @@ const Index = () => {
         setError('Record Deleted Successfully')
         fetch_place_categories_data()
       } catch (error) {
-        console.error('Error updating place:', error)
+        console.error('Error Deleting Place Category', error)
       }
     }
   }
