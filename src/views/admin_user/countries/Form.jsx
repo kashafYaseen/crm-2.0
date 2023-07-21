@@ -121,7 +121,7 @@ const Form = (props) => {
             setErrorType('success')
             setError('Record Updated Successfully')
             setTimeout(() => {
-              navigate('/countries')
+              navigate('/admin-user/countries')
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -134,7 +134,7 @@ const Form = (props) => {
             setErrorType('success')
             setError('Record Created Successfully')
             setTimeout(() => {
-              navigate('/countries')
+              navigate('/admin-user/countries')
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)

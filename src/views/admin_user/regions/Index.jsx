@@ -3,25 +3,38 @@ import 'react-flexy-table/dist/index.css'
 import '@/scss/_custom.scss'
 import { Link } from 'react-router-dom'
 import { regions_data } from '@/api/admin_user/config/resources/regions'
-import { DataTables } from '@admin_user_components/UI/dataTables'
+import { DataTable } from '@admin_user_components/UI/DataTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { CSpinner } from '@coreui/react'
 
 const Regions = () => {
   const [regions, setRegions] = useState([])
+  const [totalPlacesRecords, setTotalPlacesRecords] = useState(0)
+  const [perPageNumber, setPerPageNumber] = useState(10)
+  const [loading, setLoading] = useState(true)
+
+  const fetchRegions = async (pageNumber) => {
+    setLoading(true)
+    try {
+      const { data, totalRecords } = await regions_data('GET', 'regions', null, {
+        page: pageNumber,
+        per_page: perPageNumber,
+        query: searchQuery,
+      })
+
+      setRegions(data)
+      setTotalPlacesRecords(totalRecords)
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      throw error
+    }
+  }
 
   useEffect(() => {
-    const fetchRegions = async () => {
-      try {
-        const extractedData = await regions_data('GET', 'regions')
-        setRegions(extractedData)
-      } catch (error) {
-        throw error
-      }
-    }
-
     fetchRegions()
-  }, [])
+  }, [perPageNumber])
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -45,32 +58,52 @@ const Regions = () => {
     setSearchQuery(event.target.value)
   }
 
-  const filteredData = regions.filter((item) => {
-    const searchData = Object.values(item).join('').toLowerCase()
-    return searchData.includes(searchQuery.toLowerCase())
-  })
+  const searchQueryHandler = async () => {
+    fetchRegions()
+  }
+
+  const onPageChangeHandler = (value) => {
+    fetchRegions(value)
+  }
+
+  const onPerPageChangeHandler = (value) => {
+    setPerPageNumber(value)
+  }
 
   return (
     <div className="display">
       <h2 className="mb-3">Regions</h2>
+      <div className="create-button-div">
+        <Link to="/admin-user/regions/region-form">
+          <button className="create-button">Create</button>
+        </Link>
+      </div>
+
+      <div className="search-container">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+          placeholder="Search..."
+          className="custom-search-input"
+        />
+        <button className="create-button" onClick={searchQueryHandler}>
+          Search
+        </button>
+      </div>
+
       {regions.length > 0 ? (
-        <div>
-          <div className="search-container">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-              placeholder="Search..."
-              className="custom-search-input"
-            />
-            <Link to="/admin-user/regions/region-form">
-              <button className="create-button">Create</button>
-            </Link>
-          </div>
-          <DataTables data={filteredData} columns={columns} />
-        </div>
+        <DataTable
+          data={regions}
+          columns={columns}
+          totalPlacesRecords={totalPlacesRecords}
+          onPageChange={onPageChangeHandler}
+          onPerPageChange={onPerPageChangeHandler}
+          perPageNumber={perPageNumber}
+          loading={loading}
+        />
       ) : (
-        <p>Loading...</p>
+        <div>{loading ? <CSpinner color="secondary" variant="grow" /> : 'No records found'}</div>
       )}
     </div>
   )

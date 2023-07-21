@@ -179,7 +179,6 @@ const Dashboard = () => {
 
   return (
     <>
-      {console.log('here in dashboard')}
       {/* <WidgetsDropdown /> */}
       {/* <CCard className="mb-4">
         <CCardBody>

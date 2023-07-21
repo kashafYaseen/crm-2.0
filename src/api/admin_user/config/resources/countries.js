@@ -1,9 +1,11 @@
 import { request } from '../../api'
 
-export const countries_data = async (method, endpoint, payload = null) => {
+export const countries_data = async (method, endpoint, payload = null, params = {}) => {
   try {
-    const countries = await request(method, endpoint, payload)
-    try {
+    const countries = await request(method, endpoint, payload, params)
+
+    if (Array.isArray(countries.data)) {
+      const totalRecords = countries.count
       const extractedData = countries.data.map(({ id, attributes }) => ({
         id: id,
         name: attributes.name_en,
@@ -25,9 +27,9 @@ export const countries_data = async (method, endpoint, payload = null) => {
         dropdown: attributes.dropdown,
         sidebar: attributes.sidebar,
       }))
-      return extractedData
-    } catch (error) {
-      return error
+      return { data: extractedData, totalRecords: totalRecords }
+    } else {
+      return countries
     }
   } catch (error) {
     throw error

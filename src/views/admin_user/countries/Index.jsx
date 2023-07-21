@@ -3,25 +3,38 @@ import 'react-flexy-table/dist/index.css'
 import '@/scss/_custom.scss'
 import { Link } from 'react-router-dom'
 import { countries_data } from '@/api/admin_user/config/resources/countries'
-import { DataTables } from '@admin_user_components/UI/dataTables'
+import { DataTable } from '@admin_user_components/UI/DataTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { CSpinner } from '@coreui/react'
 
 const Countries = () => {
   const [countries, setCountries] = useState([])
+  const [totalPlacesRecords, setTotalPlacesRecords] = useState(0)
+  const [perPageNumber, setPerPageNumber] = useState(10)
+  const [loading, setLoading] = useState(true)
+
+  const fetchCountries = async (pageNumber) => {
+    setLoading(true)
+    try {
+      const { data, totalRecords } = await countries_data('GET', 'countries', null, {
+        page: pageNumber,
+        per_page: perPageNumber,
+        query: searchQuery,
+      })
+
+      setCountries(data)
+      setTotalPlacesRecords(totalRecords)
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      throw error
+    }
+  }
 
   useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const extractedData = await countries_data('GET', 'countries')
-        setCountries(extractedData)
-      } catch (error) {
-        throw error
-      }
-    }
-
     fetchCountries()
-  }, [])
+  }, [perPageNumber])
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -45,33 +58,51 @@ const Countries = () => {
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
   }
+  const searchQueryHandler = async () => {
+    fetchCountries()
+  }
 
-  const filteredData = countries.filter((item) => {
-    const searchData = Object.values(item).join('').toLowerCase()
-    return searchData.includes(searchQuery.toLowerCase())
-  })
+  const onPageChangeHandler = (value) => {
+    fetchCountries(value)
+  }
+
+  const onPerPageChangeHandler = (value) => {
+    setPerPageNumber(value)
+  }
 
   return (
     <div className="display">
       <h2 className="mb-3">Countries</h2>
+      <div className="create-button-div">
+        <Link to="/admin-user/countries/country-form">
+          <button className="create-button">Create</button>
+        </Link>
+      </div>
+      <div className="search-container">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+          placeholder="Search..."
+          className="custom-search-input"
+        />
+        <button className="create-button" onClick={searchQueryHandler}>
+          Search
+        </button>
+      </div>
+
       {countries.length > 0 ? (
-        <div>
-          <div className="search-container">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-              placeholder="Search..."
-              className="custom-search-input"
-            />
-            <Link to="/admin-user/countries/country-form">
-              <button className="create-button">Create</button>
-            </Link>
-          </div>
-          <DataTables data={filteredData} columns={columns} />
-        </div>
+        <DataTable
+          data={countries}
+          columns={columns}
+          totalPlacesRecords={totalPlacesRecords}
+          onPageChange={onPageChangeHandler}
+          onPerPageChange={onPerPageChangeHandler}
+          perPageNumber={perPageNumber}
+          loading={loading}
+        />
       ) : (
-        <p>Loading...</p>
+        <div>{loading ? <CSpinner color="secondary" variant="grow" /> : 'No records found'}</div>
       )}
     </div>
   )

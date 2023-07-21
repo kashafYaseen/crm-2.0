@@ -60,7 +60,7 @@ const Form = (props) => {
     const fetch_data = async () => {
       try {
         const extractCountriesData = await countries_data('get', 'countries')
-        setCountriesData(extractCountriesData)
+        setCountriesData(extractCountriesData.data)
       } catch (error) {
         throw error
       }
@@ -126,7 +126,7 @@ const Form = (props) => {
             setErrorType('success')
             setError('Record Updated Successfully')
             setTimeout(() => {
-              navigate('/regions')
+              navigate('/admin-user/regions')
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -139,7 +139,7 @@ const Form = (props) => {
             setErrorType('success')
             setError('Record Created Successfully')
             setTimeout(() => {
-              navigate('/regions')
+              navigate('/admin-user/regions')
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)

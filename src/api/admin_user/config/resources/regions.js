@@ -1,9 +1,10 @@
 import { request } from '../../api'
 
-export const regions_data = async (method, endpoint, payload = null) => {
+export const regions_data = async (method, endpoint, payload = null, params = {}) => {
   try {
-    const regions = await request(method, endpoint, payload)
-    try {
+    const regions = await request(method, endpoint, payload, params)
+    if (Array.isArray(regions.data)) {
+      const totalRecords = regions.count
       const extractedData = regions.data.map(({ id, attributes }) => ({
         id: id,
         name: attributes.name_en,
@@ -26,9 +27,9 @@ export const regions_data = async (method, endpoint, payload = null) => {
         apartment_desc: attributes.apartment_desc,
         bb_desc: attributes.bb_desc,
       }))
-      return extractedData
-    } catch (error) {
-      return error
+      return { data: extractedData, totalRecords: totalRecords }
+    } else {
+      return regions
     }
   } catch (error) {
     throw error
