@@ -15,7 +15,7 @@ import {
   CFormTextarea,
   CRow,
 } from '@coreui/react'
-import { place_categories_data } from '@/api/config/resources/place_categories'
+import { place_categories_data } from '@/api/config/resources/placeCategories'
 import { regions_data } from '@/api/config/resources/regions'
 import { countries_data } from '@/api/config/resources/countries'
 import JoditEditor from 'jodit-react'

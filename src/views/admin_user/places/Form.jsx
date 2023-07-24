@@ -15,7 +15,7 @@ import {
   CFormTextarea,
   CRow,
 } from '@coreui/react'
-import { place_categories_data } from '@/api/admin_user/config/resources/place_categories'
+import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
 import { regions_data } from '@/api/admin_user/config/resources/regions'
 import { countries_data } from '@/api/admin_user/config/resources/countries'
 import { places_data } from '@/api/admin_user/config/resources/places'

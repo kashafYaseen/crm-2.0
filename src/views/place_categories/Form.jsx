@@ -15,7 +15,7 @@ import { Toast } from '@/components/UI/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import './../../scss/_custom.scss'
-import { place_categories_data } from '@/api/config/resources/place_categories'
+import { place_categories_data } from '@/api/config/resources/placeCategories'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)

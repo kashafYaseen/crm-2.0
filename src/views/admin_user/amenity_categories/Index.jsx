@@ -8,7 +8,7 @@ import { CSpinner } from '@coreui/react'
 import '@/scss/_custom.scss'
 import { DataTable } from '@admin_user_components/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
-import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
+import { amenity_categories_data } from '@/api/admin_user/config/resources/amenityCategories'
 
 const Index = () => {
   const [data, setData] = useState([])
@@ -28,20 +28,20 @@ const Index = () => {
   }
 
   const searchQueryHandler = async () => {
-    fetch_place_categories_data()
+    fetch_amenity_categories_data()
   }
 
-  const deletePlace = async (id) => {
+  const deleteAmenity = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await place_categories_data('DELETE', `place_categories/${id}`)
+        const response = await amenity_categories_data('DELETE', `amenity_categories/${id}`)
         setShowToast(true)
         setErrorType('success')
         setError('Record Deleted Successfully')
-        fetch_place_categories_data()
+        fetch_amenity_categories_data()
       } catch (error) {
-        console.error('Error Deleting Place Category', error)
+        console.error('Error Deleting Amenity Category', error)
       }
     }
   }
@@ -58,21 +58,26 @@ const Index = () => {
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
-          <FontAwesomeIcon onClick={() => deletePlace(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => deleteAmenity(row.id)} icon={faTrash} />
         </>
       ),
     },
   ]
 
-  const fetch_place_categories_data = async (pageNumber) => {
+  const fetch_amenity_categories_data = async (pageNumber) => {
     setLoading(true)
 
     try {
-      const { data, totalRecords } = await place_categories_data('get', 'place_categories', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await amenity_categories_data(
+        'get',
+        'amenity_categories',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+      )
 
       setData(data)
       setTotalRecords(totalRecords)
@@ -84,7 +89,7 @@ const Index = () => {
   }
 
   useEffect(() => {
-    fetch_place_categories_data()
+    fetch_amenity_categories_data()
   }, [perPageNumber])
 
   const handleToastHide = () => {
@@ -92,7 +97,7 @@ const Index = () => {
   }
 
   const onPageChangeHandler = (value) => {
-    fetch_place_categories_data(value)
+    fetch_amenity_categories_data(value)
   }
 
   const onPerPageChangeHandler = (value) => {
@@ -100,7 +105,7 @@ const Index = () => {
   }
 
   const handleFormSubmit = async () => {
-    await fetch_place_categories_data()
+    await fetch_amenity_categories_data()
     setModal(false)
     setSelectedRecord(null)
   }
@@ -108,16 +113,16 @@ const Index = () => {
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>Place Category</ModalHeader>
+        <ModalHeader toggle={() => setModal(!modal)}>Amenity Category</ModalHeader>
         <ModalBody>
-          <Form place_category_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
+          <Form amenity_category_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
         </ModalBody>
       </Modal>
 
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">Place Categories</h2>
+      <h2 className="mb-3">Amenity Categories</h2>
       <div className="create-button-div">
         <button
           className="create-button"
@@ -126,7 +131,7 @@ const Index = () => {
             setSelectedRecord(null)
           }}
         >
-          Create New Place Category
+          Create New Amenity Category
         </button>
       </div>
 

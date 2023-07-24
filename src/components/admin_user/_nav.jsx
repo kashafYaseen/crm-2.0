@@ -49,6 +49,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Amenity Categories',
+        to: '/admin-user/amenity-categories',
+      },
+      {
+        component: CNavItem,
         name: 'Places',
         to: '/admin-user/places',
       },

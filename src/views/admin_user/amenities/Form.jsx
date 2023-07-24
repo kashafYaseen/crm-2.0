@@ -17,7 +17,7 @@ import { Toast } from '@admin_user_components/UI/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
-import { amenity_categories_data } from '@/api/admin_user/config/resources/amenity_categories'
+import { amenity_categories_data } from '@/api/admin_user/config/resources/amenityCategories'
 import { amenities_data } from '@/api/admin_user/config/resources/amenities'
 
 const Form = (props) => {

@@ -15,7 +15,7 @@ import { Toast } from '@admin_user_components/UI/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
-import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
+import { amenity_categories_data } from '@/api/admin_user/config/resources/amenityCategories'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)
@@ -24,17 +24,16 @@ const Form = (props) => {
   const [serverError, setServerError] = useState('')
 
   const initialValues = {
-    place_category: {
-      name_en: props.place_category_to_update?.name_en || '',
-      name_nl: props.place_category_to_update?.name_nl || '',
-      color_code: props.place_category_to_update?.color_code || '',
+    amenity_category: {
+      name_en: props.amenity_category_to_update?.name_en || '',
+      name_nl: props.amenity_category_to_update?.name_nl || '',
     },
   }
 
   const validationSchema = Yup.object().shape({
-    place_category: Yup.object().shape({
-      name_en: Yup.string().required('*Name is required'),
-      name_nl: Yup.string().required('*Name is required'),
+    amenity_category: Yup.object().shape({
+      name_en: Yup.string().required('*Name (EN) is required'),
+      name_nl: Yup.string().required('*Name (NL) is required'),
     }),
   })
 
@@ -57,11 +56,11 @@ const Form = (props) => {
     onSubmit: async (values) => {
       await formik.validateForm()
       if (formik.isValid) {
-        if (props.place_category_to_update) {
+        if (props.amenity_category_to_update) {
           try {
-            const extractedData = place_categories_data(
+            const extractedData = amenity_categories_data(
               'put',
-              `place_categories/${props.place_category_to_update.id}`,
+              `amenity_categories/${props.amenity_category_to_update.id}`,
               values,
             )
             setShowToast(true)
@@ -76,14 +75,15 @@ const Form = (props) => {
           }
         } else {
           try {
-            const extractedData = await place_categories_data('post', 'place_categories', values)
+            const extractedData = await amenity_categories_data(
+              'post',
+              'amenity_categories',
+              values,
+            )
             setShowToast(true)
             setErrorType('success')
             setError('Record Created Successfully')
-            setTimeout(() => {
-              setShowToast(false)
-              props.onSubmitCallback()
-            }, 2000)
+            props.onSubmitCallback()
           } catch (error) {
             serverErrorHandler(error)
           }
@@ -106,63 +106,51 @@ const Form = (props) => {
         <CCol xs={12}>
           <CCard className="mb-4">
             <CCardHeader>
-              <strong>Create New Place Category </strong>
+              <strong>Create New Amenity Category </strong>
             </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
-                <CCol md={6}>
+                <CCol xs={12}>
                   <CFormLabel htmlFor="inputName">Name (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEN"
-                    value={formik.values.place_category.name_en}
+                    value={formik.values.amenity_category.name_en}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    name="place_category.name_en"
+                    name="amenity_category.name_en"
                     className={
-                      formik.errors.place_category?.name_en &&
-                      formik.touched.place_category?.name_en
+                      formik.errors.amenity_category?.name_en &&
+                      formik.touched.amenity_category?.name_en
                         ? 'input-error'
                         : ''
                     }
                   />
-                  {formik.touched.place_category?.name_en &&
-                    formik.errors.place_category?.name_en && (
-                      <div className="formik-errors">{formik.errors.place_category?.name_en}</div>
+                  {formik.touched.amenity_category?.name_en &&
+                    formik.errors.amenity_category?.name_en && (
+                      <div className="formik-errors">{formik.errors.amenity_category?.name_en}</div>
                     )}
                 </CCol>
-                <CCol md={6}>
-                  <CFormLabel htmlFor="selectPublish4">Color Code</CFormLabel>
 
-                  <CFormInput
-                    type="text"
-                    id="input_color_code"
-                    value={formik.values.place_category.color_code}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    name="place_category.color_code"
-                  />
-                </CCol>
-
-                <CCol md={6}>
+                <CCol xs={12}>
                   <CFormLabel htmlFor="inputNameNL">Name (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameNL"
-                    value={formik.values.place_category.name_nl}
+                    value={formik.values.amenity_category.name_nl}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    name="place_category.name_nl"
+                    name="amenity_category.name_nl"
                     className={
-                      formik.errors.place_category?.name_nl &&
-                      formik.touched.place_category?.name_nl
+                      formik.errors.amenity_category?.name_nl &&
+                      formik.touched.amenity_category?.name_nl
                         ? 'input-error'
                         : ''
                     }
                   />
-                  {formik.touched.place_category?.name_nl &&
-                    formik.errors.place_category?.name_nl && (
-                      <div className="formik-errors">{formik.errors.place_category?.name_nl}</div>
+                  {formik.touched.amenity_category?.name_nl &&
+                    formik.errors.amenity_category?.name_nl && (
+                      <div className="formik-errors">{formik.errors.amenity_category?.name_nl}</div>
                     )}
                 </CCol>
 
