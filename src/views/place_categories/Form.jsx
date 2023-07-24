@@ -80,7 +80,10 @@ const Form = (props) => {
             setShowToast(true)
             setErrorType('success')
             setError('Record Created Successfully')
-            props.onSubmitCallback()
+            setTimeout(() => {
+              setShowToast(false)
+              props.onSubmitCallback()
+            }, 2000)
           } catch (error) {
             serverErrorHandler(error)
           }

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import 'react-flexy-table/dist/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Modal, ModalHeader, ModalBody } from 'reactstrap'
+import '@/scss/_custom.scss'
+import { DataTable } from '@/components/admin_user/UI/DataTable'
+import { Toast } from '@/components/UI/Toast'
+import { amenities_data } from '@/api/admin_user/config/resources/amenities'
+import { Modal, ModalHeader, ModalBody, Badge } from 'reactstrap'
 import Form from './Form'
 import { CSpinner } from '@coreui/react'
-import '@/scss/_custom.scss'
-import { DataTable } from '@admin_user_components/UI/DataTable'
-import { Toast } from '@admin_user_components/UI/Toast'
-import { place_categories_data } from '@/api/admin_user/config/resources/place_categories'
 
 const Index = () => {
   const [data, setData] = useState([])
@@ -19,6 +19,7 @@ const Index = () => {
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
+  const [popoverOpen, setPopoverOpen] = useState(false)
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
@@ -28,20 +29,20 @@ const Index = () => {
   }
 
   const searchQueryHandler = async () => {
-    fetch_place_categories_data()
+    fetch_amenities_data()
   }
 
-  const deletePlace = async (id) => {
+  const deleteAmenity = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await place_categories_data('DELETE', `place_categories/${id}`)
+        const response = await amenities_data('DELETE', `amenities/${id}`)
         setShowToast(true)
         setErrorType('success')
         setError('Record Deleted Successfully')
-        fetch_place_categories_data()
+        fetch_amenities_data()
       } catch (error) {
-        console.error('Error Deleting Place Category', error)
+        console.error('Error Deleting Amenity', error)
       }
     }
   }
@@ -51,24 +52,52 @@ const Index = () => {
     setModal(true)
   }
 
+  const openIconEditModal = (record) => {
+    setSelectedRecord(record)
+    setPopoverOpen(true)
+  }
+
   const columns = [
     { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
+    { header: 'Category', key: 'amenity_category', td: (row) => row.amenity_category ?? 'N/A' },
+    { header: 'Show on filter', key: 'filter_enabled', td: (row) => row.filter_enabled ?? 'N/A' },
+    { header: 'Hot', key: 'hot', td: (row) => row.hot ?? 'N/A' },
+    {
+      header: 'Icon',
+      key: 'icon',
+      td: (row) => {
+        if (row.icon) {
+          return (
+            <>
+              <Badge color="secondary">
+                <p id={`popover-${row.id}`} onClick={() => openIconEditModal(row)}>
+                  {row.icon}
+                </p>
+              </Badge>
+            </>
+          )
+        } else {
+          return 'N/A'
+        }
+      },
+    },
+
     {
       header: 'Actions',
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
-          <FontAwesomeIcon onClick={() => deletePlace(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => deleteAmenity(row.id)} icon={faTrash} />
         </>
       ),
     },
   ]
 
-  const fetch_place_categories_data = async (pageNumber) => {
+  const fetch_amenities_data = async (pageNumber) => {
     setLoading(true)
 
     try {
-      const { data, totalRecords } = await place_categories_data('get', 'place_categories', null, {
+      const { data, totalRecords } = await amenities_data('get', 'amenities', null, {
         page: pageNumber,
         per_page: perPageNumber,
         query: searchQuery,
@@ -84,7 +113,7 @@ const Index = () => {
   }
 
   useEffect(() => {
-    fetch_place_categories_data()
+    fetch_amenities_data()
   }, [perPageNumber])
 
   const handleToastHide = () => {
@@ -92,7 +121,7 @@ const Index = () => {
   }
 
   const onPageChangeHandler = (value) => {
-    fetch_place_categories_data(value)
+    fetch_amenities_data(value)
   }
 
   const onPerPageChangeHandler = (value) => {
@@ -100,7 +129,7 @@ const Index = () => {
   }
 
   const handleFormSubmit = async () => {
-    await fetch_place_categories_data()
+    await fetch_amenities_data()
     setModal(false)
     setSelectedRecord(null)
   }
@@ -108,16 +137,16 @@ const Index = () => {
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>Place Category</ModalHeader>
+        <ModalHeader toggle={() => setModal(!modal)}>Amenities</ModalHeader>
         <ModalBody>
-          <Form place_category_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
+          <Form amenity_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
         </ModalBody>
       </Modal>
 
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">Place Categories</h2>
+      <h2 className="mb-3">Amenities</h2>
       <div className="create-button-div">
         <button
           className="create-button"
@@ -126,7 +155,7 @@ const Index = () => {
             setSelectedRecord(null)
           }}
         >
-          Create New Place Category
+          Create New Amenity
         </button>
       </div>
 

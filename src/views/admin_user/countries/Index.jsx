@@ -10,7 +10,7 @@ import { CSpinner } from '@coreui/react'
 
 const Countries = () => {
   const [countries, setCountries] = useState([])
-  const [totalPlacesRecords, setTotalPlacesRecords] = useState(0)
+  const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
 
@@ -24,7 +24,7 @@ const Countries = () => {
       })
 
       setCountries(data)
-      setTotalPlacesRecords(totalRecords)
+      setTotalRecords(totalRecords)
       setLoading(false)
     } catch (error) {
       setLoading(false)
@@ -95,7 +95,7 @@ const Countries = () => {
         <DataTable
           data={countries}
           columns={columns}
-          totalPlacesRecords={totalPlacesRecords}
+          totalRecords={totalRecords}
           onPageChange={onPageChangeHandler}
           onPerPageChange={onPerPageChangeHandler}
           perPageNumber={perPageNumber}

@@ -9,6 +9,7 @@ const Places = React.lazy(() => import('@admin_user_views/places/Index'))
 const NewPlace = React.lazy(() => import('@admin_user_views/places/NewPlace'))
 const EditPlace = React.lazy(() => import('@admin_user_views/places/EditPlace'))
 const PlaceCategories = React.lazy(() => import('@admin_user_views/place_categories/Index'))
+const Amenities = React.lazy(() => import('@admin_user_views/amenities/Index'))
 
 const OwnerDashboard = React.lazy(() => import('@business_owner_views/dashboard/Dashboard'))
 
@@ -19,6 +20,8 @@ const admin_routes = [
   { path: '/places', name: 'Places', element: Places },
   { path: '/place-categories', name: 'PlaceCategories', element: PlaceCategories },
   { path: '/regions', name: 'Regions', element: Regions },
+  { path: '/amenities', name: 'Amenities', element: Amenities },
+
   {
     path: '/countries/country-form', // Nested path under '/countries'
     name: 'Country Form',

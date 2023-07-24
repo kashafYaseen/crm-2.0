@@ -13,7 +13,7 @@ import { CSpinner } from '@coreui/react'
 export const DataTable = ({
   data,
   columns,
-  totalPlacesRecords,
+  totalRecords,
   onPageChange,
   onPerPageChange,
   perPageNumber,
@@ -23,7 +23,7 @@ export const DataTable = ({
 
   const [totalPages, startPageIndex, endPageIndex, currentPageIndex, displayPage] = usePagination(
     rowsPerPage,
-    totalPlacesRecords,
+    totalRecords,
   )
 
   const onChangeHandler = (event, value) => {

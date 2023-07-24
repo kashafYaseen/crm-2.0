@@ -173,7 +173,7 @@ const Form = (props) => {
 
                 <CCol md={6}>
                   <CFormLabel htmlFor="selectPublish4">Publish</CFormLabel>
-                  <select
+                  <CFormSelect
                     id="publish"
                     className="form-control"
                     value={formik.values.place.publish}
@@ -183,7 +183,7 @@ const Form = (props) => {
                     <option value="">Select</option>
                     <option value="true">Yes</option>
                     <option value="false">No</option>
-                  </select>
+                  </CFormSelect>
                 </CCol>
 
                 <CCol md={6}>
