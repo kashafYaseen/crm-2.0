@@ -19,7 +19,7 @@ const Index = () => {
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
-  const [popoverOpen, setPopoverOpen] = useState(false)
+  const [amenityCategories, setAmenityCategories] = useState([])
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
@@ -52,35 +52,12 @@ const Index = () => {
     setModal(true)
   }
 
-  const openIconEditModal = (record) => {
-    setSelectedRecord(record)
-    setPopoverOpen(true)
-  }
-
   const columns = [
     { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
     { header: 'Category', key: 'amenity_category', td: (row) => row.amenity_category ?? 'N/A' },
     { header: 'Show on filter', key: 'filter_enabled', td: (row) => row.filter_enabled ?? 'N/A' },
     { header: 'Hot', key: 'hot', td: (row) => row.hot ?? 'N/A' },
-    {
-      header: 'Icon',
-      key: 'icon',
-      td: (row) => {
-        if (row.icon) {
-          return (
-            <>
-              <Badge color="secondary">
-                <p id={`popover-${row.id}`} onClick={() => openIconEditModal(row)}>
-                  {row.icon}
-                </p>
-              </Badge>
-            </>
-          )
-        } else {
-          return 'N/A'
-        }
-      },
-    },
+    { header: 'Icon', key: 'icon', td: (row) => row.icon ?? 'N/A' },
 
     {
       header: 'Actions',
@@ -134,12 +111,22 @@ const Index = () => {
     setSelectedRecord(null)
   }
 
+  const handleCreateNewAmenity = async () => {
+    const response = await amenities_data('get', 'amenities/new')
+    setAmenityCategories(response.amenity_categories)
+    setModal(true)
+    setSelectedRecord(null)
+  }
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
         <ModalHeader toggle={() => setModal(!modal)}>Amenities</ModalHeader>
         <ModalBody>
-          <Form amenity_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
+          <Form
+            amenity_to_update={selectedRecord}
+            onSubmitCallback={handleFormSubmit}
+            amenityCategories={amenityCategories}
+          />
         </ModalBody>
       </Modal>
 
@@ -148,13 +135,7 @@ const Index = () => {
       </div>
       <h2 className="mb-3">Amenities</h2>
       <div className="create-button-div">
-        <button
-          className="create-button"
-          onClick={() => {
-            setModal(true)
-            setSelectedRecord(null)
-          }}
-        >
+        <button id="createNewRecord" className="create-button" onClick={handleCreateNewAmenity}>
           Create New Amenity
         </button>
       </div>

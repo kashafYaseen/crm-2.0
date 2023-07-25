@@ -11,7 +11,7 @@ export async function request(method, endpoint, data, params = {}) {
       headers: API_CONFIG.headers,
       data,
       params: {
-        per_page: params.per_page || 1000,
+        per_page: params.per_page || 10,
         page: params.page || 1,
         query: params.query,
       },

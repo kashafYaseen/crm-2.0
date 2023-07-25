@@ -75,7 +75,7 @@ const Countries = () => {
       <h2 className="mb-3">Countries</h2>
       <div className="create-button-div">
         <Link to="/admin-user/countries/country-form">
-          <button className="create-button">Create</button>
+          <button className="create-button">Create New Country</button>
         </Link>
       </div>
       <div className="search-container">

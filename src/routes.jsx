@@ -3,8 +3,11 @@ import React from 'react'
 const AdminDashboard = React.lazy(() => import('@admin_user_views/dashboard/Dashboard'))
 const Countries = React.lazy(() => import('@admin_user_views/countries/Index'))
 const Regions = React.lazy(() => import('@admin_user_views/regions/Index'))
+const EditRegion = React.lazy(() => import('@admin_user_views/regions/EditRegion'))
+const NewRegion = React.lazy(() => import('@admin_user_views/regions/NewRegion'))
+
 const CountryForm = React.lazy(() => import('@admin_user_views/countries/Form'))
-const RegionForm = React.lazy(() => import('@admin_user_views/regions/Form'))
+// const RegionForm = React.lazy(() => import('@admin_user_views/regions/Form'))
 const Places = React.lazy(() => import('@admin_user_views/places/Index'))
 const NewPlace = React.lazy(() => import('@admin_user_views/places/NewPlace'))
 const EditPlace = React.lazy(() => import('@admin_user_views/places/EditPlace'))
@@ -30,9 +33,14 @@ const admin_routes = [
     element: CountryForm,
   },
   {
-    path: '/regions/region-form',
-    name: 'Region Form',
-    element: RegionForm,
+    path: '/regions/edit-region',
+    name: 'EditRegion',
+    element: EditRegion,
+  },
+  {
+    path: '/regions/new-region',
+    name: 'NewRegion',
+    element: NewRegion,
   },
   {
     path: '/places/new-place',

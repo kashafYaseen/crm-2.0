@@ -15,9 +15,7 @@ import {
   CFormTextarea,
   CRow,
 } from '@coreui/react'
-import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
 import { regions_data } from '@/api/admin_user/config/resources/regions'
-import { countries_data } from '@/api/admin_user/config/resources/countries'
 import { places_data } from '@/api/admin_user/config/resources/places'
 import { Toast } from '@admin_user_components/UI/Toast/Toast'
 import JoditEditor from 'jodit-react'
@@ -26,9 +24,7 @@ import * as Yup from 'yup'
 import { useNavigate } from 'react-router-dom'
 
 const Form = (props) => {
-  const [placeCategoriesData, setPlaceCategoriesData] = useState([])
   const [regionsData, setRegionsData] = useState([])
-  const [countriesData, setCountriesData] = useState([])
   const short_desc_editor = useRef(null)
   const desc_editor_en = useRef(null)
   const desc_editor_nl = useRef(null)
@@ -86,7 +82,7 @@ const Form = (props) => {
             setErrorType('success')
             setError('Record Updated Successfully')
             setTimeout(() => {
-              navigate('/places')
+              navigate('/admin-user/places')
             }, 1000)
           } catch (error) {
             console.error('FORM_ERROR', error)
@@ -98,7 +94,7 @@ const Form = (props) => {
             setErrorType('success')
             setError('Record Created Successfully')
             setTimeout(() => {
-              navigate('/places')
+              navigate('/admin-user/places')
             }, 1000)
           } catch (error) {
             console.error('FORM_ERROR', error)
@@ -108,29 +104,36 @@ const Form = (props) => {
     },
   })
 
-  useEffect(() => {
-    clearTimeout()
-    const fetchData = async () => {
-      try {
-        const [placeCategories, regions, countries] = await Promise.all([
-          place_categories_data('get', 'place_categories'),
-          regions_data('get', 'regions'),
-          countries_data('get', 'countries'),
-        ])
-        setPlaceCategoriesData(placeCategories.data)
-        setRegionsData(regions.data)
-        setCountriesData(countries.data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
   const handleToastHide = () => {
     setShowToast(false)
   }
+
+  const fetchRegionsByCountry = async (countryId) => {
+    try {
+      if (countryId) {
+        const response = await regions_data('get', `countries/${countryId}/regions_by_country`)
+        setRegionsData(response)
+      }
+    } catch (error) {
+      console.error('Error fetching regions:', error)
+    }
+  }
+
+  const handleCountryChange = (event) => {
+    const selectedCountryId = event.target.value
+    formik.handleChange(event) // Handle the formik change event for the country select
+    fetchRegionsByCountry(selectedCountryId) // Fetch the regions based on the selected country
+  }
+
+  useEffect(() => {
+    const fetchRegionsForEdit = async () => {
+      if (props.place_to_update?.country_id) {
+        fetchRegionsByCountry(props.place_to_update.country_id)
+      }
+    }
+
+    fetchRegionsForEdit()
+  }, [props.place_to_update])
 
   return (
     <div className="display">
@@ -201,7 +204,7 @@ const Form = (props) => {
                         : 'form-control'
                     }
                   >
-                    {[{ id: '', name: 'Select' }, ...placeCategoriesData].map((category) => (
+                    {[{ id: '', name: 'Select' }, ...props.placeCategories].map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}
                       </option>
@@ -215,36 +218,11 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="selectPublish4">Region</CFormLabel>
-                  <CFormSelect
-                    id="region_id"
-                    value={formik.values.place.region_id}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    name="place.region_id"
-                    className={
-                      formik.touched.place?.region_id && formik.errors.place?.region_id
-                        ? 'input-error'
-                        : ''
-                    }
-                  >
-                    {[{ id: '', name: 'Select' }, ...regionsData].map((region) => (
-                      <option key={region.id} value={region.id}>
-                        {region.name}
-                      </option>
-                    ))}
-                  </CFormSelect>
-                  {formik.touched.place?.region_id && formik.errors.place?.region_id && (
-                    <div className="formik-errors">{formik.errors.place.region_id}</div>
-                  )}
-                </CCol>
-
-                <CCol md={6}>
                   <CFormLabel htmlFor="country4">Country</CFormLabel>
                   <CFormSelect
                     id="country_id"
                     value={formik.values.place.country_id}
-                    onChange={formik.handleChange}
+                    onChange={handleCountryChange}
                     onBlur={formik.handleBlur}
                     name="place.country_id"
                     className={
@@ -253,7 +231,7 @@ const Form = (props) => {
                         : ''
                     }
                   >
-                    {[{ id: '', name: 'Select' }, ...countriesData].map((country) => (
+                    {[{ id: '', name: 'Select' }, ...props.countries].map((country) => (
                       <option key={country.id} value={country.id}>
                         {country.name}
                       </option>
@@ -262,6 +240,39 @@ const Form = (props) => {
 
                   {formik.touched.place?.country_id && formik.errors.place?.country_id && (
                     <div className="formik-errors">{formik.errors.place.country_id}</div>
+                  )}
+                </CCol>
+
+                <CCol md={6}>
+                  <CFormLabel htmlFor="selectPublish4">Region</CFormLabel>
+                  {formik.values.place.country_id ? (
+                    regionsData.length > 0 ? (
+                      <CFormSelect
+                        id="region_id"
+                        value={formik.values.place.region_id}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        name="place.region_id"
+                        className={
+                          formik.touched.place?.region_id && formik.errors.place?.region_id
+                            ? 'input-error'
+                            : ''
+                        }
+                      >
+                        {[{ id: '', name: 'Select' }, ...regionsData].map((region) => (
+                          <option key={region.id} value={region.id}>
+                            {region.name}
+                          </option>
+                        ))}
+                      </CFormSelect>
+                    ) : (
+                      <div>No regions available for this country</div>
+                    )
+                  ) : (
+                    <div>Please Select a Country First</div>
+                  )}
+                  {formik.touched.place?.region_id && formik.errors.place?.region_id && (
+                    <div className="formik-errors">{formik.errors.place.region_id}</div>
                   )}
                 </CCol>
 

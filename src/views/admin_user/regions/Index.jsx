@@ -46,7 +46,7 @@ const Regions = () => {
       header: 'Actions',
       td: (row) => (
         <>
-          <Link to="/admin-user/regions/region-form" state={{ record: row }}>
+          <Link to="/admin-user/regions/edit-region" state={{ record: row }}>
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </>
@@ -74,8 +74,8 @@ const Regions = () => {
     <div className="display">
       <h2 className="mb-3">Regions</h2>
       <div className="create-button-div">
-        <Link to="/admin-user/regions/region-form">
-          <button className="create-button">Create</button>
+        <Link to="/admin-user/regions/new-region">
+          <button className="create-button">Create New Region</button>
         </Link>
       </div>
 

@@ -22,12 +22,10 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import JoditEditor from 'jodit-react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const Form = (props) => {
-  const location = useLocation()
   const navigate = useNavigate()
-  const region_data = location.state && location.state.record
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
@@ -36,22 +34,22 @@ const Form = (props) => {
 
   const initialValues = {
     region: {
-      name_en: region_data?.name_en || '',
-      name_nl: region_data?.name_nl || '',
-      slug_en: region_data?.slug_en || '',
-      slug_nl: region_data?.slug_nl || '',
-      content_en: region_data?.content_en || '',
-      content_nl: region_data?.content_nl || '',
-      title_en: region_data?.title_en || '',
-      title_nl: region_data?.title_nl || '',
-      meta_title_en: region_data?.meta_title_en || '',
-      meta_title_nl: region_data?.meta_title_nl || '',
-      short_desc: region_data?.short_desc || '',
-      published: region_data?.published || '',
-      country_id: region_data?.country_id || '',
-      villas_desc: region_data?.villas_desc || '',
-      apartment_desc: region_data?.apartment_desc || '',
-      bb_desc: region_data?.bb_desc || '',
+      name_en: props.region_data?.name_en || '',
+      name_nl: props.region_data?.name_nl || '',
+      slug_en: props.region_data?.slug_en || '',
+      slug_nl: props.region_data?.slug_nl || '',
+      content_en: props.region_data?.content_en || '',
+      content_nl: props.region_data?.content_nl || '',
+      title_en: props.region_data?.title_en || '',
+      title_nl: props.region_data?.title_nl || '',
+      meta_title_en: props.region_data?.meta_title_en || '',
+      meta_title_nl: props.region_data?.meta_title_nl || '',
+      short_desc: props.region_data?.short_desc || '',
+      published: props.region_data?.published || '',
+      country_id: props.region_data?.country_id || '',
+      villas_desc: props.region_data?.villas_desc || '',
+      apartment_desc: props.region_data?.apartment_desc || '',
+      bb_desc: props.region_data?.bb_desc || '',
     },
   }
 
@@ -119,9 +117,13 @@ const Form = (props) => {
     onSubmit: async (values) => {
       await formik.validateForm()
       if (formik.isValid) {
-        if (region_data) {
+        if (props.region_data) {
           try {
-            const extractedData = await regions_data('put', `regions/${region_data.id}`, values)
+            const extractedData = await regions_data(
+              'put',
+              `regions/${props.region_data.id}`,
+              values,
+            )
             setShowToast(true)
             setErrorType('success')
             setError('Record Updated Successfully')
@@ -185,7 +187,7 @@ const Form = (props) => {
                         : 'form-control'
                     }
                   >
-                    {[{ id: '', name: 'Select' }, ...countriesData].map((country) => (
+                    {[{ id: '', name: 'Select' }, ...props.countries].map((country) => (
                       <option key={country.id} value={country.id}>
                         {country.name}
                       </option>

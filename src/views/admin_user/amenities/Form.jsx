@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   CButton,
   CCard,
@@ -17,11 +17,9 @@ import { Toast } from '@admin_user_components/UI/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
-import { amenity_categories_data } from '@/api/admin_user/config/resources/amenityCategories'
 import { amenities_data } from '@/api/admin_user/config/resources/amenities'
 
 const Form = (props) => {
-  const [amenityCategoriesData, setAmenityCategoriesData] = useState([])
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
@@ -101,21 +99,6 @@ const Form = (props) => {
     },
   })
 
-  useEffect(() => {
-    clearTimeout()
-    const fetchData = async () => {
-      try {
-        const amenity_Categories = await amenity_categories_data('get', 'amenity_categories')
-
-        setAmenityCategoriesData(amenity_Categories.data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
   const handleToastHide = () => {
     setShowToast(false)
   }
@@ -181,7 +164,7 @@ const Form = (props) => {
                         : ''
                     }
                   >
-                    {[{ id: '', name: 'Select' }, ...amenityCategoriesData].map((category) => (
+                    {[{ id: '', name: 'Select' }, ...props.amenityCategories].map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}
                       </option>
