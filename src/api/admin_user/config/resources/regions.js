@@ -1,8 +1,8 @@
 import { request } from '../../api'
 
-export const regions_data = async (method, endpoint, payload = null, params = {}) => {
+export const regions_data = async (method, endpoint, payload = null, params = {}, auth_token) => {
   try {
-    const regions = await request(method, endpoint, payload, params)
+    const regions = await request(method, endpoint, payload, params, auth_token)
     if (Array.isArray(regions.data)) {
       const totalRecords = regions.count
       const extractedData = regions.data.map(({ id, attributes }) => ({
