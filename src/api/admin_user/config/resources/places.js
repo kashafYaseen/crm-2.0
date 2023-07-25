@@ -33,6 +33,20 @@ export const places_data = async (method, endpoint, payload = null, params = {})
         slug_nl: attributes.slug_nl,
       }))
       return { data: extractedData, totalRecords: totalRecords }
+    } else if (response.countries) {
+      const countriesData = response.countries.data.map(({ id, attributes }) => ({
+        id: id,
+        name: attributes.name,
+        name_nl: attributes.name_nl,
+        name_en: attributes.name_en,
+      }))
+      const placeCategoriesData = response.place_categories.data.map(({ id, attributes }) => ({
+        id: id,
+        name: attributes.name,
+        name_nl: attributes.name_nl,
+        name_en: attributes.name_en,
+      }))
+      return { countries: countriesData, place_categories: placeCategoriesData }
     } else {
       return response
     }

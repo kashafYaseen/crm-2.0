@@ -32,6 +32,7 @@ const Form = (props) => {
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const navigate = useNavigate()
+  const [fetchingRegionsByCountry, setFetchingRegionsByCountry] = useState(false)
 
   const defaultValues = {
     place: {
@@ -111,11 +112,14 @@ const Form = (props) => {
   const fetchRegionsByCountry = async (countryId) => {
     try {
       if (countryId) {
-        const response = await regions_data('get', `countries/${countryId}/regions_by_country`)
-        setRegionsData(response)
+        setFetchingRegionsByCountry(true)
+        const response = await regions_data('get', `countries/${countryId}/regions`)
+        setRegionsData(response.data)
+        setFetchingRegionsByCountry(false)
       }
     } catch (error) {
       console.error('Error fetching regions:', error)
+      setFetchingRegionsByCountry(false)
     }
   }
 
@@ -246,7 +250,9 @@ const Form = (props) => {
                 <CCol md={6}>
                   <CFormLabel htmlFor="selectPublish4">Region</CFormLabel>
                   {formik.values.place.country_id ? (
-                    regionsData.length > 0 ? (
+                    fetchingRegionsByCountry ? ( // Show "Loading" when fetching is in progress
+                      <div>Loading...</div>
+                    ) : regionsData.length > 0 ? (
                       <CFormSelect
                         id="region_id"
                         value={formik.values.place.region_id}

@@ -49,6 +49,17 @@ const Index = () => {
 
   const openEditModal = (record) => {
     setSelectedRecord(record)
+    handleCreateNewAmenity()
+  }
+
+  const openNewModel = () => {
+    handleCreateNewAmenity()
+    setSelectedRecord(null)
+  }
+
+  const handleCreateNewAmenity = async () => {
+    const response = await amenities_data('get', 'amenities/new')
+    setAmenityCategories(response.data)
     setModal(true)
   }
 
@@ -111,12 +122,6 @@ const Index = () => {
     setSelectedRecord(null)
   }
 
-  const handleCreateNewAmenity = async () => {
-    const response = await amenities_data('get', 'amenities/new')
-    setAmenityCategories(response.amenity_categories)
-    setModal(true)
-    setSelectedRecord(null)
-  }
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
@@ -135,7 +140,7 @@ const Index = () => {
       </div>
       <h2 className="mb-3">Amenities</h2>
       <div className="create-button-div">
-        <button id="createNewRecord" className="create-button" onClick={handleCreateNewAmenity}>
+        <button id="createNewRecord" className="create-button" onClick={openNewModel}>
           Create New Amenity
         </button>
       </div>

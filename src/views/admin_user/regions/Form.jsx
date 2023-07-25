@@ -15,7 +15,6 @@ import {
   CBreadcrumb,
   CBreadcrumbItem,
 } from '@coreui/react'
-import { countries_data } from '@/api/admin_user/config/resources/countries'
 import { regions_data } from '@/api/admin_user/config/resources/regions'
 import { Toast } from '@admin_user_components/UI/Toast/Toast'
 import { useFormik } from 'formik'
@@ -30,7 +29,6 @@ const Form = (props) => {
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
-  const [countriesData, setCountriesData] = useState([])
 
   const initialValues = {
     region: {
@@ -52,19 +50,6 @@ const Form = (props) => {
       bb_desc: props.region_data?.bb_desc || '',
     },
   }
-
-  useEffect(() => {
-    clearTimeout()
-    const fetch_data = async () => {
-      try {
-        const extractCountriesData = await countries_data('get', 'countries')
-        setCountriesData(extractCountriesData.data)
-      } catch (error) {
-        throw error
-      }
-    }
-    fetch_data()
-  }, [])
 
   const serverErrorHandler = (error) => {
     if (error.response && error.response.data && error.response.data.errors) {

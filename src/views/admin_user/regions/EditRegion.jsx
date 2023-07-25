@@ -13,7 +13,7 @@ const NewRegion = () => {
     const handleCreateNewRecord = async () => {
       try {
         const response = await regions_data('get', 'regions/new')
-        setCountriesData(response.countries)
+        setCountriesData(response.data)
       } catch (error) {
         console.error('Error fetching Countries', error)
       }
