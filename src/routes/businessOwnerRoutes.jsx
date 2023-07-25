@@ -3,6 +3,14 @@ import { Route, Routes, Navigate, Outlet } from 'react-router-dom'
 import routes from '@/routes'
 
 const BusinessOwnerRoutes = () => {
+  // Check authentication here (using your isUserAdmin function)
+  // const isAuthenticated = isUserOwner()
+
+  const isAuthenticated = true
+  if (!isAuthenticated) {
+    return <Navigate to="/business-owner-login" /> // Redirect to login if not authenticated
+  }
+
   return (
     <>
       <Routes>

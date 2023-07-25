@@ -1,8 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Route, Routes, Navigate, Outlet } from 'react-router-dom'
 import routes from '@/routes'
+import { useStores } from '@/context/storeContext'
 
 const AdminUserRoutes = () => {
+  const authStore = useStores()
+
+  useEffect(() => {
+    authStore.isLoggedIn
+  }, [authStore.auth_token])
+
+  if (authStore.isLoggedIn) {
+    return <Navigate to="/admin-user-login" /> // Redirect to login if not authenticated
+  }
+
   return (
     <>
       <Routes>
