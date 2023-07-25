@@ -1,32 +1,17 @@
+import { handleResponse, handleError } from '../configs/axiosUtils'
 import axios from 'axios'
 
-const API_CONFIG = {
-  baseUrl: 'http://localhost:3000/en/crm/v1/admin_user/sessions',
-}
-
-export async function authenticateUser(username, password) {
-  const url = `${API_CONFIG.baseUrl}/authenticate`
-
+export async function authentication(method, endpoint, data) {
+  const url = `http://localhost:3000/en/crm/v1/admin_user/${endpoint}`
   try {
-    const response = await axios.post(url, { username, password })
+    const response = await axios({
+      method,
+      url,
+      data,
+    })
 
-    // Save the access token to local storage or state
-    const accessToken = response.data.accessToken
-    localStorage.setItem('accessToken', accessToken)
-
-    return true // Authentication successful
+    return handleResponse(response)
   } catch (error) {
-    throw new Error('User authentication failed')
+    throw error
   }
-}
-
-export function getAccessToken() {
-  // Retrieve the access token from local storage or state
-  return localStorage.getItem('accessToken')
-}
-
-export function isAuthenticated() {
-  // Check if the user is authenticated
-  const accessToken = getAccessToken()
-  return accessToken !== null
 }
