@@ -22,16 +22,16 @@ import '@/scss/_custom.scss'
 import { useNavigate } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import { useStores } from '@/context/storeContext'
 import adminLogin from '@/assets/images/adminLogin.jpeg'
 import adminLogo from '@/assets/images/adminLogo.png'
+import { useStores } from '@/context/storeContext'
 
 const Login = () => {
-  const authStore = useStores()
   const navigate = useNavigate()
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
+  const authStore = useStores()
 
   useEffect(() => {
     return () => {
@@ -57,9 +57,10 @@ const Login = () => {
       await formik.validateForm()
       if (formik.isValid) {
         try {
-          const res = await authStore.login(values)
+          const res = await login_data('post', 'sessions', values)
           if (res) {
-            setShowToast(true)
+            authStore.getState().setToken(res.auth_token, res.token_expires_at)
+            authStore.getState().startTimeTracker()
             setErrorType('success')
             setError('Login Successfully')
             navigate('/admin-user/dashboard')
