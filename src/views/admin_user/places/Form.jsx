@@ -249,34 +249,39 @@ const Form = (props) => {
 
                 <CCol md={6}>
                   <CFormLabel htmlFor="selectPublish4">Region</CFormLabel>
-                  {formik.values.place.country_id ? (
-                    fetchingRegionsByCountry ? ( // Show "Loading" when fetching is in progress
-                      <div>Loading...</div>
-                    ) : regionsData.length > 0 ? (
-                      <CFormSelect
-                        id="region_id"
-                        value={formik.values.place.region_id}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        name="place.region_id"
-                        className={
-                          formik.touched.place?.region_id && formik.errors.place?.region_id
-                            ? 'input-error'
-                            : ''
-                        }
-                      >
-                        {[{ id: '', name: 'Select' }, ...regionsData].map((region) => (
-                          <option key={region.id} value={region.id}>
-                            {region.name}
-                          </option>
-                        ))}
-                      </CFormSelect>
+                  <CFormSelect
+                    id="region_id"
+                    value={formik.values.place.region_id}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    name="place.region_id"
+                    className={
+                      formik.touched.place?.region_id && formik.errors.place?.region_id
+                        ? 'input-error'
+                        : ''
+                    }
+                    disabled={!formik.values.place.country_id} // Disable the select field if no country is selected
+                  >
+                    {formik.values.place.country_id ? (
+                      fetchingRegionsByCountry ? (
+                        // Show "Loading" when fetching is in progress
+                        <option value="">Loading...</option>
+                      ) : regionsData.length > 0 ? (
+                        <>
+                          <option value="">Select</option>
+                          {regionsData.map((region) => (
+                            <option key={region.id} value={region.id}>
+                              {region.name}
+                            </option>
+                          ))}
+                        </>
+                      ) : (
+                        <option value="">No regions available for this country</option>
+                      )
                     ) : (
-                      <div>No regions available for this country</div>
-                    )
-                  ) : (
-                    <div>Please Select a Country First</div>
-                  )}
+                      <option value="">Please Select a Country First</option>
+                    )}
+                  </CFormSelect>
                   {formik.touched.place?.region_id && formik.errors.place?.region_id && (
                     <div className="formik-errors">{formik.errors.place.region_id}</div>
                   )}
@@ -432,11 +437,7 @@ const Form = (props) => {
                 </CRow>
 
                 <CCol xs={12}>
-                  <CButton
-                    type="submit"
-                    className="create-button formik-btn"
-                    disabled={formik.isSubmitting}
-                  >
+                  <CButton type="submit" className="create-button formik-btn">
                     Submit
                   </CButton>
                 </CCol>
