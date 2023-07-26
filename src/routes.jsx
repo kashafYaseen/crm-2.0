@@ -13,6 +13,7 @@ const EditPlace = React.lazy(() => import('@admin_user_views/places/EditPlace'))
 const PlaceCategories = React.lazy(() => import('@admin_user_views/place_categories/Index'))
 const Amenities = React.lazy(() => import('@admin_user_views/amenities/Index'))
 const AmenityCategories = React.lazy(() => import('@admin_user_views/amenity_categories/Index'))
+const Experiences = React.lazy(() => import('@admin_user_views/experiences/Index'))
 
 const OwnerDashboard = React.lazy(() => import('@business_owner_views/dashboard/Dashboard'))
 
@@ -25,6 +26,7 @@ const admin_routes = [
   { path: '/regions', name: 'Regions', element: Regions },
   { path: '/amenities', name: 'Amenities', element: Amenities },
   { path: '/amenity-categories', name: 'AmenityCategories', element: AmenityCategories },
+  { path: '/experiences', name: 'Experiences', element: Experiences },
 
   {
     path: '/countries/country-form', // Nested path under '/countries'

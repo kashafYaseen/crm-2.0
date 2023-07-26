@@ -59,8 +59,13 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Place Category',
+        name: 'Place Categories',
         to: '/admin-user/place-categories',
+      },
+      {
+        component: CNavItem,
+        name: 'Experiences',
+        to: '/admin-user/experiences',
       },
       {
         component: CNavItem,
