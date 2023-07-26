@@ -31,7 +31,7 @@ const AppHeaderDropdown = () => {
   const navigate = useNavigate()
 
   const handleLockAccount = () => {
-    authStore.logout()
+    authStore.getState().logout()
     navigate('/admin-user-login')
   }
   return (
