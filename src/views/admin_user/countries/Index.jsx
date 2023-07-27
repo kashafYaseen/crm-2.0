@@ -7,21 +7,31 @@ import { DataTable } from '@admin_user_components/UI/DataTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CSpinner } from '@coreui/react'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
 
-const Countries = () => {
+const Countries = observer(() => {
   const [countries, setCountries] = useState([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
+  const authStore = useStores()
+  const authToken = authStore((state) => state.token)
 
   const fetchCountries = async (pageNumber) => {
     setLoading(true)
     try {
-      const { data, totalRecords } = await countries_data('GET', 'countries', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await countries_data(
+        'GET',
+        'countries',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setCountries(data)
       setTotalRecords(totalRecords)
@@ -40,14 +50,18 @@ const Countries = () => {
 
   const columns = [
     { header: 'Name', key: 'name' },
-    { header: 'Disable', key: 'disable', td: (row) => row.disable ?? 'N/A' },
+    { header: 'Disable', key: 'disable', td: (row) => (row.disable ? 'True' : 'False') },
     { header: 'Content', key: 'content', td: (row) => row.content ?? 'N/A' },
 
     {
       header: 'Actions',
       td: (row) => (
         <>
-          <Link to="/admin-user/countries/country-form" state={{ record: row }}>
+          <Link
+            to="/admin-user/countries/country-form"
+            state={{ record: row }}
+            className="custom-link"
+          >
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </>
@@ -106,6 +120,6 @@ const Countries = () => {
       )}
     </div>
   )
-}
+})
 
 export default Countries

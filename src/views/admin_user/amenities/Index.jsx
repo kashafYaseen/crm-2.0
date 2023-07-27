@@ -4,11 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import '@/scss/_custom.scss'
 import { DataTable } from '@/components/admin_user/UI/DataTable'
-import { Toast } from '@/components/UI/Toast'
+import { Toast } from '@/components/admin_user/UI/Toast'
 import { amenities_data } from '@/api/admin_user/config/resources/amenities'
 import { Modal, ModalHeader, ModalBody, Badge } from 'reactstrap'
 import Form from './Form'
 import { CSpinner } from '@coreui/react'
+import { useStores } from '@/context/storeContext'
 
 const Index = () => {
   const [data, setData] = useState([])
@@ -23,6 +24,8 @@ const Index = () => {
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
+  const authStore = useStores()
+  const authToken = authStore((state) => state.token)
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -36,7 +39,7 @@ const Index = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await amenities_data('DELETE', `amenities/${id}`)
+        const response = await amenities_data('DELETE', `amenities/${id}`, null, {}, authToken)
         setShowToast(true)
         setErrorType('success')
         setError('Record Deleted Successfully')
@@ -58,7 +61,7 @@ const Index = () => {
   }
 
   const handleCreateNewAmenity = async () => {
-    const response = await amenities_data('get', 'amenities/new')
+    const response = await amenities_data('get', 'amenities/new', null, {}, authToken)
     setAmenityCategories(response.data)
     setModal(true)
   }
@@ -85,11 +88,17 @@ const Index = () => {
     setLoading(true)
 
     try {
-      const { data, totalRecords } = await amenities_data('get', 'amenities', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await amenities_data(
+        'get',
+        'amenities',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setData(data)
       setTotalRecords(totalRecords)

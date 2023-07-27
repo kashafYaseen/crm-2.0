@@ -9,8 +9,11 @@ import '@/scss/_custom.scss'
 import { DataTable } from '@admin_user_components/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
 
-const Index = () => {
+const Index = observer(() => {
+  const authStore = useStores()
   const [data, setData] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showToast, setShowToast] = useState(false)
@@ -22,6 +25,8 @@ const Index = () => {
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
+
+  const authToken = authStore((state) => state.token)
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -35,7 +40,13 @@ const Index = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await place_categories_data('DELETE', `place_categories/${id}`)
+        const response = await place_categories_data(
+          'DELETE',
+          `place_categories/${id}`,
+          null,
+          {},
+          authToken,
+        )
         setShowToast(true)
         setErrorType('success')
         setError('Record Deleted Successfully')
@@ -68,11 +79,17 @@ const Index = () => {
     setLoading(true)
 
     try {
-      const { data, totalRecords } = await place_categories_data('get', 'place_categories', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await place_categories_data(
+        'get',
+        'place_categories',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setData(data)
       setTotalRecords(totalRecords)
@@ -158,6 +175,6 @@ const Index = () => {
       )}
     </div>
   )
-}
+})
 
 export default Index

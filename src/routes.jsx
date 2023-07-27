@@ -17,7 +17,6 @@ const AmenityCategories = React.lazy(() => import('@admin_user_views/amenity_cat
 const OwnerDashboard = React.lazy(() => import('@business_owner_views/dashboard/Dashboard'))
 
 const admin_routes = [
-  { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: AdminDashboard },
   { path: '/countries', name: 'Countries', element: Countries },
   { path: '/places', name: 'Places', element: Places },
@@ -53,10 +52,7 @@ const admin_routes = [
   },
 ]
 
-const owner_routes = [
-  { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: OwnerDashboard },
-]
+const owner_routes = [{ path: '/dashboard', name: 'Dashboard', element: OwnerDashboard }]
 
 const routes = { admin_routes, owner_routes }
 

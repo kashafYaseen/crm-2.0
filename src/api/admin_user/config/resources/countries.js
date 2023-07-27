@@ -1,8 +1,8 @@
 import { request } from '../../api'
 
-export const countries_data = async (method, endpoint, payload = null, params = {}) => {
+export const countries_data = async (method, endpoint, payload = null, params = {}, auth_token) => {
   try {
-    const countries = await request(method, endpoint, payload, params)
+    const countries = await request(method, endpoint, payload, params, auth_token)
 
     if (Array.isArray(countries.data)) {
       const totalRecords = countries.count

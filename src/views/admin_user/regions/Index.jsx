@@ -7,21 +7,31 @@ import { DataTable } from '@admin_user_components/UI/DataTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CSpinner } from '@coreui/react'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
 
-const Regions = () => {
+const Regions = observer(() => {
+  const authStore = useStores()
   const [regions, setRegions] = useState([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
+  const authToken = authStore((state) => state.token)
 
   const fetchRegions = async (pageNumber) => {
     setLoading(true)
     try {
-      const { data, totalRecords } = await regions_data('GET', 'regions', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await regions_data(
+        'GET',
+        'regions',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setRegions(data)
       setTotalRecords(totalRecords)
@@ -46,7 +56,11 @@ const Regions = () => {
       header: 'Actions',
       td: (row) => (
         <>
-          <Link to="/admin-user/regions/edit-region" state={{ record: row }}>
+          <Link
+            to="/admin-user/regions/edit-region"
+            state={{ record: row }}
+            className="custom-link"
+          >
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </>
@@ -107,6 +121,6 @@ const Regions = () => {
       )}
     </div>
   )
-}
+})
 
 export default Regions

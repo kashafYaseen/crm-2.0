@@ -9,6 +9,7 @@ import '@/scss/_custom.scss'
 import { DataTable } from '@admin_user_components/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { amenity_categories_data } from '@/api/admin_user/config/resources/amenityCategories'
+import { useStores } from '@/context/storeContext'
 
 const Index = () => {
   const [data, setData] = useState([])
@@ -22,6 +23,8 @@ const Index = () => {
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
+  const authStore = useStores()
+  const authToken = authStore((state) => state.token)
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -35,7 +38,13 @@ const Index = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await amenity_categories_data('DELETE', `amenity_categories/${id}`)
+        const response = await amenity_categories_data(
+          'DELETE',
+          `amenity_categories/${id}`,
+          null,
+          {},
+          authToken,
+        )
         setShowToast(true)
         setErrorType('success')
         setError('Record Deleted Successfully')
@@ -77,6 +86,7 @@ const Index = () => {
           per_page: perPageNumber,
           query: searchQuery,
         },
+        authToken,
       )
 
       setData(data)

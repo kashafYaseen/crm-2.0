@@ -21,9 +21,12 @@ import { Toast } from '@admin_user_components/UI/Toast/Toast'
 import JoditEditor from 'jodit-react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
 
-const Form = (props) => {
+const Form = observer((props) => {
+  const authStore = useStores()
   const [regionsData, setRegionsData] = useState([])
   const short_desc_editor = useRef(null)
   const desc_editor_en = useRef(null)
@@ -33,6 +36,8 @@ const Form = (props) => {
   const [errorType, setErrorType] = useState('')
   const navigate = useNavigate()
   const [fetchingRegionsByCountry, setFetchingRegionsByCountry] = useState(false)
+  const authToken = authStore((state) => state.token)
+  const [serverError, setServerError] = useState('')
 
   const defaultValues = {
     place: {
@@ -66,6 +71,11 @@ const Form = (props) => {
     }),
   })
 
+  const serverErrorHandler = (error) => {
+    setServerError('An error occurred. Please try again: ' + error.toString())
+    formik.resetForm()
+  }
+
   const formik = useFormik({
     initialValues: defaultValues,
     validationSchema: validationSchema,
@@ -78,6 +88,8 @@ const Form = (props) => {
               'put',
               `places/${props.place_to_update.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
@@ -86,11 +98,11 @@ const Form = (props) => {
               navigate('/admin-user/places')
             }, 1000)
           } catch (error) {
-            console.error('FORM_ERROR', error)
+            serverErrorHandler(error)
           }
         } else {
           try {
-            const extractedData = await places_data('post', 'places', values)
+            const extractedData = await places_data('post', 'places', values, {}, authToken)
             setShowToast(true)
             setErrorType('success')
             setError('Record Created Successfully')
@@ -98,7 +110,7 @@ const Form = (props) => {
               navigate('/admin-user/places')
             }, 1000)
           } catch (error) {
-            console.error('FORM_ERROR', error)
+            serverErrorHandler(error)
           }
         }
       }
@@ -113,7 +125,13 @@ const Form = (props) => {
     try {
       if (countryId) {
         setFetchingRegionsByCountry(true)
-        const response = await regions_data('get', `countries/${countryId}/regions`)
+        const response = await regions_data(
+          'get',
+          `countries/${countryId}/regions`,
+          null,
+          {},
+          authToken,
+        )
         setRegionsData(response.data)
         setFetchingRegionsByCountry(false)
       }
@@ -141,9 +159,17 @@ const Form = (props) => {
 
   return (
     <div className="display">
+      {serverError && <div className="server-error-message">{serverError}</div>}
+
       <CBreadcrumb>
-        <CBreadcrumbItem href="/admin-user/places">Place</CBreadcrumbItem>
-        <CBreadcrumbItem active>New Place</CBreadcrumbItem>
+        <CBreadcrumbItem>
+          <Link to="/admin-user/places">Place</Link>
+        </CBreadcrumbItem>
+        {props.place_to_update ? (
+          <CBreadcrumbItem active>Edit Place</CBreadcrumbItem>
+        ) : (
+          <CBreadcrumbItem active>Create New Place</CBreadcrumbItem>
+        )}
       </CBreadcrumb>
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
@@ -448,6 +474,6 @@ const Form = (props) => {
       </CRow>
     </div>
   )
-}
+})
 
 export default Form

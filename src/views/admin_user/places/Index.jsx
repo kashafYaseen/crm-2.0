@@ -8,8 +8,11 @@ import '@/scss/_custom.scss'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { places_data } from '@/api/admin_user/config/resources/places'
 import { DataTable } from '@admin_user_components/UI/DataTable'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
 
-const Index = () => {
+const Index = observer(() => {
+  const authStore = useStores()
   const [data, setData] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showToast, setShowToast] = useState(false)
@@ -18,6 +21,7 @@ const Index = () => {
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
+  const authToken = authStore((state) => state.token)
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -31,7 +35,7 @@ const Index = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await places_data('DELETE', `places/${id}`)
+        const response = await places_data('DELETE', `places/${id}`, null, {}, authToken)
         fetch_places_data()
         setShowToast(true)
         setErrorType('success')
@@ -53,7 +57,7 @@ const Index = () => {
       header: 'Actions',
       td: (row) => (
         <>
-          <Link to="/admin-user/places/edit-place" state={{ record: row }}>
+          <Link to="/admin-user/places/edit-place" state={{ record: row }} className="custom-link">
             <FontAwesomeIcon icon={faEdit} />
           </Link>
           <FontAwesomeIcon onClick={() => deletePlace(row.id)} icon={faTrash} />
@@ -65,11 +69,17 @@ const Index = () => {
   const fetch_places_data = async (pageNumber) => {
     setLoading(true)
     try {
-      const { data, totalRecords } = await places_data('get', 'places', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await places_data(
+        'get',
+        'places',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setData(data)
       setTotalRecords(totalRecords)
@@ -138,6 +148,5 @@ const Index = () => {
       )}
     </div>
   )
-}
-
+})
 export default Index

@@ -16,12 +16,16 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
 
-const Form = (props) => {
+const Form = observer((props) => {
+  const authStore = useStores()
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
+  const authToken = authStore((state) => state.token)
 
   const initialValues = {
     place_category: {
@@ -63,6 +67,8 @@ const Form = (props) => {
               'put',
               `place_categories/${props.place_category_to_update.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
@@ -76,7 +82,13 @@ const Form = (props) => {
           }
         } else {
           try {
-            const extractedData = await place_categories_data('post', 'place_categories', values)
+            const extractedData = await place_categories_data(
+              'post',
+              'place_categories',
+              values,
+              {},
+              authToken,
+            )
             setShowToast(true)
             setErrorType('success')
             setError('Record Created Successfully')
@@ -105,9 +117,15 @@ const Form = (props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>Create New Place Category </strong>
-            </CCardHeader>
+            {props.place_category_to_update ? (
+              <CCardHeader>
+                <strong>Edit Place Category </strong>
+              </CCardHeader>
+            ) : (
+              <CCardHeader>
+                <strong>Create New Place Category </strong>
+              </CCardHeader>
+            )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
@@ -178,6 +196,6 @@ const Form = (props) => {
       </CRow>
     </div>
   )
-}
+})
 
 export default Form

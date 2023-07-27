@@ -18,12 +18,15 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import { amenities_data } from '@/api/admin_user/config/resources/amenities'
+import { useStores } from '@/context/storeContext'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
+  const authStore = useStores()
+  const authToken = authStore((state) => state.token)
   const initialValues = {
     amenity: {
       name_en: props.amenity_to_update?.name_en || '',
@@ -69,6 +72,8 @@ const Form = (props) => {
               'put',
               `amenities/${props.amenity_to_update.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
@@ -82,7 +87,7 @@ const Form = (props) => {
           }
         } else {
           try {
-            const extractedData = await amenities_data('post', 'amenities', values)
+            const extractedData = await amenities_data('post', 'amenities', values, {}, authToken)
             setShowToast(true)
             setErrorType('success')
             setError('Record Created Successfully')
@@ -112,9 +117,15 @@ const Form = (props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>Create New Place Category </strong>
-            </CCardHeader>
+            {props.amenity_to_update ? (
+              <CCardHeader>
+                <strong>Edit Amenity </strong>
+              </CCardHeader>
+            ) : (
+              <CCardHeader>
+                <strong>Create New Amenity </strong>
+              </CCardHeader>
+            )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol xs={12}>

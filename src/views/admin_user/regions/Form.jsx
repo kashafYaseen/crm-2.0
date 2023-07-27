@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   CButton,
   CCard,
@@ -21,14 +21,20 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import JoditEditor from 'jodit-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
 
-const Form = (props) => {
+const Form = observer((props) => {
+  const authStore = useStores()
   const navigate = useNavigate()
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
+  const authToken = authStore((state) => state.token)
+  const content_en_editor = useRef(null)
+  const content_nl_editor = useRef(null)
 
   const initialValues = {
     region: {
@@ -75,27 +81,6 @@ const Form = (props) => {
     }),
   })
 
-  const handleInputChange = (event) => {
-    if (event.target && event.target.value !== undefined) {
-      const inputValue = event.target.value ?? ''
-      const inputType = event.target.type ?? ''
-
-      const hasNonNumericCharacters = /^[a-zA-Z\s]+$/.test(inputValue)
-
-      // If the input is a text field and contains any numeric characters, prevent it from being set in the state
-      if (inputType === 'text' && !hasNonNumericCharacters) {
-        return
-      }
-
-      // If the input is a number field and contains any non-numeric characters, prevent it from being set in the state
-      if (inputType === 'number' && !hasNonNumericCharacters) {
-        return
-      }
-    }
-    // If the input passes the validation, update the state
-    formik.handleChange(event)
-  }
-
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -108,6 +93,8 @@ const Form = (props) => {
               'put',
               `regions/${props.region_data.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
@@ -120,7 +107,7 @@ const Form = (props) => {
           }
         } else {
           try {
-            const extractedData = await regions_data('post', 'regions', values)
+            const extractedData = await regions_data('post', 'regions', values, {}, authToken)
 
             setShowToast(true)
             setErrorType('success')
@@ -143,8 +130,14 @@ const Form = (props) => {
   return (
     <div className="display">
       <CBreadcrumb>
-        <CBreadcrumbItem href="/admin-user/regions">Region</CBreadcrumbItem>
-        <CBreadcrumbItem active>New Region</CBreadcrumbItem>
+        <CBreadcrumbItem>
+          <Link to="/admin-user/regions">Region</Link>
+        </CBreadcrumbItem>
+        {props.region_data ? (
+          <CBreadcrumbItem active>Edit Region</CBreadcrumbItem>
+        ) : (
+          <CBreadcrumbItem active>New Region</CBreadcrumbItem>
+        )}
       </CBreadcrumb>
       {serverError && <div className="server-error-message">{serverError}</div>}
 
@@ -164,7 +157,7 @@ const Form = (props) => {
                   <CFormSelect
                     id="country_id"
                     value={formik.values.region.country_id}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     name="region.country_id"
                     className={
                       formik.touched.region?.country_id && formik.errors.region?.country_id
@@ -185,7 +178,7 @@ const Form = (props) => {
                   <CFormSwitch
                     size="lg"
                     id="inputPublish"
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     name="region.published"
                     className={
                       formik.errors.region?.published && formik.touched.region?.published
@@ -204,7 +197,7 @@ const Form = (props) => {
                     type="text"
                     id="inputNameEn"
                     value={formik.values.region.name_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.name_en"
                     className={
@@ -224,7 +217,7 @@ const Form = (props) => {
                     type="text"
                     id="inputNameNl"
                     value={formik.values.region.name_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.name_nl"
                     className={
@@ -244,7 +237,7 @@ const Form = (props) => {
                     type="text"
                     id="inputTitleEn"
                     value={formik.values.region.title_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.title_en"
                     className={
@@ -264,7 +257,7 @@ const Form = (props) => {
                     type="text"
                     id="inputTitleNl"
                     value={formik.values.region.title_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.title_nl"
                     className={
@@ -284,7 +277,7 @@ const Form = (props) => {
                     type="text"
                     id="inputMetaTitleEn"
                     value={formik.values.region.meta_title_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.meta_title_en"
                     className={
@@ -304,7 +297,7 @@ const Form = (props) => {
                     type="text"
                     id="inputMetaTitleNl"
                     value={formik.values.region.meta_title_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.meta_title_nl"
                     className={
@@ -321,41 +314,45 @@ const Form = (props) => {
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputContentEn">Content en</CFormLabel>
                   <JoditEditor
+                    ref={content_en_editor}
                     id="inputContentEn"
                     tabIndex={1}
                     value={formik.values.region.content_en}
-                    onChange={handleInputChange}
-                    onBlur={formik.handleBlur}
-                    name="region.content_en"
+                    onChange={(value) => {
+                      formik.setFieldValue('region.content_en', value)
+                    }}
+                    onBlur={() => {
+                      const value = content_en_editor.current.value
+                      formik.setFieldValue('region.content_en', value)
+                    }}
                     className={
                       formik.errors.region?.content_en && formik.touched.region?.content_en
                         ? 'input-error'
                         : ''
                     }
                   />
-                  {formik.touched.region?.content_en && formik.errors.region?.content_en && (
-                    <div className="formik-errors">{formik.errors.region?.content_en}</div>
-                  )}
                 </CCol>
 
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputContentNl">Content nl</CFormLabel>
                   <JoditEditor
+                    ref={content_nl_editor}
                     id="inputContentNl"
                     tabIndex={1}
                     value={formik.values.region.content_nl}
-                    onChange={handleInputChange}
-                    onBlur={formik.handleBlur}
-                    name="region.content_nl"
+                    onChange={(value) => {
+                      formik.setFieldValue('region.content_nl', value)
+                    }}
+                    onBlur={() => {
+                      const value = content_nl_editor.current.value
+                      formik.setFieldValue('region.content_nl', value)
+                    }}
                     className={
                       formik.errors.region?.content_nl && formik.touched.region?.content_nl
                         ? 'input-error'
                         : ''
                     }
                   />
-                  {formik.touched.region?.content_nl && formik.errors.region?.content_nl && (
-                    <div className="formik-errors">{formik.errors.region?.content_nl}</div>
-                  )}
                 </CCol>
 
                 {/* This attribute is not saving at backend temporarily */}
@@ -375,7 +372,7 @@ const Form = (props) => {
                     id="inputShortDesc"
                     tabIndex={1}
                     value={formik.values.region.short_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.short_desc"
                     className={
@@ -396,7 +393,7 @@ const Form = (props) => {
                     id="inputVillasDesc"
                     tabIndex={1}
                     value={formik.values.region.villas_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.villas_desc"
                     className={
@@ -417,7 +414,7 @@ const Form = (props) => {
                     id="inputApartmentDesc"
                     tabIndex={1}
                     value={formik.values.region.apartment_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.apartment_desc"
                     className={
@@ -439,7 +436,7 @@ const Form = (props) => {
                     id="inputBbDesc"
                     tabIndex={1}
                     value={formik.values.region.bb_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.bb_desc"
                     className={
@@ -464,7 +461,7 @@ const Form = (props) => {
                     type="text"
                     id="inputSlugEn"
                     value={formik.values.region.slug_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.slug_en"
                     className={
@@ -484,7 +481,7 @@ const Form = (props) => {
                     type="text"
                     id="inputSlugNl"
                     value={formik.values.region.slug_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.slug_nl"
                     className={
@@ -510,6 +507,6 @@ const Form = (props) => {
       </CRow>
     </div>
   )
-}
+})
 
 export default Form

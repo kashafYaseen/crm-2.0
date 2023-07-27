@@ -16,12 +16,15 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import { amenity_categories_data } from '@/api/admin_user/config/resources/amenityCategories'
+import { useStores } from '@/context/storeContext'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
+  const authStore = useStores()
+  const authToken = authStore((state) => state.token)
 
   const initialValues = {
     amenity_category: {
@@ -62,6 +65,8 @@ const Form = (props) => {
               'put',
               `amenity_categories/${props.amenity_category_to_update.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
@@ -79,6 +84,8 @@ const Form = (props) => {
               'post',
               'amenity_categories',
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
@@ -105,9 +112,15 @@ const Form = (props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>Create New Amenity Category </strong>
-            </CCardHeader>
+            {props.amenity_category_to_update ? (
+              <CCardHeader>
+                <strong>Edit Amenity Category </strong>
+              </CCardHeader>
+            ) : (
+              <CCardHeader>
+                <strong>Create New Amenity Category </strong>
+              </CCardHeader>
+            )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol xs={12}>
