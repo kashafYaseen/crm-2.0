@@ -1,4 +1,3 @@
-import { useStores } from '@/context/storeContext'
 import API_CONFIG from '../configs/axiosConfigs'
 import { handleResponse, handleError } from '../configs/axiosUtils'
 import axios from 'axios'
