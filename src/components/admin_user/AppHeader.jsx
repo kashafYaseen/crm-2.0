@@ -13,6 +13,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
+import LanguageSelector from './UI/LanguageSelector'
 
 // import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from '@admin_user_components/header/index'
@@ -47,8 +48,8 @@ const AppHeader = () => {
             <CNavLink href="#">Settings</CNavLink>
           </CNavItem>
         </CHeaderNav>
-        {/* <CHeaderNav>
-          <CNavItem>
+        <CHeaderNav>
+          {/* <CNavItem>
             <CNavLink href="#">
               <CIcon icon={cilBell} size="lg" />
             </CNavLink>
@@ -57,13 +58,14 @@ const AppHeader = () => {
             <CNavLink href="#">
               <CIcon icon={cilList} size="lg" />
             </CNavLink>
-          </CNavItem>
+          </CNavItem> */}
           <CNavItem>
-            <CNavLink href="#">
+            {/* <CNavLink href="#">
               <CIcon icon={cilEnvelopeOpen} size="lg" />
-            </CNavLink>
+            </CNavLink> */}
+            <LanguageSelector />
           </CNavItem>
-        </CHeaderNav> */}
+        </CHeaderNav>
         <CHeaderNav className="ms-3">
           <AppHeaderDropdown />
         </CHeaderNav>

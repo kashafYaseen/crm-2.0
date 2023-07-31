@@ -8,6 +8,12 @@
   background-color: #303C50 !important
 }
 
+.custom-table thead th {
+  background-color: #303C50;
+  color: #fff; /* Set the text color for the header cells */
+}
+
+
 .custom-table tr:nth-child(even):hover {
   color: #818895;
 }

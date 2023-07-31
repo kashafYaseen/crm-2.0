@@ -50,9 +50,12 @@ const Countries = observer(() => {
 
   const columns = [
     { header: 'Name', key: 'name' },
-    { header: 'Disable', key: 'disable', td: (row) => (row.disable ? 'True' : 'False') },
-    { header: 'Content', key: 'content', td: (row) => row.content ?? 'N/A' },
-
+    { header: 'Disable', key: 'disable', td: (row) => row.disable ?? 'N/A' },
+    {
+      header: 'Content',
+      key: 'content',
+      td: (row) => <div dangerouslySetInnerHTML={{ __html: row.content ?? 'N/A' }} />,
+    },
     {
       header: 'Actions',
       td: (row) => (

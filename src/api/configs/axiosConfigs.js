@@ -1,7 +1,7 @@
 // axiosConfig.js
 
 const API_CONFIG = {
-  baseUrl: 'http://localhost:3000/en/crm/v1',
+  baseUrl: `http://localhost:3000`,
   headers: {
     'Content-Type': 'application/json',
     // Add any additional headers if required

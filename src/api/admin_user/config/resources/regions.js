@@ -7,7 +7,7 @@ export const regions_data = async (method, endpoint, payload = null, params = {}
       const totalRecords = regions.count
       const extractedData = regions.data.map(({ id, attributes }) => ({
         id: id,
-        name: attributes.name_en,
+        name: attributes.name,
         name_en: attributes.name_en,
         name_nl: attributes.name_nl,
         slug_en: attributes.slug_en,
@@ -15,7 +15,7 @@ export const regions_data = async (method, endpoint, payload = null, params = {}
         title_en: attributes.title_en,
         title_nl: attributes.title_nl,
         region_country: attributes.region_country,
-        content: attributes.content_en,
+        content: attributes.content,
         content_en: attributes.content_en,
         content_nl: attributes.content_nl,
         meta_title_en: attributes.meta_title_en,

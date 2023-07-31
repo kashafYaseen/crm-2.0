@@ -2,9 +2,10 @@ import { useStores } from '@/context/storeContext'
 import API_CONFIG from '../configs/axiosConfigs'
 import { handleResponse, handleError } from '../configs/axiosUtils'
 import axios from 'axios'
+import i18next from 'i18next'
 
 export async function request(method, endpoint, data, params = {}, auth_token) {
-  const url = `${API_CONFIG.baseUrl}/admin_user/${endpoint}`
+  const url = `${API_CONFIG.baseUrl}/${i18next.language}/crm/v1/admin_user/${endpoint}`
   try {
     const response = await axios({
       method,
