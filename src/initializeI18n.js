@@ -13,8 +13,7 @@ const initializeI18n = () => {
         supportedLngs: ['en', 'nl'],
         fallbackLng: 'en',
         detection: {
-          order: ['cookie', 'htmlTag', 'localStorage', 'path', 'subdomain'],
-          caches: ['cookie'],
+          order: ['path', 'cookie', 'htmlTag', 'localStorage', 'subdomain'],
         },
         backend: {
           loadPath: '/src/locale/{{lng}}.json',

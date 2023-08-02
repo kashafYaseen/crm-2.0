@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import i18next from 'i18next'
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+
 const languages = [
   { code: 'nl', name: 'Dutch', country_code: 'nl' },
   { code: 'en', name: 'English', country_code: 'gb' },
@@ -19,7 +21,12 @@ const GlobIcon = ({ width = 24, height = 24 }) => (
 )
 
 const LanguageSelector = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState(i18next.language)
+
+  const toggleDropdown = () => {
+    setDropdownOpen((prevState) => !prevState)
+  }
 
   useEffect(() => {
     setSelectedLanguage(i18next.language)
@@ -27,36 +34,29 @@ const LanguageSelector = () => {
 
   const handleLanguageChange = (code) => {
     if (code !== selectedLanguage) {
-      i18next.changeLanguage(code)
-      setSelectedLanguage(code)
-      window.location.reload()
+      i18next.changeLanguage(code).then(() => {
+        setSelectedLanguage(code)
+        window.location.reload()
+      })
     }
   }
+
   return (
     <div className="container">
       <div className="d-flex justify-content-end">
-        <div className="dropdown">
-          <button
-            className="btn btn-link dropdown-toggle"
-            type="button"
-            id="dropdownMenuButton1"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
+        <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+          <DropdownToggle tag="button" className="btn btn-link" caret>
             <GlobIcon />
-          </button>
-
-          <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          </DropdownToggle>
+          <DropdownMenu end>
             {languages.map(({ code, name, country_code }) => (
-              <li key={country_code}>
-                <button className="dropdown-item" onClick={() => handleLanguageChange(code)}>
-                  <span className={`flag-icon flag-icon-${country_code} mx-2`}></span>
-                  {name}
-                </button>
-              </li>
+              <DropdownItem key={country_code} onClick={() => handleLanguageChange(code)}>
+                <span className={`flag-icon flag-icon-${country_code} mx-2`}></span>
+                {name}
+              </DropdownItem>
             ))}
-          </ul>
-        </div>
+          </DropdownMenu>
+        </Dropdown>
       </div>
     </div>
   )
