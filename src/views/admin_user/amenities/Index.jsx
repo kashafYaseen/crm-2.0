@@ -10,6 +10,7 @@ import { Modal, ModalHeader, ModalBody, Badge } from 'reactstrap'
 import Form from './Form'
 import { CSpinner } from '@coreui/react'
 import { useStores } from '@/context/storeContext'
+import { useTranslation } from 'react-i18next'
 
 const Index = () => {
   const [data, setData] = useState([])
@@ -26,6 +27,7 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState(null)
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -67,14 +69,22 @@ const Index = () => {
   }
 
   const columns = [
-    { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
-    { header: 'Category', key: 'amenity_category', td: (row) => row.amenity_category ?? 'N/A' },
-    { header: 'Show on filter', key: 'filter_enabled', td: (row) => row.filter_enabled ?? 'N/A' },
-    { header: 'Hot', key: 'hot', td: (row) => row.hot ?? 'N/A' },
-    { header: 'Icon', key: 'icon', td: (row) => row.icon ?? 'N/A' },
+    { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
+    {
+      header: t('category'),
+      key: 'amenity_category',
+      td: (row) => row.amenity_category ?? 'N/A',
+    },
+    {
+      header: t('amenity.show_on_filter'),
+      key: 'filter_enabled',
+      td: (row) => row.filter_enabled ?? 'N/A',
+    },
+    { header: t('amenity.hot'), key: 'hot', td: (row) => row.hot ?? 'N/A' },
+    { header: t('icon'), key: 'icon', td: (row) => row.icon ?? 'N/A' },
 
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
@@ -134,7 +144,7 @@ const Index = () => {
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>Amenities</ModalHeader>
+        <ModalHeader toggle={() => setModal(!modal)}>{t('amenities')}</ModalHeader>
         <ModalBody>
           <Form
             amenity_to_update={selectedRecord}
@@ -147,10 +157,10 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">Amenities</h2>
+      <h2 className="mb-3">{t('amenities')}</h2>
       <div className="create-button-div">
         <button id="createNewRecord" className="create-button" onClick={openNewModel}>
-          Create New Amenity
+          {t('create_new_amenity')}
         </button>
       </div>
 
@@ -163,7 +173,7 @@ const Index = () => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 

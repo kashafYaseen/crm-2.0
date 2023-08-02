@@ -11,6 +11,7 @@ import { Toast } from '@admin_user_components/UI/Toast'
 import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
+import { useTranslation } from 'react-i18next'
 
 const Index = observer(() => {
   const authStore = useStores()
@@ -27,6 +28,7 @@ const Index = observer(() => {
   const [selectedRecord, setSelectedRecord] = useState(null)
 
   const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -63,9 +65,9 @@ const Index = observer(() => {
   }
 
   const columns = [
-    { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
+    { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
@@ -125,7 +127,7 @@ const Index = observer(() => {
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>Place Category</ModalHeader>
+        <ModalHeader toggle={() => setModal(!modal)}>{t('Place Category')}</ModalHeader>
         <ModalBody>
           <Form place_category_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
         </ModalBody>
@@ -134,7 +136,7 @@ const Index = observer(() => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">Place Categories</h2>
+      <h2 className="mb-3">{t('place_categories')}</h2>
       <div className="create-button-div">
         <button
           className="create-button"
@@ -143,7 +145,7 @@ const Index = observer(() => {
             setSelectedRecord(null)
           }}
         >
-          Create New Place Category
+          {t('create_new_place_category')}
         </button>
       </div>
 
@@ -156,7 +158,7 @@ const Index = observer(() => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 

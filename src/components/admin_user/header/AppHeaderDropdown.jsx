@@ -25,6 +25,7 @@ import CIcon from '@coreui/icons-react'
 import avatar8 from '@/assets/images/avatars/8.jpg'
 import { useStores } from '@/context/storeContext'
 import { useNavigate } from 'react-router-dom'
+import i18next from 'i18next'
 
 const AppHeaderDropdown = () => {
   const authStore = useStores()
@@ -32,7 +33,7 @@ const AppHeaderDropdown = () => {
 
   const handleLockAccount = () => {
     authStore.getState().logout()
-    navigate('/admin-user-login')
+    navigate(`/${i18next.language}/admin-user-login`)
   }
   return (
     <CDropdown variant="nav-item">

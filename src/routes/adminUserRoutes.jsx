@@ -1,8 +1,8 @@
-import React, { Suspense } from 'react'
-import { Route, Routes, Navigate, Outlet } from 'react-router-dom'
+import React from 'react'
+import { Route, Routes, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import routes from '@/routes'
 import { useStores } from '@/context/storeContext'
-import { CSpinner } from '@coreui/react'
+import i18next from 'i18next'
 
 const AdminUserRoutes = () => {
   const authStore = useStores()
@@ -12,13 +12,18 @@ const AdminUserRoutes = () => {
     <>
       <Routes>
         {routes.admin_routes.map((route) => {
-          // If the route has a parentPath defined, it is a nested route
           if (route.parentPath) {
             return (
               <Route
                 key={route.path}
-                path={`/admin-user${route.parentPath}${route.path}`}
-                element={!isLoggedIn ? <Navigate replace to={'/admin-user-login'} /> : <Outlet />}
+                path={`/${i18next.language}/admin-user${route.parentPath}${route.path}`}
+                element={
+                  !isLoggedIn ? (
+                    <Navigate replace to={`/${i18next.language}/admin-user-login`} />
+                  ) : (
+                    <Outlet />
+                  )
+                }
               />
             )
           } else {
@@ -28,13 +33,20 @@ const AdminUserRoutes = () => {
                 key={route.path}
                 path={`/${route.path}`}
                 element={
-                  !isLoggedIn ? <Navigate replace to={'/admin-user-login'} /> : <route.element />
+                  !isLoggedIn ? (
+                    <Navigate replace to={`/${i18next.language}/admin-user-login`} />
+                  ) : (
+                    <route.element />
+                  )
                 }
               />
             )
           }
         })}
-        <Route path="*" element={<Navigate replace to={'/admin-user/dashboard'} />} />
+        <Route
+          path="*"
+          element={<Navigate replace to={`/${i18next.language}/admin-user/dashboard`} />}
+        />
       </Routes>
     </>
   )

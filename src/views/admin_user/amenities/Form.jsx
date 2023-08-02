@@ -19,6 +19,7 @@ import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import { amenities_data } from '@/api/admin_user/config/resources/amenities'
 import { useStores } from '@/context/storeContext'
+import { useTranslation } from 'react-i18next'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)
@@ -27,6 +28,8 @@ const Form = (props) => {
   const [serverError, setServerError] = useState('')
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
+
   const initialValues = {
     amenity: {
       name_en: props.amenity_to_update?.name_en || '',
@@ -77,7 +80,7 @@ const Form = (props) => {
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Updated Successfully')
+            setError(t('record_updated_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -90,7 +93,7 @@ const Form = (props) => {
             const extractedData = await amenities_data('post', 'amenities', values, {}, authToken)
             setShowToast(true)
             setErrorType('success')
-            setError('Record Created Successfully')
+            setError(t('record_created_successfully'))
 
             setTimeout(() => {
               setShowToast(false)
@@ -119,17 +122,19 @@ const Form = (props) => {
           <CCard className="mb-4">
             {props.amenity_to_update ? (
               <CCardHeader>
-                <strong>Edit Amenity </strong>
+                <strong>
+                  {t('edit')} {t('edit_amenity')}
+                </strong>
               </CCardHeader>
             ) : (
               <CCardHeader>
-                <strong>Create New Amenity </strong>
+                <strong>{t('create_new_amenity')} </strong>
               </CCardHeader>
             )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="inputName">Name (EN)</CFormLabel>
+                  <CFormLabel htmlFor="inputName">{t('name')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEN"
@@ -141,7 +146,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="inputNameNL">Name (NL)</CFormLabel>
+                  <CFormLabel htmlFor="inputNameNL">{t('name')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameNL"
@@ -161,7 +166,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="selectPublish4">Amenity Category</CFormLabel>
+                  <CFormLabel htmlFor="selectPublish4">{t('amenity_category')}</CFormLabel>
                   <CFormSelect
                     id="amenity_category_id"
                     value={formik.values.amenity.amenity_category_id}
@@ -190,7 +195,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="inputName">Icon</CFormLabel>
+                  <CFormLabel htmlFor="inputName">{t('icon')}</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEN"
@@ -202,7 +207,9 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="selectSearchFilter">Add to search filters</CFormLabel>
+                  <CFormLabel htmlFor="selectSearchFilter">
+                    {'amenity.add_to_search_filters'}
+                  </CFormLabel>
                   <CFormSelect
                     id="filter_enabled"
                     className="form-control"
@@ -217,7 +224,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="selectHot">Hot</CFormLabel>
+                  <CFormLabel htmlFor="selectHot">{t('amenity.hot')}</CFormLabel>
                   <CFormSelect
                     id="hot"
                     className="form-control"
@@ -232,7 +239,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="inputSlug">Slug (NL)</CFormLabel>
+                  <CFormLabel htmlFor="inputSlug">{t('slug')} (NL)</CFormLabel>
                   <CFormTextarea
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -244,7 +251,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="inputSlug">Slug (EN)</CFormLabel>
+                  <CFormLabel htmlFor="inputSlug">{t('slug')} (EN)</CFormLabel>
                   <CFormTextarea
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -257,7 +264,7 @@ const Form = (props) => {
 
                 <CCol xs={12}>
                   <CButton type="submit" className="create-button">
-                    Submit
+                    {t('submit')}
                   </CButton>
                 </CCol>
               </CForm>

@@ -1,4 +1,4 @@
-import { useTranslation, initReactI18next } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 const Dashboard = () => {
   const { t } = useTranslation()

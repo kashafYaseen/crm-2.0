@@ -10,6 +10,8 @@ import { places_data } from '@/api/admin_user/config/resources/places'
 import { DataTable } from '@admin_user_components/UI/DataTable'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const Index = observer(() => {
   const authStore = useStores()
@@ -22,6 +24,7 @@ const Index = observer(() => {
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
   const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -47,17 +50,21 @@ const Index = observer(() => {
   }
 
   const columns = [
-    { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
-    { header: 'Address', key: 'address', td: (row) => row.address ?? 'N/A' },
-    { header: 'Category', key: 'category', td: (row) => row.category ?? 'N/A' },
-    { header: 'Region', key: 'region', td: (row) => row.region ?? 'N/A' },
-    { header: 'Country', key: 'country', td: (row) => row.country ?? 'N/A' },
+    { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
+    { header: t('address'), key: 'address', td: (row) => row.address ?? 'N/A' },
+    { header: t('category'), key: 'category', td: (row) => row.category ?? 'N/A' },
+    { header: t('region'), key: 'region', td: (row) => row.region ?? 'N/A' },
+    { header: t('country'), key: 'country', td: (row) => row.country ?? 'N/A' },
 
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
-          <Link to="/admin-user/places/edit-place" state={{ record: row }} className="custom-link">
+          <Link
+            to={`/${i18next.language}/admin-user/places/edit-place`}
+            state={{ record: row }}
+            className="custom-link"
+          >
             <FontAwesomeIcon icon={faEdit} />
           </Link>
           <FontAwesomeIcon onClick={() => deletePlace(row.id)} icon={faTrash} />
@@ -112,11 +119,10 @@ const Index = observer(() => {
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
 
-      <h2 className="mb-3">Places</h2>
-
+      <h2 className="mb-3">{t('Places')}</h2>
       <div className="create-button-div">
-        <Link to="/admin-user/places/new-place">
-          <button className="create-button">Create New Place</button>
+        <Link to={`/${i18next.language}/admin-user/places/new-place`}>
+          <button className="create-button">{t('create_new_place')}</button>
         </Link>
       </div>
 
@@ -129,7 +135,7 @@ const Index = observer(() => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 

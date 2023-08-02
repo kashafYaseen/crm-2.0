@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import i18next from 'i18next'
 const languages = [
   { code: 'nl', name: 'Dutch', country_code: 'nl' },
@@ -21,7 +20,6 @@ const GlobIcon = ({ width = 24, height = 24 }) => (
 
 const LanguageSelector = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(i18next.language)
-  const navigate = useNavigate()
 
   useEffect(() => {
     setSelectedLanguage(i18next.language)
@@ -51,14 +49,7 @@ const LanguageSelector = () => {
           <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
             {languages.map(({ code, name, country_code }) => (
               <li key={country_code}>
-                <button
-                  className="dropdown-item"
-                  // onClick={() => {
-                  //   i18next.changeLanguage(code)
-                  //   navigate('/admin-user/dashboard')
-                  // }}
-                  onClick={() => handleLanguageChange(code)}
-                >
+                <button className="dropdown-item" onClick={() => handleLanguageChange(code)}>
                   <span className={`flag-icon flag-icon-${country_code} mx-2`}></span>
                   {name}
                 </button>

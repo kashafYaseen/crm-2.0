@@ -14,6 +14,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 import LanguageSelector from './UI/LanguageSelector'
+import i18next from 'i18next'
 
 // import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from '@admin_user_components/header/index'
@@ -37,7 +38,7 @@ const AppHeader = () => {
         </CHeaderBrand>
         <CHeaderNav className="d-none d-md-flex me-auto">
           <CNavItem>
-            <CNavLink to="/admin-user/dashboard" component={NavLink}>
+            <CNavLink to={`/${i18next.language}/admin-user/dashboard`} component={NavLink}>
               Dashboard
             </CNavLink>
           </CNavItem>

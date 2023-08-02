@@ -1,12 +1,13 @@
+// index.jsx
 import 'react-app-polyfill/stable'
 import 'core-js'
 import React from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot } from 'react-dom/client' // Use createRoot from 'react-dom'
 import { Provider } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import 'flag-icon-css/css/flag-icons.min.css'
-
+import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import store from './store'
@@ -18,7 +19,9 @@ initializeI18n()
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <StoreProvider>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </StoreProvider>
   </Provider>,
 )

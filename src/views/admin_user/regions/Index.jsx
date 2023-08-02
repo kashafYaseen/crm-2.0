@@ -9,6 +9,8 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CSpinner } from '@coreui/react'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const Regions = observer(() => {
   const authStore = useStores()
@@ -17,6 +19,7 @@ const Regions = observer(() => {
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
   const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const fetchRegions = async (pageNumber) => {
     setLoading(true)
@@ -49,19 +52,19 @@ const Regions = observer(() => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const columns = [
-    { header: 'Name', key: 'name' },
-    { header: 'Country', key: 'region_country', td: (row) => row.region_country ?? 'N/A' },
+    { header: t('name'), key: 'name' },
+    { header: t('country'), key: 'region_country', td: (row) => row.region_country ?? 'N/A' },
     {
-      header: 'Content',
+      header: t('content'),
       key: 'content',
       td: (row) => <div dangerouslySetInnerHTML={{ __html: row.content ?? 'N/A' }} />,
     },
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
           <Link
-            to="/admin-user/regions/edit-region"
+            to={`/${i18next.language}/admin-user/regions/edit-region`}
             state={{ record: row }}
             className="custom-link"
           >
@@ -90,10 +93,10 @@ const Regions = observer(() => {
 
   return (
     <div className="display">
-      <h2 className="mb-3">Regions</h2>
+      <h2 className="mb-3">{t('Regions')}</h2>
       <div className="create-button-div">
-        <Link to="/admin-user/regions/new-region">
-          <button className="create-button">Create New Region</button>
+        <Link to={`/${i18next.language}/admin-user/regions/new-region`}>
+          <button className="create-button">{t('create_new_region')}</button>
         </Link>
       </div>
 
@@ -106,7 +109,7 @@ const Regions = observer(() => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 

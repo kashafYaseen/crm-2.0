@@ -9,6 +9,8 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CSpinner } from '@coreui/react'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const Countries = observer(() => {
   const [countries, setCountries] = useState([])
@@ -17,6 +19,7 @@ const Countries = observer(() => {
   const [loading, setLoading] = useState(true)
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const fetchCountries = async (pageNumber) => {
     setLoading(true)
@@ -49,19 +52,19 @@ const Countries = observer(() => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const columns = [
-    { header: 'Name', key: 'name' },
-    { header: 'Disable', key: 'disable', td: (row) => row.disable ?? 'N/A' },
+    { header: t('name'), key: 'name' },
+    { header: t('disable'), key: 'disable', td: (row) => row.disable ?? 'N/A' },
     {
-      header: 'Content',
+      header: t('content'),
       key: 'content',
       td: (row) => <div dangerouslySetInnerHTML={{ __html: row.content ?? 'N/A' }} />,
     },
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
           <Link
-            to="/admin-user/countries/country-form"
+            to={`/${i18next.language}/admin-user/countries/country-form`}
             state={{ record: row }}
             className="custom-link"
           >
@@ -89,10 +92,10 @@ const Countries = observer(() => {
 
   return (
     <div className="display">
-      <h2 className="mb-3">Countries</h2>
+      <h2 className="mb-3">{t('Countries')}</h2>
       <div className="create-button-div">
-        <Link to="/admin-user/countries/country-form">
-          <button className="create-button">Create New Country</button>
+        <Link to={`/${i18next.language}/admin-user/countries/country-form`}>
+          <button className="create-button">{t('create_new_country')}</button>
         </Link>
       </div>
       <div className="search-container">
@@ -104,7 +107,7 @@ const Countries = observer(() => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 

@@ -18,6 +18,7 @@ import '@/scss/_custom.scss'
 import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
+import { useTranslation } from 'react-i18next'
 
 const Form = observer((props) => {
   const authStore = useStores()
@@ -26,6 +27,7 @@ const Form = observer((props) => {
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
   const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const initialValues = {
     place_category: {
@@ -72,7 +74,7 @@ const Form = observer((props) => {
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Updated Successfully')
+            setError(t('record_updated_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -91,7 +93,7 @@ const Form = observer((props) => {
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Created Successfully')
+            setError(t('record_created_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -119,17 +121,19 @@ const Form = observer((props) => {
           <CCard className="mb-4">
             {props.place_category_to_update ? (
               <CCardHeader>
-                <strong>Edit Place Category </strong>
+                <strong>
+                  {t('edit')} {t('place_category')}
+                </strong>
               </CCardHeader>
             ) : (
               <CCardHeader>
-                <strong>Create New Place Category </strong>
+                <strong> {t('create_new_place_category')} </strong>
               </CCardHeader>
             )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputName">Name (EN)</CFormLabel>
+                  <CFormLabel htmlFor="inputName">{t('name')} EN</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEN"
@@ -150,7 +154,7 @@ const Form = observer((props) => {
                     )}
                 </CCol>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="selectPublish4">Color Code</CFormLabel>
+                  <CFormLabel htmlFor="selectPublish4">{t('color_code')}</CFormLabel>
 
                   <CFormInput
                     type="text"
@@ -163,7 +167,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameNL">Name (NL)</CFormLabel>
+                  <CFormLabel htmlFor="inputNameNL">{t('name')} NL</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameNL"
@@ -186,7 +190,7 @@ const Form = observer((props) => {
 
                 <CCol xs={12}>
                   <CButton type="submit" className="create-button">
-                    Submit
+                    {t('submit')}
                   </CButton>
                 </CCol>
               </CForm>

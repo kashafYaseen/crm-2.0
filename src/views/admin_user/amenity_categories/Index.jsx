@@ -10,6 +10,7 @@ import { DataTable } from '@admin_user_components/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { amenity_categories_data } from '@/api/admin_user/config/resources/amenityCategories'
 import { useStores } from '@/context/storeContext'
+import { useTranslation } from 'react-i18next'
 
 const Index = () => {
   const [data, setData] = useState([])
@@ -25,6 +26,8 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState(null)
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
+
+  const { t } = useTranslation()
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -61,9 +64,9 @@ const Index = () => {
   }
 
   const columns = [
-    { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
+    { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
@@ -123,7 +126,7 @@ const Index = () => {
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>Amenity Category</ModalHeader>
+        <ModalHeader toggle={() => setModal(!modal)}>{t('Amenity Categories')}</ModalHeader>
         <ModalBody>
           <Form amenity_category_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
         </ModalBody>
@@ -132,7 +135,7 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">Amenity Categories</h2>
+      <h2 className="mb-3">{t('Amenity Categories')}</h2>
       <div className="create-button-div">
         <button
           className="create-button"
@@ -141,7 +144,7 @@ const Index = () => {
             setSelectedRecord(null)
           }}
         >
-          Create New Amenity Category
+          {t('create_new_amenity_category')}
         </button>
       </div>
 
@@ -154,7 +157,7 @@ const Index = () => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 

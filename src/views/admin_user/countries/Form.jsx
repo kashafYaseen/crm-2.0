@@ -24,6 +24,8 @@ import JoditEditor from 'jodit-react'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const Form = observer((props) => {
   const authStore = useStores()
@@ -37,6 +39,7 @@ const Form = observer((props) => {
   const authToken = authStore((state) => state.token)
   const content_en_editor = useRef(null)
   const content_nl_editor = useRef(null)
+  const { t } = useTranslation()
 
   const initialValues = {
     country: {
@@ -106,9 +109,9 @@ const Form = observer((props) => {
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Updated Successfully')
+            setError(t('record_updated_successfully'))
             setTimeout(() => {
-              navigate('/admin-user/countries')
+              navigate(`/${i18next.language}/admin-user/countries`)
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -119,9 +122,9 @@ const Form = observer((props) => {
 
             setShowToast(true)
             setErrorType('success')
-            setError('Record Created Successfully')
+            setError(t('record_created_successfully'))
             setTimeout(() => {
-              navigate('/admin-user/countries')
+              navigate(`/${i18next.language}/admin-user/countries`)
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -139,12 +142,15 @@ const Form = observer((props) => {
     <div className="display">
       <CBreadcrumb>
         <CBreadcrumbItem>
-          <Link to="/admin-user/countries">Country</Link>
+          <Link to={`/${i18next.language}/admin-user/countries`}>{t('country')}</Link>
         </CBreadcrumbItem>
         {country_data ? (
-          <CBreadcrumbItem active>Edit Country</CBreadcrumbItem>
+          <CBreadcrumbItem active>
+            {' '}
+            {t('edit')} {t('country')}
+          </CBreadcrumbItem>
         ) : (
-          <CBreadcrumbItem active>Create New Country</CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('create_new_country')}</CBreadcrumbItem>
         )}
       </CBreadcrumb>
       {serverError && <div className="server-error-message">{serverError}</div>}
@@ -156,12 +162,12 @@ const Form = observer((props) => {
         <CCol xs={12}>
           <CCard className="mb-4">
             <CCardHeader>
-              <strong>New Country </strong>
+              <strong>{t('create_new_country')}</strong>
             </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameEn">Name en</CFormLabel>
+                  <CFormLabel htmlFor="inputNameEn">{t('name')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEn"
@@ -181,7 +187,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameNl">Name nl</CFormLabel>
+                  <CFormLabel htmlFor="inputNameNl">{t('name')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameNl"
@@ -201,7 +207,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputTitleEn">Title en</CFormLabel>
+                  <CFormLabel htmlFor="inputTitleEn">{t('title')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputTitleEn"
@@ -221,7 +227,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputTitleNl">Title nl</CFormLabel>
+                  <CFormLabel htmlFor="inputTitleNl">{t('title')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputTitleNl"
@@ -241,7 +247,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputMetaTitleEn">Meta Title en</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaTitleEn">{t('meta_title')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputMetaTitleEn"
@@ -262,7 +268,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputMetaTitleNl">Meta Title nl</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaTitleNl">{t('meta_title')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputMetaTitleNl"
@@ -283,7 +289,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputContentEn">Content en</CFormLabel>
+                  <CFormLabel htmlFor="inputContentEn">{t('content')} (EN)</CFormLabel>
                   <JoditEditor
                     ref={content_en_editor}
                     id="inputContentEn"
@@ -305,7 +311,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputContentNl">Content nl</CFormLabel>
+                  <CFormLabel htmlFor="inputContentNl">{t('content')} (NL)</CFormLabel>
                   <JoditEditor
                     ref={content_nl_editor}
                     id="inputContentNl"
@@ -328,7 +334,7 @@ const Form = observer((props) => {
 
                 {/* This attribute is not saving at backend temporarily */}
                 <CCol md={12}>
-                  <CFormLabel htmlFor="inputMetaDescription">Meta Description</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaDescription">{t('meta_description')}</CFormLabel>
                   <JoditEditor
                     id="inputMetaDescription"
                     tabIndex={1}
@@ -337,7 +343,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={12}>
-                  <CFormLabel htmlFor="selectDisable">Disable</CFormLabel>
+                  <CFormLabel htmlFor="selectDisable">{t('disable')}</CFormLabel>
                   <CFormSelect
                     id="disable"
                     name="country.disable"
@@ -352,7 +358,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputVillasDesc">Villas desc</CFormLabel>
+                  <CFormLabel htmlFor="inputVillasDesc">{t('villas_desc')}</CFormLabel>
                   <CFormTextarea
                     id="inputVillasDesc"
                     tabIndex={1}
@@ -372,7 +378,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputApartmentDesc">Apartment desc</CFormLabel>
+                  <CFormLabel htmlFor="inputApartmentDesc">{t('apartment_desc')}</CFormLabel>
                   <CFormTextarea
                     id="inputApartmentDesc"
                     tabIndex={1}
@@ -394,7 +400,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputBbDesc">Bb desc</CFormLabel>
+                  <CFormLabel htmlFor="inputBbDesc">{t('bb_desc')}</CFormLabel>
                   <CFormTextarea
                     id="inputBbDesc"
                     tabIndex={1}
@@ -416,7 +422,7 @@ const Form = observer((props) => {
                 <CCol md={6}>
                   <CFormCheck
                     id="inputDropdown"
-                    label="Dropdown"
+                    label={t('dropdown')}
                     name="country.dropdown"
                     checked={formik.values.country.dropdown}
                     onChange={(event) => {
@@ -427,7 +433,7 @@ const Form = observer((props) => {
                   <CFormCheck
                     id="inputSidebar"
                     name="country.sidebar"
-                    label="Sidebar"
+                    label={t('sidebar')}
                     checked={formik.values.country.sidebar}
                     onChange={(event) => {
                       formik.handleChange(event)
@@ -442,7 +448,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputSlugEn">Slug en</CFormLabel>
+                  <CFormLabel htmlFor="inputSlugEn">{t('slug')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputSlugEn"
@@ -462,7 +468,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputSlugNl">Slug nl</CFormLabel>
+                  <CFormLabel htmlFor="inputSlugNl">{t('slug')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputSlugNl"
@@ -483,7 +489,7 @@ const Form = observer((props) => {
 
                 <CCol xs={12}>
                   <CButton color="dark" type="submit" className="create-button">
-                    Submit
+                    {t('submit')}
                   </CButton>
                 </CCol>
               </CForm>

@@ -24,6 +24,8 @@ import * as Yup from 'yup'
 import { useNavigate, Link } from 'react-router-dom'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const Form = observer((props) => {
   const authStore = useStores()
@@ -38,6 +40,7 @@ const Form = observer((props) => {
   const [fetchingRegionsByCountry, setFetchingRegionsByCountry] = useState(false)
   const authToken = authStore((state) => state.token)
   const [serverError, setServerError] = useState('')
+  const { t } = useTranslation()
 
   const defaultValues = {
     place: {
@@ -93,9 +96,9 @@ const Form = observer((props) => {
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Updated Successfully')
+            setError(t('record_updated_successfully'))
             setTimeout(() => {
-              navigate('/admin-user/places')
+              navigate(`/${i18next.language}/admin-user/places`)
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -105,9 +108,9 @@ const Form = observer((props) => {
             const extractedData = await places_data('post', 'places', values, {}, authToken)
             setShowToast(true)
             setErrorType('success')
-            setError('Record Created Successfully')
+            setError(t('record_created_successfully'))
             setTimeout(() => {
-              navigate('/admin-user/places')
+              navigate(`/${i18next.language}/admin-user/places`)
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -163,12 +166,14 @@ const Form = observer((props) => {
 
       <CBreadcrumb>
         <CBreadcrumbItem>
-          <Link to="/admin-user/places">Place</Link>
+          <Link to={`/${i18next.language}/admin-user/places`}>{t('place')}</Link>
         </CBreadcrumbItem>
         {props.place_to_update ? (
-          <CBreadcrumbItem active>Edit Place</CBreadcrumbItem>
+          <CBreadcrumbItem active>
+            {t('edit')} {t('place')}
+          </CBreadcrumbItem>
         ) : (
-          <CBreadcrumbItem active>Create New Place</CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('create_new_place')}</CBreadcrumbItem>
         )}
       </CBreadcrumb>
       <div className="toast-container">
@@ -178,12 +183,12 @@ const Form = observer((props) => {
         <CCol xs={12}>
           <CCard className="mb-4">
             <CCardHeader>
-              <strong>Create New Place </strong>
+              <strong>{t('create_new_place')} </strong>
             </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputName">Name (NL)</CFormLabel>
+                  <CFormLabel htmlFor="inputName">{t('name')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputName"
@@ -194,7 +199,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputName">Name (EN)</CFormLabel>
+                  <CFormLabel htmlFor="inputName">{t('name')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputName"
@@ -205,7 +210,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="selectPublish4">Publish</CFormLabel>
+                  <CFormLabel htmlFor="selectPublish4">{t('publish')}</CFormLabel>
                   <CFormSelect
                     id="publish"
                     className="form-control"
@@ -220,7 +225,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="selectPublish4">Place Category</CFormLabel>
+                  <CFormLabel htmlFor="selectPublish4">{t('Place Category')}</CFormLabel>
                   <CFormSelect
                     id="place_category_id"
                     value={formik.values.place.place_category_id}
@@ -248,7 +253,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="country4">Country</CFormLabel>
+                  <CFormLabel htmlFor="country4">{t('country')}</CFormLabel>
                   <CFormSelect
                     id="country_id"
                     value={formik.values.place.country_id}
@@ -274,7 +279,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="selectPublish4">Region</CFormLabel>
+                  <CFormLabel htmlFor="selectPublish4">{t('region')}</CFormLabel>
                   <CFormSelect
                     id="region_id"
                     value={formik.values.place.region_id}
@@ -314,7 +319,9 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="selectPublish4">Header dropdown</CFormLabel>
+                  <CFormLabel htmlFor="selectPublish4">
+                    {t('header')} {t('dropdown')}
+                  </CFormLabel>
                   <select
                     id="header_dropdown"
                     className="form-control"
@@ -332,7 +339,7 @@ const Form = observer((props) => {
                   <CFormCheck
                     type="checkbox"
                     id="gridCheck"
-                    label="Spotlight"
+                    label={t('spotlight')}
                     checked={formik.values.place.spotlight}
                     onChange={(event) => {
                       formik.handleChange(event)
@@ -342,7 +349,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="inputSlug">Address</CFormLabel>
+                  <CFormLabel htmlFor="inputSlug">{t('address')}</CFormLabel>
                   <CFormTextarea
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -354,7 +361,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="shortDesc">Short description nav</CFormLabel>
+                  <CFormLabel htmlFor="shortDesc">{t('short_description_nav')}</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputShortDescNav"
@@ -366,7 +373,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="shortDesc">Short description</CFormLabel>
+                  <CFormLabel htmlFor="shortDesc">{t('short_description')}</CFormLabel>
                   <JoditEditor
                     ref={short_desc_editor}
                     tabIndex={1}
@@ -382,7 +389,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="Desc">Description (NL) </CFormLabel>
+                  <CFormLabel htmlFor="Desc">{t('description')} (NL) </CFormLabel>
                   <JoditEditor
                     ref={desc_editor_nl}
                     tabIndex={1}
@@ -398,7 +405,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="Desc">Description (EN) </CFormLabel>
+                  <CFormLabel htmlFor="Desc">{t('description')} (EN) </CFormLabel>
                   <JoditEditor
                     ref={desc_editor_en}
                     tabIndex={1}
@@ -414,7 +421,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputSlug">Slug (NL)</CFormLabel>
+                  <CFormLabel htmlFor="inputSlug">{t('slug')} (NL)</CFormLabel>
                   <CFormTextarea
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -426,7 +433,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputSlug">Slug (EN)</CFormLabel>
+                  <CFormLabel htmlFor="inputSlug">{t('slug')} (EN)</CFormLabel>
                   <CFormTextarea
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -438,14 +445,14 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CRow>
-                  <CFormLabel htmlFor="selectPublish4">Geo Location</CFormLabel>
+                  <CFormLabel htmlFor="selectPublish4">{t('geo_location')}</CFormLabel>
                   <CCol md={6}>
                     <CFormInput
                       type="text"
                       id="inputLongitude"
                       value={formik.values.place.longitude}
                       onChange={formik.handleChange}
-                      placeholder="Longitude"
+                      placeholder={t('longitude')}
                       name="place.longitude"
                     />
                   </CCol>
@@ -456,7 +463,7 @@ const Form = observer((props) => {
                       id="inputLatitude"
                       value={formik.values.place.latitude}
                       onChange={formik.handleChange}
-                      placeholder="Latitude"
+                      placeholder={t('latitude')}
                       name="place.latitude"
                     />
                   </CCol>
@@ -464,7 +471,7 @@ const Form = observer((props) => {
 
                 <CCol xs={12}>
                   <CButton type="submit" className="create-button formik-btn">
-                    Submit
+                    {t('submit')}
                   </CButton>
                 </CCol>
               </CForm>
