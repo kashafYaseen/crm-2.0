@@ -1,51 +1,76 @@
-import React, { Component, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import React, { Suspense, useEffect, useState } from 'react'
+import { Route, Routes, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import '@/scss/style.scss'
-import AdminUserRoutes from '@/routes/admin_user_routes'
-import BusinessOwnerRoutes from '@/routes/business_owner_routes'
+import LoginAdminUser from '@admin_user_views/sessions/Login'
+import Page404 from '@/viewsTemp/pages/page404/Page404'
+import { useStores } from '@/context/storeContext'
+import { CSpinner } from '@coreui/react'
+import AdminDefaultLayout from '@/layout/admin_user/DefaultLayout'
+import initializeI18n from './initializeI18n'
+import i18next from 'i18next'
 
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-)
+const App = () => {
+  const authStore = useStores()
+  const isLoggedIn = authStore((state) => state.token)
+  const [locale, setLocale] = useState(i18next.language)
+  const navigate = useNavigate()
+  const location = useLocation()
 
-// Containers
-const DefaultLayout = React.lazy(() => import('@/layout/business_owner/DefaultLayout'))
-const AdminDefaultLayout = React.lazy(() => import('@/layout/admin_user/DefaultLayout'))
+  useEffect(() => {
+    initializeI18n()
+  }, [])
 
-class App extends Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <Suspense fallback={loading}>
-          <Routes>
-            {/* Route for admin_user namespace */}
-            <Route
-              path="/admin-user/*"
-              element={
-                // Check if user is logged in as admin_user here
-                <AdminDefaultLayout>
-                  <AdminUserRoutes />
-                </AdminDefaultLayout>
-              }
-            />
+  useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setLocale(lng)
 
-            {/* Route for business_owner namespace */}
-            <Route
-              path="/business-owner/*"
-              element={
-                // Check if user is logged in as business_owner here
-                <DefaultLayout>
-                  <BusinessOwnerRoutes />
-                </DefaultLayout>
-              }
-            />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    )
-  }
+      if (isLoggedIn) {
+        const currentPath = location.pathname
+        const newPath = `/${lng}${currentPath.substring(currentPath.indexOf('/admin-user'))}`
+        navigate(newPath, { replace: true })
+      }
+    }
+
+    i18next.on('languageChanged', handleLanguageChange)
+
+    return () => {
+      i18next.off('languageChanged', handleLanguageChange)
+    }
+  }, [isLoggedIn, location.pathname])
+
+  return (
+    <Suspense fallback={<CSpinner color="primary" />}>
+      <Routes>
+        <Route
+          path={`/${locale}/admin-user-login`}
+          element={
+            !isLoggedIn ? (
+              <LoginAdminUser />
+            ) : (
+              <Navigate to={`/${locale}/admin-user/dashboard`} replace={true} />
+            )
+          }
+        />
+
+        <Route
+          path={`/${locale}/admin-user/*`}
+          element={
+            !isLoggedIn ? (
+              <Navigate replace={true} to={`/${locale}/admin-user-login`} />
+            ) : (
+              <AdminDefaultLayout />
+            )
+          }
+        />
+
+        {/* Catch-all route for admin pages */}
+        <Route
+          path="*"
+          element={location.pathname.startsWith(`/${locale}/admin-user/*`) && <Page404 />}
+        />
+      </Routes>
+    </Suspense>
+  )
 }
 
 export default App

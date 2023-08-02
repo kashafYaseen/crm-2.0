@@ -9,8 +9,12 @@ import '@/scss/_custom.scss'
 import { DataTable } from '@admin_user_components/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
+import { useTranslation } from 'react-i18next'
 
-const Index = () => {
+const Index = observer(() => {
+  const authStore = useStores()
   const [data, setData] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showToast, setShowToast] = useState(false)
@@ -22,6 +26,9 @@ const Index = () => {
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
+
+  const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -35,7 +42,13 @@ const Index = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await place_categories_data('DELETE', `place_categories/${id}`)
+        const response = await place_categories_data(
+          'DELETE',
+          `place_categories/${id}`,
+          null,
+          {},
+          authToken,
+        )
         setShowToast(true)
         setErrorType('success')
         setError('Record Deleted Successfully')
@@ -52,9 +65,9 @@ const Index = () => {
   }
 
   const columns = [
-    { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
+    { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
@@ -68,11 +81,17 @@ const Index = () => {
     setLoading(true)
 
     try {
-      const { data, totalRecords } = await place_categories_data('get', 'place_categories', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await place_categories_data(
+        'get',
+        'place_categories',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setData(data)
       setTotalRecords(totalRecords)
@@ -108,7 +127,7 @@ const Index = () => {
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>Place Category</ModalHeader>
+        <ModalHeader toggle={() => setModal(!modal)}>{t('Place Category')}</ModalHeader>
         <ModalBody>
           <Form place_category_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
         </ModalBody>
@@ -117,7 +136,7 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">Place Categories</h2>
+      <h2 className="mb-3">{t('place_categories')}</h2>
       <div className="create-button-div">
         <button
           className="create-button"
@@ -126,7 +145,7 @@ const Index = () => {
             setSelectedRecord(null)
           }}
         >
-          Create New Place Category
+          {t('create_new_place_category')}
         </button>
       </div>
 
@@ -139,7 +158,7 @@ const Index = () => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 
@@ -158,6 +177,6 @@ const Index = () => {
       )}
     </div>
   )
-}
+})
 
 export default Index

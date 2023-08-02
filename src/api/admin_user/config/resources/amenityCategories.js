@@ -1,8 +1,14 @@
 import { request } from '@/api/admin_user/api'
 
-export const amenity_categories_data = async (method, endpoint, payload = null, params = {}) => {
+export const amenity_categories_data = async (
+  method,
+  endpoint,
+  payload = null,
+  params = {},
+  auth_token,
+) => {
   try {
-    const response = await request(method, endpoint, payload, params)
+    const response = await request(method, endpoint, payload, params, auth_token)
     if (Array.isArray(response.data)) {
       const totalRecords = response.count
 

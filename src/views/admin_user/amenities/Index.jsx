@@ -4,11 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import '@/scss/_custom.scss'
 import { DataTable } from '@/components/admin_user/UI/DataTable'
-import { Toast } from '@/components/UI/Toast'
+import { Toast } from '@/components/admin_user/UI/Toast'
 import { amenities_data } from '@/api/admin_user/config/resources/amenities'
 import { Modal, ModalHeader, ModalBody, Badge } from 'reactstrap'
 import Form from './Form'
 import { CSpinner } from '@coreui/react'
+import { useStores } from '@/context/storeContext'
+import { useTranslation } from 'react-i18next'
 
 const Index = () => {
   const [data, setData] = useState([])
@@ -23,6 +25,9 @@ const Index = () => {
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
+  const authStore = useStores()
+  const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -36,7 +41,7 @@ const Index = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await amenities_data('DELETE', `amenities/${id}`)
+        const response = await amenities_data('DELETE', `amenities/${id}`, null, {}, authToken)
         setShowToast(true)
         setErrorType('success')
         setError('Record Deleted Successfully')
@@ -58,20 +63,28 @@ const Index = () => {
   }
 
   const handleCreateNewAmenity = async () => {
-    const response = await amenities_data('get', 'amenities/new')
+    const response = await amenities_data('get', 'amenities/new', null, {}, authToken)
     setAmenityCategories(response.data)
     setModal(true)
   }
 
   const columns = [
-    { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
-    { header: 'Category', key: 'amenity_category', td: (row) => row.amenity_category ?? 'N/A' },
-    { header: 'Show on filter', key: 'filter_enabled', td: (row) => row.filter_enabled ?? 'N/A' },
-    { header: 'Hot', key: 'hot', td: (row) => row.hot ?? 'N/A' },
-    { header: 'Icon', key: 'icon', td: (row) => row.icon ?? 'N/A' },
+    { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
+    {
+      header: t('category'),
+      key: 'amenity_category',
+      td: (row) => row.amenity_category ?? 'N/A',
+    },
+    {
+      header: t('amenity.show_on_filter'),
+      key: 'filter_enabled',
+      td: (row) => row.filter_enabled ?? 'N/A',
+    },
+    { header: t('amenity.hot'), key: 'hot', td: (row) => row.hot ?? 'N/A' },
+    { header: t('icon'), key: 'icon', td: (row) => row.icon ?? 'N/A' },
 
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
@@ -85,11 +98,17 @@ const Index = () => {
     setLoading(true)
 
     try {
-      const { data, totalRecords } = await amenities_data('get', 'amenities', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await amenities_data(
+        'get',
+        'amenities',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setData(data)
       setTotalRecords(totalRecords)
@@ -125,7 +144,7 @@ const Index = () => {
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>Amenities</ModalHeader>
+        <ModalHeader toggle={() => setModal(!modal)}>{t('amenities')}</ModalHeader>
         <ModalBody>
           <Form
             amenity_to_update={selectedRecord}
@@ -138,10 +157,10 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">Amenities</h2>
+      <h2 className="mb-3">{t('amenities')}</h2>
       <div className="create-button-div">
         <button id="createNewRecord" className="create-button" onClick={openNewModel}>
-          Create New Amenity
+          {t('create_new_amenity')}
         </button>
       </div>
 
@@ -154,7 +173,7 @@ const Index = () => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 

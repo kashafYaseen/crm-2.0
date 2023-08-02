@@ -7,21 +7,34 @@ import { DataTable } from '@admin_user_components/UI/DataTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CSpinner } from '@coreui/react'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
-const Regions = () => {
+const Regions = observer(() => {
+  const authStore = useStores()
   const [regions, setRegions] = useState([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
+  const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const fetchRegions = async (pageNumber) => {
     setLoading(true)
     try {
-      const { data, totalRecords } = await regions_data('GET', 'regions', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await regions_data(
+        'GET',
+        'regions',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setRegions(data)
       setTotalRecords(totalRecords)
@@ -39,14 +52,22 @@ const Regions = () => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const columns = [
-    { header: 'Name', key: 'name' },
-    { header: 'Country', key: 'region_country', td: (row) => row.region_country ?? 'N/A' },
-    { header: 'Content', key: 'content', td: (row) => row.content ?? 'N/A' },
+    { header: t('name'), key: 'name' },
+    { header: t('country'), key: 'region_country', td: (row) => row.region_country ?? 'N/A' },
     {
-      header: 'Actions',
+      header: t('content'),
+      key: 'content',
+      td: (row) => <div dangerouslySetInnerHTML={{ __html: row.content ?? 'N/A' }} />,
+    },
+    {
+      header: t('actions'),
       td: (row) => (
         <>
-          <Link to="/admin-user/regions/edit-region" state={{ record: row }}>
+          <Link
+            to={`/${i18next.language}/admin-user/regions/edit-region`}
+            state={{ record: row }}
+            className="custom-link"
+          >
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </>
@@ -72,10 +93,10 @@ const Regions = () => {
 
   return (
     <div className="display">
-      <h2 className="mb-3">Regions</h2>
+      <h2 className="mb-3">{t('Regions')}</h2>
       <div className="create-button-div">
-        <Link to="/admin-user/regions/new-region">
-          <button className="create-button">Create New Region</button>
+        <Link to={`/${i18next.language}/admin-user/regions/new-region`}>
+          <button className="create-button">{t('create_new_region')}</button>
         </Link>
       </div>
 
@@ -88,7 +109,7 @@ const Regions = () => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 
@@ -107,6 +128,6 @@ const Regions = () => {
       )}
     </div>
   )
-}
+})
 
 export default Regions

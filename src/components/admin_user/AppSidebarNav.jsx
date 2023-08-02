@@ -3,14 +3,18 @@ import { NavLink, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { CBadge } from '@coreui/react'
+import { useTranslation } from 'react-i18next'
 
 export const AppSidebarNav = ({ items }) => {
   const location = useLocation()
+  const { t } = useTranslation()
+
   const navLink = (name, icon, badge) => {
+    const translatedName = name.toLowerCase().replace(/ /g, '_')
     return (
       <>
         {icon && icon}
-        {name && name}
+        {t(translatedName)}
         {badge && (
           <CBadge color={badge.color} className="ms-auto">
             {badge.text}

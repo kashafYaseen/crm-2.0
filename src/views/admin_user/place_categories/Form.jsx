@@ -16,12 +16,18 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
+import { useTranslation } from 'react-i18next'
 
-const Form = (props) => {
+const Form = observer((props) => {
+  const authStore = useStores()
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
+  const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const initialValues = {
     place_category: {
@@ -63,10 +69,12 @@ const Form = (props) => {
               'put',
               `place_categories/${props.place_category_to_update.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Updated Successfully')
+            setError(t('record_updated_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -76,10 +84,16 @@ const Form = (props) => {
           }
         } else {
           try {
-            const extractedData = await place_categories_data('post', 'place_categories', values)
+            const extractedData = await place_categories_data(
+              'post',
+              'place_categories',
+              values,
+              {},
+              authToken,
+            )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Created Successfully')
+            setError(t('record_created_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -105,13 +119,21 @@ const Form = (props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>Create New Place Category </strong>
-            </CCardHeader>
+            {props.place_category_to_update ? (
+              <CCardHeader>
+                <strong>
+                  {t('edit')} {t('place_category')}
+                </strong>
+              </CCardHeader>
+            ) : (
+              <CCardHeader>
+                <strong> {t('create_new_place_category')} </strong>
+              </CCardHeader>
+            )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputName">Name (EN)</CFormLabel>
+                  <CFormLabel htmlFor="inputName">{t('name')} EN</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEN"
@@ -132,7 +154,7 @@ const Form = (props) => {
                     )}
                 </CCol>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="selectPublish4">Color Code</CFormLabel>
+                  <CFormLabel htmlFor="selectPublish4">{t('color_code')}</CFormLabel>
 
                   <CFormInput
                     type="text"
@@ -145,7 +167,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameNL">Name (NL)</CFormLabel>
+                  <CFormLabel htmlFor="inputNameNL">{t('name')} NL</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameNL"
@@ -168,7 +190,7 @@ const Form = (props) => {
 
                 <CCol xs={12}>
                   <CButton type="submit" className="create-button">
-                    Submit
+                    {t('submit')}
                   </CButton>
                 </CCol>
               </CForm>
@@ -178,6 +200,6 @@ const Form = (props) => {
       </CRow>
     </div>
   )
-}
+})
 
 export default Form

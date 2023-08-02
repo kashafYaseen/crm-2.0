@@ -7,21 +7,34 @@ import { DataTable } from '@admin_user_components/UI/DataTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CSpinner } from '@coreui/react'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
-const Countries = () => {
+const Countries = observer(() => {
   const [countries, setCountries] = useState([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
+  const authStore = useStores()
+  const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const fetchCountries = async (pageNumber) => {
     setLoading(true)
     try {
-      const { data, totalRecords } = await countries_data('GET', 'countries', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await countries_data(
+        'GET',
+        'countries',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
 
       setCountries(data)
       setTotalRecords(totalRecords)
@@ -39,15 +52,22 @@ const Countries = () => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const columns = [
-    { header: 'Name', key: 'name' },
-    { header: 'Disable', key: 'disable', td: (row) => row.disable ?? 'N/A' },
-    { header: 'Content', key: 'content', td: (row) => row.content ?? 'N/A' },
-
+    { header: t('name'), key: 'name' },
+    { header: t('disable'), key: 'disable', td: (row) => row.disable ?? 'N/A' },
     {
-      header: 'Actions',
+      header: t('content'),
+      key: 'content',
+      td: (row) => <div dangerouslySetInnerHTML={{ __html: row.content ?? 'N/A' }} />,
+    },
+    {
+      header: t('actions'),
       td: (row) => (
         <>
-          <Link to="/admin-user/countries/country-form" state={{ record: row }}>
+          <Link
+            to={`/${i18next.language}/admin-user/countries/country-form`}
+            state={{ record: row }}
+            className="custom-link"
+          >
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </>
@@ -72,10 +92,10 @@ const Countries = () => {
 
   return (
     <div className="display">
-      <h2 className="mb-3">Countries</h2>
+      <h2 className="mb-3">{t('Countries')}</h2>
       <div className="create-button-div">
-        <Link to="/admin-user/countries/country-form">
-          <button className="create-button">Create New Country</button>
+        <Link to={`/${i18next.language}/admin-user/countries/country-form`}>
+          <button className="create-button">{t('create_new_country')}</button>
         </Link>
       </div>
       <div className="search-container">
@@ -87,7 +107,7 @@ const Countries = () => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 
@@ -106,6 +126,6 @@ const Countries = () => {
       )}
     </div>
   )
-}
+})
 
 export default Countries

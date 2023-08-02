@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   CButton,
   CCard,
@@ -21,9 +21,14 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import JoditEditor from 'jodit-react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
-const Form = (props) => {
+const Form = observer((props) => {
+  const authStore = useStores()
   const location = useLocation()
   const navigate = useNavigate()
   const country_data = location.state && location.state.record
@@ -31,6 +36,10 @@ const Form = (props) => {
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
+  const authToken = authStore((state) => state.token)
+  const content_en_editor = useRef(null)
+  const content_nl_editor = useRef(null)
+  const { t } = useTranslation()
 
   const initialValues = {
     country: {
@@ -83,27 +92,6 @@ const Form = (props) => {
     }),
   })
 
-  const handleInputChange = (event) => {
-    if (event.target && event.target.value !== undefined) {
-      const inputValue = event.target.value ?? ''
-      const inputType = event.target.type ?? ''
-
-      const hasNonNumericCharacters = /^[a-zA-Z\s]+$/.test(inputValue)
-
-      // If the input is a text field and contains any numeric characters, prevent it from being set in the state
-      if (inputType === 'text' && !hasNonNumericCharacters) {
-        return
-      }
-
-      // If the input is a number field and contains any non-numeric characters, prevent it from being set in the state
-      if (inputType === 'number' && !hasNonNumericCharacters) {
-        return
-      }
-    }
-    // If the input passes the validation, update the state
-    formik.handleChange(event)
-  }
-
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -116,25 +104,27 @@ const Form = (props) => {
               'put',
               `countries/${country_data.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Updated Successfully')
+            setError(t('record_updated_successfully'))
             setTimeout(() => {
-              navigate('/admin-user/countries')
+              navigate(`/${i18next.language}/admin-user/countries`)
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
           }
         } else {
           try {
-            const extractedData = await countries_data('post', 'countries', values)
+            const extractedData = await countries_data('post', 'countries', values, {}, authToken)
 
             setShowToast(true)
             setErrorType('success')
-            setError('Record Created Successfully')
+            setError(t('record_created_successfully'))
             setTimeout(() => {
-              navigate('/admin-user/countries')
+              navigate(`/${i18next.language}/admin-user/countries`)
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -151,8 +141,17 @@ const Form = (props) => {
   return (
     <div className="display">
       <CBreadcrumb>
-        <CBreadcrumbItem href="/admin-user/countries">Country</CBreadcrumbItem>
-        <CBreadcrumbItem active>New Country</CBreadcrumbItem>
+        <CBreadcrumbItem>
+          <Link to={`/${i18next.language}/admin-user/countries`}>{t('country')}</Link>
+        </CBreadcrumbItem>
+        {country_data ? (
+          <CBreadcrumbItem active>
+            {' '}
+            {t('edit')} {t('country')}
+          </CBreadcrumbItem>
+        ) : (
+          <CBreadcrumbItem active>{t('create_new_country')}</CBreadcrumbItem>
+        )}
       </CBreadcrumb>
       {serverError && <div className="server-error-message">{serverError}</div>}
 
@@ -163,17 +162,17 @@ const Form = (props) => {
         <CCol xs={12}>
           <CCard className="mb-4">
             <CCardHeader>
-              <strong>New Country </strong>
+              <strong>{t('create_new_country')}</strong>
             </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameEn">Name en</CFormLabel>
+                  <CFormLabel htmlFor="inputNameEn">{t('name')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEn"
                     value={formik.values.country.name_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.name_en"
                     className={
@@ -188,12 +187,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameNl">Name nl</CFormLabel>
+                  <CFormLabel htmlFor="inputNameNl">{t('name')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameNl"
                     value={formik.values.country.name_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.name_nl"
                     className={
@@ -208,12 +207,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputTitleEn">Title en</CFormLabel>
+                  <CFormLabel htmlFor="inputTitleEn">{t('title')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputTitleEn"
                     value={formik.values.country.title_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.title_en"
                     className={
@@ -228,12 +227,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputTitleNl">Title nl</CFormLabel>
+                  <CFormLabel htmlFor="inputTitleNl">{t('title')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputTitleNl"
                     value={formik.values.country.title_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.title_nl"
                     className={
@@ -248,12 +247,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputMetaTitleEn">Meta Title en</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaTitleEn">{t('meta_title')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputMetaTitleEn"
                     value={formik.values.country.meta_title_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.meta_title_en"
                     className={
@@ -269,12 +268,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputMetaTitleNl">Meta Title nl</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaTitleNl">{t('meta_title')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputMetaTitleNl"
                     value={formik.values.country.meta_title_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.meta_title_nl"
                     className={
@@ -290,48 +289,52 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputContentEn">Content en</CFormLabel>
+                  <CFormLabel htmlFor="inputContentEn">{t('content')} (EN)</CFormLabel>
                   <JoditEditor
+                    ref={content_en_editor}
                     id="inputContentEn"
                     tabIndex={1}
                     value={formik.values.country.content_en}
-                    onChange={handleInputChange}
-                    onBlur={formik.handleBlur}
-                    name="country.content_en"
+                    onChange={(value) => {
+                      formik.setFieldValue('country.content_en', value)
+                    }}
+                    onBlur={() => {
+                      const value = content_en_editor.current.value
+                      formik.setFieldValue('country.content_en', value)
+                    }}
                     className={
                       formik.errors.country?.content_en && formik.touched.country?.content_en
                         ? 'input-error'
                         : ''
                     }
                   />
-                  {formik.touched.country?.content_en && formik.errors.country?.content_en && (
-                    <div className="formik-errors">{formik.errors.country?.content_en}</div>
-                  )}
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputContentNl">Content nl</CFormLabel>
+                  <CFormLabel htmlFor="inputContentNl">{t('content')} (NL)</CFormLabel>
                   <JoditEditor
+                    ref={content_nl_editor}
                     id="inputContentNl"
                     tabIndex={1}
                     value={formik.values.country.content_nl}
-                    onChange={handleInputChange}
-                    onBlur={formik.handleBlur}
-                    name="country.content_nl"
+                    onChange={(value) => {
+                      formik.setFieldValue('country.content_en', value)
+                    }}
+                    onBlur={() => {
+                      const value = content_nl_editor.current.value
+                      formik.setFieldValue('country.content_nl', value)
+                    }}
                     className={
                       formik.errors.country?.content_nl && formik.touched.country?.content_nl
                         ? 'input-error'
                         : ''
                     }
                   />
-                  {formik.touched.country?.content_nl && formik.errors.country?.content_nl && (
-                    <div className="formik-errors">{formik.errors.country?.content_nl}</div>
-                  )}
                 </CCol>
 
                 {/* This attribute is not saving at backend temporarily */}
                 <CCol md={12}>
-                  <CFormLabel htmlFor="inputMetaDescription">Meta Description</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaDescription">{t('meta_description')}</CFormLabel>
                   <JoditEditor
                     id="inputMetaDescription"
                     tabIndex={1}
@@ -340,35 +343,27 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={12}>
-                  <CFormLabel htmlFor="selectDisable">Disable</CFormLabel>
+                  <CFormLabel htmlFor="selectDisable">{t('disable')}</CFormLabel>
                   <CFormSelect
-                    id="inputDisable"
+                    id="disable"
                     name="country.disable"
                     aria-label="Default select example"
                     value={formik.values.country.disable}
-                    onChange={handleInputChange}
-                    className={
-                      formik.errors.country?.disable && formik.touched.country?.disable
-                        ? 'input-error'
-                        : ''
-                    }
+                    onChange={formik.handleChange}
                   >
                     <option>Select</option>
                     <option value="true">True</option>
                     <option value="false">False</option>
-                    {formik.touched.country?.disable && formik.errors.country?.disable && (
-                      <div className="formik-errors">{formik.errors.country?.disable}</div>
-                    )}
                   </CFormSelect>
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputVillasDesc">Villas desc</CFormLabel>
+                  <CFormLabel htmlFor="inputVillasDesc">{t('villas_desc')}</CFormLabel>
                   <CFormTextarea
                     id="inputVillasDesc"
                     tabIndex={1}
                     value={formik.values.country.villas_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.villas_desc"
                     className={
@@ -383,12 +378,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputApartmentDesc">Apartment desc</CFormLabel>
+                  <CFormLabel htmlFor="inputApartmentDesc">{t('apartment_desc')}</CFormLabel>
                   <CFormTextarea
                     id="inputApartmentDesc"
                     tabIndex={1}
                     value={formik.values.country.apartment_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.apartment_desc"
                     className={
@@ -405,12 +400,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputBbDesc">Bb desc</CFormLabel>
+                  <CFormLabel htmlFor="inputBbDesc">{t('bb_desc')}</CFormLabel>
                   <CFormTextarea
                     id="inputBbDesc"
                     tabIndex={1}
                     value={formik.values.country.bb_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.bb_desc"
                     className={
@@ -427,27 +422,23 @@ const Form = (props) => {
                 <CCol md={6}>
                   <CFormCheck
                     id="inputDropdown"
-                    label="Dropdown"
+                    label={t('dropdown')}
                     name="country.dropdown"
-                    defaultChecked={formik.values.country.dropdown}
-                    onChange={handleInputChange}
-                    className={
-                      formik.errors.country?.dropdown && formik.touched.country?.dropdown
-                        ? 'input-error'
-                        : ''
-                    }
+                    checked={formik.values.country.dropdown}
+                    onChange={(event) => {
+                      formik.handleChange(event)
+                      formik.setFieldValue('country.dropdown', event.target.dropdown)
+                    }}
                   />
                   <CFormCheck
                     id="inputSidebar"
                     name="country.sidebar"
-                    label="Sidebar"
-                    defaultChecked={formik.values.country.sidebar}
-                    onChange={handleInputChange}
-                    className={
-                      formik.errors.country?.dropdown && formik.touched.country?.dropdown
-                        ? 'input-error'
-                        : ''
-                    }
+                    label={t('sidebar')}
+                    checked={formik.values.country.sidebar}
+                    onChange={(event) => {
+                      formik.handleChange(event)
+                      formik.setFieldValue('country.sidebar', event.target.sidebar)
+                    }}
                   />
                 </CCol>
 
@@ -457,12 +448,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputSlugEn">Slug en</CFormLabel>
+                  <CFormLabel htmlFor="inputSlugEn">{t('slug')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputSlugEn"
                     value={formik.values.country.slug_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.slug_en"
                     className={
@@ -477,12 +468,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputSlugNl">Slug nl</CFormLabel>
+                  <CFormLabel htmlFor="inputSlugNl">{t('slug')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputSlugNl"
                     value={formik.values.country.slug_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="country.slug_nl"
                     className={
@@ -498,7 +489,7 @@ const Form = (props) => {
 
                 <CCol xs={12}>
                   <CButton color="dark" type="submit" className="create-button">
-                    Submit
+                    {t('submit')}
                   </CButton>
                 </CCol>
               </CForm>
@@ -508,6 +499,6 @@ const Form = (props) => {
       </CRow>
     </div>
   )
-}
+})
 
 export default Form

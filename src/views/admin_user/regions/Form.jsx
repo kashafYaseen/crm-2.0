@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   CButton,
   CCard,
@@ -21,14 +21,23 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import JoditEditor from 'jodit-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { useStores } from '@/context/storeContext'
+import { observer } from 'mobx-react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 
-const Form = (props) => {
+const Form = observer((props) => {
+  const authStore = useStores()
   const navigate = useNavigate()
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const [serverError, setServerError] = useState('')
+  const authToken = authStore((state) => state.token)
+  const content_en_editor = useRef(null)
+  const content_nl_editor = useRef(null)
+  const { t } = useTranslation()
 
   const initialValues = {
     region: {
@@ -75,27 +84,6 @@ const Form = (props) => {
     }),
   })
 
-  const handleInputChange = (event) => {
-    if (event.target && event.target.value !== undefined) {
-      const inputValue = event.target.value ?? ''
-      const inputType = event.target.type ?? ''
-
-      const hasNonNumericCharacters = /^[a-zA-Z\s]+$/.test(inputValue)
-
-      // If the input is a text field and contains any numeric characters, prevent it from being set in the state
-      if (inputType === 'text' && !hasNonNumericCharacters) {
-        return
-      }
-
-      // If the input is a number field and contains any non-numeric characters, prevent it from being set in the state
-      if (inputType === 'number' && !hasNonNumericCharacters) {
-        return
-      }
-    }
-    // If the input passes the validation, update the state
-    formik.handleChange(event)
-  }
-
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -108,25 +96,27 @@ const Form = (props) => {
               'put',
               `regions/${props.region_data.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Updated Successfully')
+            setError(t('record_updated_successfully'))
             setTimeout(() => {
-              navigate('/admin-user/regions')
+              navigate(`/${i18next.language}/admin-user/regions`)
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
           }
         } else {
           try {
-            const extractedData = await regions_data('post', 'regions', values)
+            const extractedData = await regions_data('post', 'regions', values, {}, authToken)
 
             setShowToast(true)
             setErrorType('success')
-            setError('Record Created Successfully')
+            setError(t('record_created_successfully'))
             setTimeout(() => {
-              navigate('/admin-user/regions')
+              navigate(`/${i18next.language}/admin-user/regions`)
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -143,8 +133,16 @@ const Form = (props) => {
   return (
     <div className="display">
       <CBreadcrumb>
-        <CBreadcrumbItem href="/admin-user/regions">Region</CBreadcrumbItem>
-        <CBreadcrumbItem active>New Region</CBreadcrumbItem>
+        <CBreadcrumbItem>
+          <Link to={`/${i18next.language}/admin-user/regions`}>{t('region')}</Link>
+        </CBreadcrumbItem>
+        {props.region_data ? (
+          <CBreadcrumbItem active>
+            {t('edit')} {t('region')}
+          </CBreadcrumbItem>
+        ) : (
+          <CBreadcrumbItem active>{t('create_new_region')}</CBreadcrumbItem>
+        )}
       </CBreadcrumb>
       {serverError && <div className="server-error-message">{serverError}</div>}
 
@@ -155,7 +153,7 @@ const Form = (props) => {
         <CCol xs={12}>
           <CCard className="mb-4">
             <CCardHeader>
-              <strong>New Region</strong>
+              <strong>{t('create_new_region')}</strong>
             </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
@@ -164,7 +162,7 @@ const Form = (props) => {
                   <CFormSelect
                     id="country_id"
                     value={formik.values.region.country_id}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     name="region.country_id"
                     className={
                       formik.touched.region?.country_id && formik.errors.region?.country_id
@@ -181,11 +179,11 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputPublished">Publish</CFormLabel>
+                  <CFormLabel htmlFor="inputPublished">{t('publish')}</CFormLabel>
                   <CFormSwitch
                     size="lg"
                     id="inputPublish"
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     name="region.published"
                     className={
                       formik.errors.region?.published && formik.touched.region?.published
@@ -199,12 +197,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameEn">Name en</CFormLabel>
+                  <CFormLabel htmlFor="inputNameEn">{t('name')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEn"
                     value={formik.values.region.name_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.name_en"
                     className={
@@ -219,12 +217,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameNl">Name nl</CFormLabel>
+                  <CFormLabel htmlFor="inputNameNl">{t('name')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameNl"
                     value={formik.values.region.name_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.name_nl"
                     className={
@@ -239,12 +237,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputTitleEn">Title en</CFormLabel>
+                  <CFormLabel htmlFor="inputTitleEn">{t('title')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputTitleEn"
                     value={formik.values.region.title_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.title_en"
                     className={
@@ -259,12 +257,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputTitleNl">Title nl</CFormLabel>
+                  <CFormLabel htmlFor="inputTitleNl">{t('title')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputTitleNl"
                     value={formik.values.region.title_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.title_nl"
                     className={
@@ -279,12 +277,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputMetaTitleEn">Meta Title en</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaTitleEn">{t('meta_title')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputMetaTitleEn"
                     value={formik.values.region.meta_title_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.meta_title_en"
                     className={
@@ -299,12 +297,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputMetaTitleNl">Meta Title nl</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaTitleNl">{t('meta_title')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputMetaTitleNl"
                     value={formik.values.region.meta_title_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.meta_title_nl"
                     className={
@@ -319,48 +317,52 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputContentEn">Content en</CFormLabel>
+                  <CFormLabel htmlFor="inputContentEn">{t('content')} (EN)</CFormLabel>
                   <JoditEditor
+                    ref={content_en_editor}
                     id="inputContentEn"
                     tabIndex={1}
                     value={formik.values.region.content_en}
-                    onChange={handleInputChange}
-                    onBlur={formik.handleBlur}
-                    name="region.content_en"
+                    onChange={(value) => {
+                      formik.setFieldValue('region.content_en', value)
+                    }}
+                    onBlur={() => {
+                      const value = content_en_editor.current.value
+                      formik.setFieldValue('region.content_en', value)
+                    }}
                     className={
                       formik.errors.region?.content_en && formik.touched.region?.content_en
                         ? 'input-error'
                         : ''
                     }
                   />
-                  {formik.touched.region?.content_en && formik.errors.region?.content_en && (
-                    <div className="formik-errors">{formik.errors.region?.content_en}</div>
-                  )}
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputContentNl">Content nl</CFormLabel>
+                  <CFormLabel htmlFor="inputContentNl">{t('content')} (NL)</CFormLabel>
                   <JoditEditor
+                    ref={content_nl_editor}
                     id="inputContentNl"
                     tabIndex={1}
                     value={formik.values.region.content_nl}
-                    onChange={handleInputChange}
-                    onBlur={formik.handleBlur}
-                    name="region.content_nl"
+                    onChange={(value) => {
+                      formik.setFieldValue('region.content_nl', value)
+                    }}
+                    onBlur={() => {
+                      const value = content_nl_editor.current.value
+                      formik.setFieldValue('region.content_nl', value)
+                    }}
                     className={
                       formik.errors.region?.content_nl && formik.touched.region?.content_nl
                         ? 'input-error'
                         : ''
                     }
                   />
-                  {formik.touched.region?.content_nl && formik.errors.region?.content_nl && (
-                    <div className="formik-errors">{formik.errors.region?.content_nl}</div>
-                  )}
                 </CCol>
 
                 {/* This attribute is not saving at backend temporarily */}
                 <CCol md={12}>
-                  <CFormLabel htmlFor="inputMetaDescription">Meta Description</CFormLabel>
+                  <CFormLabel htmlFor="inputMetaDescription">{t('meta_description')}</CFormLabel>
                   <JoditEditor
                     id="inputMetaDescription"
                     tabIndex={1}
@@ -369,13 +371,13 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputShortDesc">Short desc</CFormLabel>
+                  <CFormLabel htmlFor="inputShortDesc">{t('short_desc')}</CFormLabel>
                   <CFormTextarea
                     type="text"
                     id="inputShortDesc"
                     tabIndex={1}
                     value={formik.values.region.short_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.short_desc"
                     className={
@@ -390,13 +392,13 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputVillasDesc">Villas desc</CFormLabel>
+                  <CFormLabel htmlFor="inputVillasDesc">{t('villas_desc')}</CFormLabel>
                   <CFormTextarea
                     type="text"
                     id="inputVillasDesc"
                     tabIndex={1}
                     value={formik.values.region.villas_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.villas_desc"
                     className={
@@ -411,13 +413,13 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputApartmentDesc">Apartment desc</CFormLabel>
+                  <CFormLabel htmlFor="inputApartmentDesc">{t('apartment_desc')}</CFormLabel>
                   <CFormTextarea
                     type="text"
                     id="inputApartmentDesc"
                     tabIndex={1}
                     value={formik.values.region.apartment_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.apartment_desc"
                     className={
@@ -433,13 +435,13 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputBbDesc">Bb desc</CFormLabel>
+                  <CFormLabel htmlFor="inputBbDesc">{t('bb_desc')}</CFormLabel>
                   <CFormTextarea
                     type="text"
                     id="inputBbDesc"
                     tabIndex={1}
                     value={formik.values.region.bb_desc}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.bb_desc"
                     className={
@@ -459,12 +461,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputSlugEn">Slug en</CFormLabel>
+                  <CFormLabel htmlFor="inputSlugEn">{t('slug')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputSlugEn"
                     value={formik.values.region.slug_en}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.slug_en"
                     className={
@@ -479,12 +481,12 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputSlugNl">Slug nl</CFormLabel>
+                  <CFormLabel htmlFor="inputSlugNl">{t('slug')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputSlugNl"
                     value={formik.values.region.slug_nl}
-                    onChange={handleInputChange}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="region.slug_nl"
                     className={
@@ -500,7 +502,7 @@ const Form = (props) => {
 
                 <CCol xs={12}>
                   <CButton color="dark" type="submit" className="create-button">
-                    Submit
+                    {t('submit')}
                   </CButton>
                 </CCol>
               </CForm>
@@ -510,6 +512,6 @@ const Form = (props) => {
       </CRow>
     </div>
   )
-}
+})
 
 export default Form

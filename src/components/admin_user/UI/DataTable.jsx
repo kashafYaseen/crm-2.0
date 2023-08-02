@@ -9,6 +9,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import Grid from '@mui/material/Grid'
 import { CSpinner } from '@coreui/react'
+import { useTranslation } from 'react-i18next'
 
 export const DataTable = ({
   data,
@@ -35,12 +36,13 @@ export const DataTable = ({
     setRowsPerPage(event.target.value)
     onPerPageChange(event.target.value)
   }
+  const { t } = useTranslation()
 
   return (
     <React.Fragment key="data-tables">
       <Grid container alignItems="center" className="row-per-page">
         <InputLabel htmlFor="rows-per-page-label" className="rows-per-page-label">
-          Entries Per Page
+          {t('entries_per_page')}
         </InputLabel>
 
         <Select
