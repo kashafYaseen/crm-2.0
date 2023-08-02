@@ -16,7 +16,6 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 import LanguageSelector from './UI/LanguageSelector'
 import i18next from 'i18next'
 
-// import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from '@admin_user_components/header/index'
 import { logo } from '@/assets/brand/logo'
 
@@ -50,20 +49,7 @@ const AppHeader = () => {
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav>
-          {/* <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
           <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem> */}
-          <CNavItem>
-            {/* <CNavLink href="#">
-              <CIcon icon={cilEnvelopeOpen} size="lg" />
-            </CNavLink> */}
             <LanguageSelector />
           </CNavItem>
         </CHeaderNav>
@@ -71,10 +57,6 @@ const AppHeader = () => {
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>
-      {/* <CHeaderDivider /> */}
-      {/* <CContainer fluid>
-        <AppBreadcrumb />
-      </CContainer> */}
     </CHeader>
   )
 }
