@@ -51,7 +51,7 @@ const Index = observer(() => {
         )
         setShowToast(true)
         setErrorType('success')
-        setError('Record Deleted Successfully')
+        setError(t('record_deleted_successfully'))
         fetch_place_categories_data()
       } catch (error) {
         console.error('Error Deleting Place Category', error)

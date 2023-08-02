@@ -13,17 +13,24 @@ import {
   CFormSelect,
   CFormCheck,
 } from '@coreui/react'
+import { useStores } from '@/context/storeContext'
 
-import { Toast } from '@/components/UI/Toast'
+import { Toast } from '@admin_user_components/UI/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import { experiences_data } from '@/api/admin_user/config/resources/experiences'
+import { useTranslation } from 'react-i18next'
 
 const Form = (props) => {
+  const authStore = useStores()
+
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
+
+  const authToken = authStore((state) => state.token)
+  const { t } = useTranslation()
 
   const initialValues = {
     experience: {
@@ -38,9 +45,9 @@ const Form = (props) => {
 
   const validationSchema = Yup.object().shape({
     experience: Yup.object().shape({
-      name_en: Yup.string().required('*Name is required'),
-      name_nl: Yup.string().required('*Name is required'),
-      guests: Yup.number().integer().required('*Please type a number'),
+      name_en: Yup.string().required(t('name_is_required')),
+      name_nl: Yup.string().required(t('name_is_required')),
+      guests: Yup.number().integer().required(t('enter_number')),
     }),
   })
 
@@ -56,10 +63,12 @@ const Form = (props) => {
               'put',
               `experiences/${props.experience_to_update.id}`,
               values,
+              {},
+              authToken,
             )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Updated Successfully')
+            setError(t('record_updated_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -69,10 +78,16 @@ const Form = (props) => {
           }
         } else {
           try {
-            const extractedData = await experiences_data('post', 'experiences', values)
+            const extractedData = await experiences_data(
+              'post',
+              'experiences',
+              values,
+              {},
+              authToken,
+            )
             setShowToast(true)
             setErrorType('success')
-            setError('Record Created Successfully')
+            setError(t('record_created_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -98,12 +113,12 @@ const Form = (props) => {
         <CCol xs={12}>
           <CCard className="mb-4">
             <CCardHeader>
-              <strong>Create New Place Category </strong>
+              <strong> {t('create_new_experience')}</strong>
             </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputName">Name (EN)</CFormLabel>
+                  <CFormLabel htmlFor="inputName">{t('name')} (EN)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameEN"
@@ -123,7 +138,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputNameNL">Name (NL)</CFormLabel>
+                  <CFormLabel htmlFor="inputNameNL">{t('name')} (NL)</CFormLabel>
                   <CFormInput
                     type="text"
                     id="inputNameNL"
@@ -143,7 +158,9 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="select_guests">Number of Guests</CFormLabel>
+                  <CFormLabel htmlFor="select_guests">
+                    {t('experience_trans.number_of_guests')}
+                  </CFormLabel>
                   <CFormInput
                     type="text"
                     id="input_guests"
@@ -158,7 +175,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="priority">Priority</CFormLabel>
+                  <CFormLabel htmlFor="priority"> {t('experience_trans.priority')}</CFormLabel>
                   <CFormSelect
                     id="priority"
                     className="form-control"
@@ -176,7 +193,7 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CFormLabel htmlFor="shortDesc">Description</CFormLabel>
+                  <CFormLabel htmlFor="shortDesc">{t('description')}</CFormLabel>
                   <CFormTextarea
                     id="short_desc"
                     rows="3"
@@ -191,7 +208,7 @@ const Form = (props) => {
                   <CFormCheck
                     type="checkbox"
                     id="gridCheck"
-                    label="publish"
+                    label={t('publish')}
                     checked={formik.values.experience.publish}
                     onChange={(event) => {
                       formik.handleChange(event)
@@ -202,7 +219,7 @@ const Form = (props) => {
 
                 <CCol xs={12}>
                   <CButton type="submit" className="create-button">
-                    Submit
+                    {t('submit')}
                   </CButton>
                 </CCol>
               </CForm>

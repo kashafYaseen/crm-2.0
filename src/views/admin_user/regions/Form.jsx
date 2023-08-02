@@ -78,9 +78,9 @@ const Form = observer((props) => {
 
   const validationSchema = Yup.object().shape({
     region: Yup.object().shape({
-      name_en: Yup.string().required('*Name is required'),
-      name_nl: Yup.string().required('*Name is required'),
-      country_id: Yup.string().required('*Country is required'),
+      name_en: Yup.string().required(t('name_is_required')),
+      name_nl: Yup.string().required(t('name_is_required')),
+      country_id: Yup.string().required(t('country_is_required')),
     }),
   })
 

@@ -38,6 +38,14 @@
 
   "record_updated_successfully": "Record Updated Successfully",
   "record_created_successfully": "Record Created Successfully",
+  "name_is_required": "*Name is Required",
+  "enter_number": "*Please Enter a Number",
+  "no_record_found": "No Record Found",
+  "amenity_category_is_required": "*Amenity Category is Required",
+  "region_is_required": "*Region is Required",
+  "country_is_required": "*Country is Required",
+  "place_category_is_required": "*Place Category is Required",
+  "record_deleted_successfully": "Record Deleted Successfully",
 
   "create_new_country": "Nieuw land maken",
   "create_new_amenity": "nieuwe beleving creëren",
@@ -45,6 +53,7 @@
   "create_new_amenity_category": "Maak een nieuwe voorzieningencategorie",
   "create_new_place": "Creëer een nieuwe plek",
   "create_new_place_category": "Nieuwe plaatscategorie maken",
+  "create_new_experience": "Create New Experience",
 
   "actions": "Acties",
   "search": "Zoekopdracht",
@@ -57,11 +66,19 @@
   "amenity_categories": "Voorzieningen categorieën",
   "places": "Plaatsen",
   "place_category": "Plaats categorie",
+  "experiences": "Experiences",
+  "new_partner": "New Partner",
 
   "amenity": {
     "hot": "Heet",
     "show_on_filter": "Toon op Filter",
     "add_to_search_filters": "Toevoegen aan zoekfilter"
+  },
+
+  "experience_trans": {
+    "guests": "Guests",
+    "priority": "Priority",
+    "number_of_guests": "Number of Guests"
   },
 
   "pdf_document": {

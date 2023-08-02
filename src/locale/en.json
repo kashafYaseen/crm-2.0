@@ -38,6 +38,14 @@
 
   "record_updated_successfully": "Record Updated Successfully",
   "record_created_successfully": "Record Created Successfully",
+  "name_is_required": "*Name is Required",
+  "enter_number": "*Please Enter a Number",
+  "no_record_found": "No Record Found",
+  "amenity_category_is_required": "*Amenity Category is Required",
+  "region_is_required": "*Region is Required",
+  "country_is_required": "*Country is Required",
+  "place_category_is_required": "*Place Category is Required",
+  "record_deleted_successfully": "Record Deleted Successfully",
 
   "create_new_country": "Create New Country",
   "create_new_amenity": "Create New Amenity",
@@ -45,6 +53,7 @@
   "create_new_amenity_category": "Create New Amenity Category",
   "create_new_place": "Create New Place",
   "create_new_place_category": "Create New Place Category",
+  "create_new_experience": "Create New Experience",
 
   "actions": "Actions",
   "search": "Search",
@@ -57,11 +66,19 @@
   "amenity_categories": "Amenity Categories",
   "places": "Places",
   "place_category": "Place Category",
+  "experiences": "Experiences",
+  "new_partner": "New Partner",
 
   "amenity": {
     "hot": "Hot",
     "show_on_filter": "Show on Filter",
     "add_to_search_filters": "Add to Search Filter"
+  },
+
+  "experience_trans": {
+    "guests": "Guests",
+    "priority": "Priority",
+    "number_of_guests": "Number of Guests"
   },
 
   "enumerize": {

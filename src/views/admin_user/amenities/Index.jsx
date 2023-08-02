@@ -44,7 +44,7 @@ const Index = () => {
         const response = await amenities_data('DELETE', `amenities/${id}`, null, {}, authToken)
         setShowToast(true)
         setErrorType('success')
-        setError('Record Deleted Successfully')
+        setError(t('record_deleted_successfully'))
         fetch_amenities_data()
       } catch (error) {
         console.error('Error Deleting Amenity', error)

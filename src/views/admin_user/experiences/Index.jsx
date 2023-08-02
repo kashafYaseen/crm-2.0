@@ -4,13 +4,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import '@/scss/_custom.scss'
 import { DataTable } from '@/components/admin_user/UI/DataTable'
-import { Toast } from '@/components/UI/Toast'
+import { Toast } from '@admin_user_components/UI/Toast'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
 import Form from './Form'
 import { CSpinner } from '@coreui/react'
 import { experiences_data } from '@/api/admin_user/config/resources/experiences'
+import { useStores } from '@/context/storeContext'
+import { useTranslation } from 'react-i18next'
 
 const Index = () => {
+  const authStore = useStores()
+
   const [data, setData] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showToast, setShowToast] = useState(false)
@@ -19,9 +23,11 @@ const Index = () => {
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
+  const authToken = authStore((state) => state.token)
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
+  const { t } = useTranslation()
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
@@ -35,10 +41,10 @@ const Index = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await experiences_data('DELETE', `experiences/${id}`)
+        const response = await experiences_data('DELETE', `experiences/${id}`, null, {}, authToken)
         setShowToast(true)
         setErrorType('success')
-        setError('Record Deleted Successfully')
+        setError(t('record_deleted_successfully'))
         fetch_experiences_data()
       } catch (error) {
         console.error('Error Deleting Experience Category', error)
@@ -52,11 +58,11 @@ const Index = () => {
   }
 
   const columns = [
-    { header: 'Name', key: 'name', td: (row) => row.name ?? 'N/A' },
-    { header: 'Guests', key: 'guests', td: (row) => row.guests ?? 'N/A' },
-    { header: 'Priority', key: 'priority', td: (row) => row.priority ?? 'N/A' },
+    { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
+    { header: t('experience_trans.guests'), key: 'guests', td: (row) => row.guests ?? 'N/A' },
+    { header: t('experience_trans.priority'), key: 'priority', td: (row) => row.priority ?? 'N/A' },
     {
-      header: 'Published',
+      header: t('publish'),
       key: 'publish',
       td: (row) => {
         return (
@@ -68,7 +74,7 @@ const Index = () => {
     },
 
     {
-      header: 'Actions',
+      header: t('actions'),
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
@@ -82,11 +88,18 @@ const Index = () => {
     setLoading(true)
 
     try {
-      const { data, totalRecords } = await experiences_data('get', 'experiences', null, {
-        page: pageNumber,
-        per_page: perPageNumber,
-        query: searchQuery,
-      })
+      const { data, totalRecords } = await experiences_data(
+        'get',
+        'experiences',
+        null,
+        {
+          page: pageNumber,
+          per_page: perPageNumber,
+          query: searchQuery,
+        },
+        authToken,
+      )
+
       setData(data)
       setTotalRecords(totalRecords)
       setLoading(false)
@@ -121,7 +134,7 @@ const Index = () => {
   return (
     <div className="display">
       <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>Experiences</ModalHeader>
+        <ModalHeader toggle={() => setModal(!modal)}>{t('experiences')}</ModalHeader>
         <ModalBody>
           <Form experience_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
         </ModalBody>
@@ -130,7 +143,7 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">Experiences</h2>
+      <h2 className="mb-3">{t('experiences')}</h2>
       <div className="create-button-div">
         <button
           className="create-button"
@@ -139,7 +152,7 @@ const Index = () => {
             setSelectedRecord(null)
           }}
         >
-          Create New Experience
+          {t('create_new_experience')}
         </button>
       </div>
 
@@ -152,7 +165,7 @@ const Index = () => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          Search
+          {t('search')}
         </button>
       </div>
 
@@ -167,7 +180,7 @@ const Index = () => {
           loading={loading}
         />
       ) : (
-        <div>{loading ? <CSpinner color="secondary" variant="grow" /> : 'No records found'}</div>
+        <div>{loading ? <CSpinner color="secondary" variant="grow" /> : t('no_record_found')}</div>
       )}
     </div>
   )

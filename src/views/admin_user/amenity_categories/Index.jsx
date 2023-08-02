@@ -50,7 +50,7 @@ const Index = () => {
         )
         setShowToast(true)
         setErrorType('success')
-        setError('Record Deleted Successfully')
+        setError(t('record_deleted_successfully'))
         fetch_amenity_categories_data()
       } catch (error) {
         console.error('Error Deleting Amenity Category', error)

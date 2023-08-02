@@ -45,8 +45,8 @@ const Form = (props) => {
 
   const validationSchema = Yup.object().shape({
     amenity: Yup.object().shape({
-      name_nl: Yup.string().required('*Name is required'),
-      amenity_category_id: Yup.string().required('*Amenity Category is required'),
+      name_nl: Yup.string().required(t('name_is_required')),
+      amenity_category_id: Yup.string().required(t('amenity_category_is_required')),
     }),
   })
 

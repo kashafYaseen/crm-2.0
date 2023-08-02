@@ -42,7 +42,7 @@ const Index = observer(() => {
         fetch_places_data()
         setShowToast(true)
         setErrorType('success')
-        setError('Record Deleted Successfully')
+        setError(t('record_deleted_successfully'))
       } catch (error) {
         console.error('Error Deleting place:', error)
       }
