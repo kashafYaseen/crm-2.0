@@ -13,6 +13,9 @@ const EditPlace = React.lazy(() => import('@admin_user_views/places/EditPlace'))
 const PlaceCategories = React.lazy(() => import('@admin_user_views/place_categories/Index'))
 const Amenities = React.lazy(() => import('@admin_user_views/amenities/Index'))
 const AmenityCategories = React.lazy(() => import('@admin_user_views/amenity_categories/Index'))
+const Partners = React.lazy(() => import('@admin_user_views/partners/Index'))
+const EditPartner = React.lazy(() => import('@admin_user_views/partners/EditPartner'))
+const NewPartner = React.lazy(() => import('@admin_user_views/partners/NewPartner'))
 
 const OwnerDashboard = React.lazy(() => import('@business_owner_views/dashboard/Dashboard'))
 
@@ -24,7 +27,13 @@ const admin_routes = [
   { path: '/regions', name: 'Regions', element: Regions },
   { path: '/amenities', name: 'Amenities', element: Amenities },
   { path: '/amenity-categories', name: 'AmenityCategories', element: AmenityCategories },
-
+  { path: '/partners', name: 'Partners', element: Partners },
+  { path: '/new-partner', name: 'New Partner', element: NewPartner },
+  {
+    path: '/partners/edit-partner',
+    name: 'Edit Partner',
+    element: EditPartner,
+  },
   {
     path: '/countries/country-form', // Nested path under '/countries'
     name: 'Country Form',
