@@ -8,6 +8,7 @@ import { useStores } from '@/context/storeContext'
 import { CSpinner } from '@coreui/react'
 import AdminDefaultLayout from '@/layout/admin_user/DefaultLayout'
 import OwnerDefaultLayout from '@/layout/business_owner/DefaultLayout'
+import InvitationForm from '@business_owner_views/invitations/Form'
 
 const App = () => {
   const authStore = useStores()
@@ -49,6 +50,8 @@ const App = () => {
               )
             }
           />
+
+          <Route path="/business-owner/invitation-form" element={<InvitationForm />} />
 
           <Route path="*" element={<Page404 />} />
         </Routes>
