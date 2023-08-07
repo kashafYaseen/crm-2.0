@@ -14,6 +14,9 @@ const PlaceCategories = React.lazy(() => import('@admin_user_views/place_categor
 const Amenities = React.lazy(() => import('@admin_user_views/amenities/Index'))
 const AmenityCategories = React.lazy(() => import('@admin_user_views/amenity_categories/Index'))
 const Experiences = React.lazy(() => import('@admin_user_views/experiences/Index'))
+const Campaigns = React.lazy(() => import('@admin_user_views/campaigns/Index'))
+const NewCampaign = React.lazy(() => import('@admin_user_views/campaigns/NewCampaign'))
+const EditCampaign = React.lazy(() => import('@admin_user_views/campaigns/EditCampaign'))
 
 const OwnerDashboard = React.lazy(() => import('@business_owner_views/dashboard/Dashboard'))
 
@@ -52,6 +55,9 @@ const admin_routes = [
     name: 'Edit Place',
     element: EditPlace,
   },
+  { path: '/campaigns', name: 'Campaigns', element: Campaigns },
+  { path: '/campaigns/new-campaign', name: 'New Campaign', element: NewCampaign },
+  { path: '/campaigns/edit-campaign', name: 'Edit Campaign', element: EditCampaign },
 ]
 
 const owner_routes = [{ path: '/dashboard', name: 'Dashboard', element: OwnerDashboard }]

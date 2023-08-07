@@ -9,6 +9,8 @@
   "amenities": "Amenities",
   "icon": "Icon",
   "place_categories": "Place Categories",
+  "campaigns": "Campaigns",
+  "campaign": "Campaign",
   "color_code": "Color Code",
   "amenity_category": "Amenity Category",
   "slug": "Slug",
@@ -26,6 +28,7 @@
   "spotlight": "Spotlight",
   "short_description_nav": "Short description nav",
   "short_description": "Short description",
+  "description": "Description",
   "geo_location": "Geo Location",
   "longitude": "Longitude",
   "latitude": "Latitude",
@@ -35,6 +38,8 @@
   "password": "Password",
   "login": "Login",
   "forgot_password": "Forgot password ?",
+  "to": "To",
+  "from": "From",
 
   "record_updated_successfully": "Record Updated Successfully",
   "record_created_successfully": "Record Created Successfully",
@@ -46,6 +51,7 @@
   "country_is_required": "*Country is Required",
   "place_category_is_required": "*Place Category is Required",
   "record_deleted_successfully": "Record Deleted Successfully",
+  "add_more_category": "Add more category",
 
   "create_new_country": "Create New Country",
   "create_new_amenity": "Create New Amenity",
@@ -54,6 +60,7 @@
   "create_new_place": "Create New Place",
   "create_new_place_category": "Create New Place Category",
   "create_new_experience": "Create New Experience",
+  "create_new_campaign": "Create New Campaign",
 
   "actions": "Actions",
   "search": "Search",
@@ -79,6 +86,19 @@
     "guests": "Guests",
     "priority": "Priority",
     "number_of_guests": "Number of Guests"
+  },
+
+  "campaigns_trans": {
+    "url": "url",
+    "collection": "Collection",
+    "footer": "Footer",
+    "homepage": "Homepage",
+    "top_menu": "Top menu",
+    "min_price": "Min price",
+    "max_price": "Max price",
+    "for_url_generation": "For url generation",
+    "auto_complete": "Autocomplete",
+    "type": "Type"
   },
 
   "enumerize": {
