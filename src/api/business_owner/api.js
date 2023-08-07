@@ -4,7 +4,8 @@ import axios from 'axios'
 import i18next from 'i18next'
 
 export async function request(method, endpoint, data, params = {}, auth_token) {
-  const url = `${API_CONFIG.baseUrl}/${i18next.language}/crm/v1/admin_user/${endpoint}`
+  const url = `${API_CONFIG.baseUrl}/${i18next.language}/crm/v1/owner/${endpoint}`
+
   try {
     const response = await axios({
       method,
@@ -15,7 +16,7 @@ export async function request(method, endpoint, data, params = {}, auth_token) {
       },
       data,
       params: {
-        per_page: params.per_page || 10,
+        per_page: params.per_page || 1000,
         page: params.page || 1,
         query: params.query,
       },

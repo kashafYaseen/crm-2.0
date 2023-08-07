@@ -52,10 +52,10 @@ const Regions = observer(() => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const columns = [
-    { header: t('name'), key: 'name' },
-    { header: t('country'), key: 'region_country', td: (row) => row.region_country ?? 'N/A' },
+    { header: 'Name', key: 'name' },
+    { header: 'Country', key: 'region_country', td: (row) => row.region_country ?? 'N/A' },
     {
-      header: t('content'),
+      header: 'Content',
       key: 'content',
       td: (row) => <div dangerouslySetInnerHTML={{ __html: row.content ?? 'N/A' }} />,
     },

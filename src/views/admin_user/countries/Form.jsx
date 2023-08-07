@@ -427,7 +427,7 @@ const Form = observer((props) => {
                     checked={formik.values.country.dropdown}
                     onChange={(event) => {
                       formik.handleChange(event)
-                      formik.setFieldValue('country.dropdown', event.target.dropdown)
+                      formik.setFieldValue('country.dropdown', event.target.checked)
                     }}
                   />
                   <CFormCheck
@@ -437,7 +437,7 @@ const Form = observer((props) => {
                     checked={formik.values.country.sidebar}
                     onChange={(event) => {
                       formik.handleChange(event)
-                      formik.setFieldValue('country.sidebar', event.target.sidebar)
+                      formik.setFieldValue('country.sidebar', event.target.checked)
                     }}
                   />
                 </CCol>
