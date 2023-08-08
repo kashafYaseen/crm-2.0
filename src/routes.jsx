@@ -66,8 +66,8 @@ const admin_routes = [
     element: EditPlace,
   },
   { path: '/campaigns', name: 'Campaigns', element: Campaigns },
-  { path: '/campaigns/new-campaign', name: 'New Campaign', element: NewCampaign },
-  { path: '/campaigns/edit-campaign', name: 'Edit Campaign', element: EditCampaign },
+  { path: '/campaigns/new', name: 'New Campaign', element: NewCampaign },
+  { path: '/campaigns/edit', name: 'Edit Campaign', element: EditCampaign },
 ]
 
 const owner_routes = [{ path: '/dashboard', name: 'Dashboard', element: OwnerDashboard }]

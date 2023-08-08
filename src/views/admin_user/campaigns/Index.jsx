@@ -129,10 +129,7 @@ const Index = () => {
       header: t('actions'),
       td: (row) => (
         <>
-          <Link
-            to={`/${i18next.language}/admin-user/campaigns/edit-campaign`}
-            state={{ record: row }}
-          >
+          <Link to={`/${i18next.language}/admin-user/campaigns/edit`} state={{ record: row }}>
             <FontAwesomeIcon icon={faEdit} />
           </Link>
           <FontAwesomeIcon onClick={() => deleteCampaign(row.id)} icon={faTrash} />
@@ -190,7 +187,7 @@ const Index = () => {
       <h2 className="mb-3">{t('campaigns')}</h2>
 
       <div className="create-button-div">
-        <Link to={`/${i18next.language}/admin-user/campaigns/new-campaign`}>
+        <Link to={`/${i18next.language}/admin-user/campaigns/new`}>
           <button className="create-button">{t('create_new_campaign')}</button>
         </Link>
       </div>

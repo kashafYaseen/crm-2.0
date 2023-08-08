@@ -280,11 +280,9 @@ const Form = observer((props) => {
           <Link to={`/${i18next.language}/admin-user/campaigns`}>{t('campaigns')}</Link>
         </CBreadcrumbItem>
         {props.campaign_to_update ? (
-          <CBreadcrumbItem active>
-            {t('edit')} {t('campaign')}
-          </CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('edit')}</CBreadcrumbItem>
         ) : (
-          <CBreadcrumbItem active>{t('create_new_campaign')}</CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('new')}</CBreadcrumbItem>
         )}
       </CBreadcrumb>
       <div className="toast-container">
@@ -293,9 +291,6 @@ const Form = observer((props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>{t('create_new_campaign')} </strong>
-            </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
@@ -428,7 +423,7 @@ const Form = observer((props) => {
                 ))}
 
                 <CCol xs={12}>
-                  <CButton type="button" onClick={addMoreCategory}>
+                  <CButton type="button" onClick={addMoreCategory} className="category-button">
                     {t('add_more_category')}
                   </CButton>
                 </CCol>
