@@ -28,6 +28,24 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: 'Partners',
+    to: '/partner',
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'New Partner Page',
+        to: '/admin-user/new-partner',
+      },
+      {
+        component: CNavItem,
+        name: 'Exact Partner Account',
+        to: '/admin-user/partners',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
     name: 'Content',
     to: '/content',
     icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,

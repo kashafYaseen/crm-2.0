@@ -2,12 +2,15 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { Route, Routes, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import '@/scss/style.scss'
 import LoginAdminUser from '@admin_user_views/sessions/Login'
+import LoginBusinessOwner from '@business_owner_views/sessions/Login'
 import Page404 from '@/viewsTemp/pages/page404/Page404'
 import { useStores } from '@/context/storeContext'
 import { CSpinner } from '@coreui/react'
 import AdminDefaultLayout from '@/layout/admin_user/DefaultLayout'
 import initializeI18n from './initializeI18n'
 import i18next from 'i18next'
+import OwnerDefaultLayout from '@/layout/business_owner/DefaultLayout'
+import InvitationForm from '@business_owner_views/invitations/Form'
 
 const App = () => {
   const authStore = useStores()
@@ -53,6 +56,17 @@ const App = () => {
         />
 
         <Route
+          path={`/${locale}/business-owner-login`}
+          element={
+            !isLoggedIn ? (
+              <LoginBusinessOwner />
+            ) : (
+              <Navigate to={`/${locale}/business-owner/dashboard`} replace={true} />
+            )
+          }
+        />
+
+        <Route
           path={`/${locale}/admin-user/*`}
           element={
             !isLoggedIn ? (
@@ -63,10 +77,28 @@ const App = () => {
           }
         />
 
-        {/* Catch-all route for admin pages */}
+        <Route
+          path={`/${locale}/business-owner/*`}
+          element={
+            !isLoggedIn ? (
+              <Navigate replace={true} to={`/${locale}/business-owner-login`} />
+            ) : (
+              <OwnerDefaultLayout />
+            )
+          }
+        />
+
+        <Route path={`/${locale}/business-owner/invitation-form`} element={<InvitationForm />} />
+
+        {/* Catch-all route for admin and owner pages */}
         <Route
           path="*"
           element={location.pathname.startsWith(`/${locale}/admin-user/*`) && <Page404 />}
+        />
+
+        <Route
+          path="*"
+          element={location.pathname.startsWith(`/${locale}/business-owner/*`) && <Page404 />}
         />
       </Routes>
     </Suspense>

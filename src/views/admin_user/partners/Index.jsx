@@ -2,31 +2,33 @@ import React, { useEffect, useState } from 'react'
 import 'react-flexy-table/dist/index.css'
 import '@/scss/_custom.scss'
 import { Link } from 'react-router-dom'
-import { countries_data } from '@/api/admin_user/config/resources/countries'
+import { Toast } from '@admin_user_components/UI/Toast'
+
 import { DataTable } from '@admin_user_components/UI/DataTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { CSpinner } from '@coreui/react'
+import { CSpinner, CButton } from '@coreui/react'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
-import i18next from 'i18next'
-import { useTranslation } from 'react-i18next'
+import { partners_data } from '@/api/admin_user/config/resources/partners'
 
-const Countries = observer(() => {
-  const [countries, setCountries] = useState([])
+const Partners = observer(() => {
+  const authStore = useStores()
+  const [partners, setPartners] = useState([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
-  const authStore = useStores()
   const authToken = authStore((state) => state.token)
-  const { t } = useTranslation()
+  const [showToast, setShowToast] = useState(false)
+  const [error, setError] = useState('')
+  const [errorType, setErrorType] = useState('')
 
-  const fetchCountries = async (pageNumber) => {
+  const fetchPartners = async (pageNumber) => {
     setLoading(true)
     try {
-      const { data, totalRecords } = await countries_data(
+      const { data, totalRecords } = await partners_data(
         'GET',
-        'countries',
+        'owners',
         null,
         {
           page: pageNumber,
@@ -36,7 +38,7 @@ const Countries = observer(() => {
         authToken,
       )
 
-      setCountries(data)
+      setPartners(data)
       setTotalRecords(totalRecords)
       setLoading(false)
     } catch (error) {
@@ -45,26 +47,55 @@ const Countries = observer(() => {
     }
   }
 
+  const handleResendInvite = async (id) => {
+    try {
+      const res = await partners_data('GET', `owners/${id}/resend_invitation`, null, {}, authToken)
+      setShowToast(true)
+      setErrorType('success')
+      setError(res)
+    } catch (error) {
+      setShowToast(true)
+      setErrorType('danger')
+      setError(error)
+    }
+  }
+
   useEffect(() => {
-    fetchCountries()
+    fetchPartners()
   }, [perPageNumber])
+
+  const handleToastHide = () => {
+    setShowToast(false)
+  }
 
   const [searchQuery, setSearchQuery] = useState('')
 
   const columns = [
-    { header: 'Name', key: 'name' },
-    { header: 'Disable', key: 'disable', td: (row) => (row.disable ? 'True' : 'False') },
+    { header: 'Name', key: 'full_name', td: (row) => row.full_name ?? '' },
+    { header: 'Email', key: 'email', td: (row) => row.email ?? '' },
+    { header: 'Visited By', key: 'admin_user', td: (row) => row.admin_user ?? '' },
+    { header: 'Pre-Payment', key: 'pre_payment', td: (row) => row.pre_payment ?? '' },
+    { header: 'Final-Payment', key: 'final_payment', td: (row) => row.final_payment ?? '' },
     {
-      header: 'Content',
-      key: 'content',
-      td: (row) => <div dangerouslySetInnerHTML={{ __html: row.content ?? 'N/A' }} />,
+      header: 'Invitation Status',
+      key: 'invitation_accepted_at',
+      td: (row) =>
+        row.invitation_accepted_at ? (
+          'Accepted'
+        ) : (
+          <>
+            <CButton onClick={() => handleResendInvite(row.id)} size="sm" color="secondary">
+              Resend Invite
+            </CButton>
+          </>
+        ),
     },
     {
-      header: t('actions'),
+      header: 'Actions',
       td: (row) => (
         <>
           <Link
-            to={`/${i18next.language}/admin-user/countries/country-form`}
+            to="/admin-user/partners/edit-partner"
             state={{ record: row }}
             className="custom-link"
           >
@@ -78,12 +109,13 @@ const Countries = observer(() => {
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
   }
+
   const searchQueryHandler = async () => {
-    fetchCountries()
+    fetchPartners()
   }
 
   const onPageChangeHandler = (value) => {
-    fetchCountries(value)
+    fetchPartners(value)
   }
 
   const onPerPageChangeHandler = (value) => {
@@ -92,12 +124,16 @@ const Countries = observer(() => {
 
   return (
     <div className="display">
-      <h2 className="mb-3">{t('Countries')}</h2>
+      <div className="toast-container">
+        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+      </div>
+      <h2 className="mb-3">Partners</h2>
       <div className="create-button-div">
-        <Link to={`/${i18next.language}/admin-user/countries/country-form`}>
-          <button className="create-button">{t('create_new_country')}</button>
+        <Link to="/admin-user/new-partner">
+          <button className="create-button">Create New Partner</button>
         </Link>
       </div>
+
       <div className="search-container">
         <input
           type="text"
@@ -107,13 +143,13 @@ const Countries = observer(() => {
           className="custom-search-input"
         />
         <button className="create-button" onClick={searchQueryHandler}>
-          {t('search')}
+          Search
         </button>
       </div>
 
-      {countries.length > 0 ? (
+      {partners.length > 0 ? (
         <DataTable
-          data={countries}
+          data={partners}
           columns={columns}
           totalRecords={totalRecords}
           onPageChange={onPageChangeHandler}
@@ -128,4 +164,4 @@ const Countries = observer(() => {
   )
 })
 
-export default Countries
+export default Partners
