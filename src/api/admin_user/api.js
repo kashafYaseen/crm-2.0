@@ -18,7 +18,7 @@ export async function request(method, endpoint, data, params = {}, auth_token) {
         per_page: params.per_page || 10,
         page: params.page || 1,
         query: params.query,
-        category_id: params.category,
+        category: params.category,
       },
     })
 

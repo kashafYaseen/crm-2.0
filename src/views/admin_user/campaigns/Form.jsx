@@ -44,7 +44,9 @@ const Form = observer((props) => {
   const { t } = useTranslation()
 
   const [selectedAdditionalCategories, setSelectedAdditionalCategories] = useState([])
-  const [fetchingOptionsByCategory, setFetchingOptionsByCategory] = useState(true)
+
+  const [loadingCategory, setLoadingCategory] = useState({})
+
   const [categoryResponses, setCategoryResponses] = useState({})
 
   const CATEGORY = {
@@ -84,15 +86,18 @@ const Form = observer((props) => {
     // Use the latest state values here
     const updatedSelectedCategories = newCategorySets.map((set) => set.category)
     setSelectedAdditionalCategories(updatedSelectedCategories)
-
     try {
       const updatedCategory = updatedSelectedCategories[index]
-      if (updatedCategory) {
+      if (updatedCategory && !categoryResponses[updatedSelectedCategories[index]]) {
+        setLoadingCategory((prevLoading) => ({
+          ...prevLoading,
+          [updatedCategory]: true,
+        }))
         const response = await campaigns_data(
           'get',
-          `campaigns/get_options_from_category`,
+          `campaigns/options`,
           null,
-          { category: updatedCategory },
+          { category: CATEGORY[updatedCategory] },
           authToken,
         )
 
@@ -102,11 +107,17 @@ const Form = observer((props) => {
           return updatedCategoryResponses
         })
 
-        setFetchingOptionsByCategory(false)
+        setLoadingCategory((prevLoading) => ({
+          ...prevLoading,
+          [updatedCategory]: false,
+        }))
       }
     } catch (error) {
       console.error('Error fetching records:', error)
-      setFetchingOptionsByCategory(false)
+      setLoadingCategory((prevLoading) => ({
+        ...prevLoading,
+        [updatedCategory]: false,
+      }))
     }
   }
 
@@ -373,7 +384,11 @@ const Form = observer((props) => {
                       </CFormLabel>
 
                       <CFormSelect
-                        disabled={fetchingOptionsByCategory}
+                        // disabled={fetchingOptionsByCategory}
+                        disabled={
+                          !formik.values.campaign.category ||
+                          loadingCategory[selectedAdditionalCategories[index]]
+                        }
                         value={
                           set.value
                             ? set.value
@@ -388,17 +403,24 @@ const Form = observer((props) => {
                           setAdditionalCategorySets(newCategorySets)
                         }}
                       >
-                        <option value="">Select</option>
-                        {categoryResponses[selectedAdditionalCategories[index]]?.length > 0 ? (
-                          categoryResponses[selectedAdditionalCategories[index]].map(
-                            ({ id, name }) => (
-                              <option key={id} value={id}>
-                                {name}
-                              </option>
-                            ),
-                          )
+                        {loadingCategory[selectedAdditionalCategories[index]] ? (
+                          // Show "Loading" when fetching is in progress
+                          <option value="">Loading...</option>
                         ) : (
-                          <option value="">No options available</option>
+                          <>
+                            <option value="">Select</option>
+                            {categoryResponses[selectedAdditionalCategories[index]]?.length > 0 ? (
+                              categoryResponses[selectedAdditionalCategories[index]].map(
+                                ({ id, name }) => (
+                                  <option key={id} value={id}>
+                                    {name}
+                                  </option>
+                                ),
+                              )
+                            ) : (
+                              <option value="">No options available</option>
+                            )}
+                          </>
                         )}
                       </CFormSelect>
                     </CCol>
@@ -507,7 +529,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputName">{t('to')}</CFormLabel>
+                  <CFormLabel htmlFor="inputName">{t('from')}</CFormLabel>
                   <CFormInput
                     type={props.campaign_to_update ? 'datetime' : 'datetime-local'}
                     id="inputFrom"
