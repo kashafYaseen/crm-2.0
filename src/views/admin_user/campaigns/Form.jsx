@@ -3,10 +3,8 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CForm,
-  CFormCheck,
   CFormInput,
   CFormLabel,
   CFormSelect,
@@ -27,6 +25,8 @@ import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 const Form = observer((props) => {
   const authStore = useStores()
@@ -153,7 +153,6 @@ const Form = observer((props) => {
 
   const serverErrorHandler = (error) => {
     setServerError('An error occurred. Please try again: ' + error.toString())
-    formik.resetForm()
   }
 
   useEffect(() => {
@@ -161,7 +160,6 @@ const Form = observer((props) => {
     additionalCategorySets.forEach((set, index) => {
       const selectedCategoryKey = selectedAdditionalCategories[index]
       if (selectedCategoryKey && set.value) {
-        const get_category_value = CATEGORY[selectedCategoryKey]
         const uniqueCategoryKey = `${CATEGORY[selectedCategoryKey]}-${index + 1}`
         updatedCategoryValues[uniqueCategoryKey] = set.value
       }
@@ -271,6 +269,31 @@ const Form = observer((props) => {
     },
   })
 
+  const handleRemoveCategory = (indexToRemove) => {
+    let newCategorySets = {}
+    setAdditionalCategorySets((prevCategorySets) => {
+      newCategorySets = [...prevCategorySets]
+      newCategorySets.splice(indexToRemove, 1)
+      return newCategorySets
+    })
+
+    formik.setValues((prevValues) => {
+      setSelectedAdditionalCategories((prevSelectedCategories) => {
+        const newSelectedCategories = [...prevSelectedCategories]
+        newSelectedCategories.splice(indexToRemove, 1)
+
+        return newSelectedCategories
+      })
+      return {
+        ...prevValues,
+        campaign: {
+          ...prevValues.campaign,
+          category: newCategorySets,
+        },
+      }
+    })
+  }
+
   return (
     <div className="display">
       {serverError && <div className="server-error-message">{serverError}</div>}
@@ -298,7 +321,7 @@ const Form = observer((props) => {
                   <CFormInput
                     type="text"
                     id="inputtitle"
-                    value={formik.values.campaign.title_en}
+                    value={formik.values.campaign.title_en || ''}
                     onChange={formik.handleChange}
                     name="campaign.title_en"
                   />
@@ -313,7 +336,7 @@ const Form = observer((props) => {
                   <CFormInput
                     type="text"
                     id="inputName"
-                    value={formik.values.campaign.title_nl}
+                    value={formik.values.campaign.title_nl || ''}
                     onChange={formik.handleChange}
                     name="campaign.title_nl"
                   />
@@ -355,7 +378,7 @@ const Form = observer((props) => {
                 </CCol>
 
                 {additionalCategorySets.map((set, index) => (
-                  <div key={set.id} className="row">
+                  <div key={index} className="row">
                     <CCol md={6}>
                       <CFormLabel htmlFor={`selectPublish4_${set.id}`}>{t('category')}</CFormLabel>
                       <CFormSelect
@@ -370,6 +393,7 @@ const Form = observer((props) => {
                         ))}
                       </CFormSelect>
                     </CCol>
+
                     {/* ... Subsequent Dropdown field ... */}
                     <CCol md={6}>
                       <CFormLabel htmlFor={`selectPublish4_${set.id}`}>
@@ -378,14 +402,21 @@ const Form = observer((props) => {
                           : 'Please select a category first'}
                       </CFormLabel>
 
+                      {index > 0 && (
+                        <FontAwesomeIcon
+                          icon={faTimes}
+                          className="remove-icon"
+                          onClick={() => handleRemoveCategory(index)}
+                        />
+                      )}
+
                       <CFormSelect
-                        // disabled={fetchingOptionsByCategory}
                         disabled={
                           !formik.values.campaign.category ||
                           loadingCategory[selectedAdditionalCategories[index]]
                         }
                         value={
-                          set.value
+                          set.value !== undefined
                             ? set.value
                             : props.campaign_to_update
                             ? Object.values(props.campaign_to_update?.category)[index]
@@ -423,9 +454,11 @@ const Form = observer((props) => {
                 ))}
 
                 <CCol xs={12}>
-                  <CButton type="button" onClick={addMoreCategory} className="category-button">
-                    {t('add_more_category')}
-                  </CButton>
+                  <div className="button-container">
+                    <CButton type="button" className="category-button" onClick={addMoreCategory}>
+                      {t('add_more_category')}
+                    </CButton>
+                  </div>
                 </CCol>
 
                 <div className="col-md-12">
@@ -443,7 +476,12 @@ const Form = observer((props) => {
                         ? formik.values.campaign.min_price
                         : 1
                     }
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      const inputValue = parseInt(e.target.value)
+                      if (!isNaN(inputValue) && inputValue >= 0) {
+                        formik.handleChange(e)
+                      }
+                    }}
                     name="campaign.min_price"
                   />
                 </CCol>
@@ -458,7 +496,12 @@ const Form = observer((props) => {
                         ? formik.values.campaign.max_price
                         : 3000
                     }
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      const inputValue = parseInt(e.target.value)
+                      if (!isNaN(inputValue) && inputValue >= 0) {
+                        formik.handleChange(e)
+                      }
+                    }}
                     name="campaign.max_price"
                   />
                 </CCol>
@@ -467,7 +510,7 @@ const Form = observer((props) => {
                   <CFormLabel htmlFor="country4">{t('country')}</CFormLabel>
                   <CFormSelect
                     id="country_id"
-                    value={formik.values.campaign.country_id}
+                    value={formik.values.campaign.country_id || ''}
                     onChange={handleCountryChange}
                     onBlur={formik.handleBlur}
                     name="campaign.country_id"
@@ -484,7 +527,7 @@ const Form = observer((props) => {
                   <CFormLabel htmlFor="selectPublish4">{t('region')}</CFormLabel>
                   <CFormSelect
                     id="region_id"
-                    value={formik.values.campaign.region_id}
+                    value={formik.values.campaign.region_id || ''}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="campaign.region_id"
@@ -513,24 +556,37 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol md={6}>
-                  <CFormLabel htmlFor="inputName">{t('to')}</CFormLabel>
-                  <CFormInput
-                    type={props.campaign_to_update ? 'datetime' : 'datetime-local'}
-                    id="input_to"
-                    value={formik.values.campaign.to}
-                    onChange={formik.handleChange}
-                    name="campaign.to"
-                  />
-                </CCol>
-
-                <CCol md={6}>
                   <CFormLabel htmlFor="inputName">{t('from')}</CFormLabel>
                   <CFormInput
                     type={props.campaign_to_update ? 'datetime' : 'datetime-local'}
                     id="inputFrom"
-                    value={formik.values.campaign.from}
+                    value={formik.values.campaign.from || ''}
                     onChange={formik.handleChange}
                     name="campaign.from"
+                    onBlur={() => {
+                      if (
+                        formik.values.campaign.to &&
+                        formik.values.campaign.to > formik.values.campaign.from
+                      ) {
+                        formik.setFieldTouched('campaign.to', true)
+                      } else {
+                        formik.setFieldValue('campaign.to', '')
+                        formik.setFieldTouched('campaign.to', false)
+                      }
+                    }}
+                    min={new Date().toISOString().slice(0, 16)}
+                  />
+                </CCol>
+
+                <CCol md={6}>
+                  <CFormLabel htmlFor="inputName">{t('to')}</CFormLabel>
+                  <CFormInput
+                    type={props.campaign_to_update ? 'datetime' : 'datetime-local'}
+                    id="input_to"
+                    value={formik.values.campaign.to || ''}
+                    onChange={formik.handleChange}
+                    name="campaign.to"
+                    min={formik.values.campaign.from || new Date().toISOString().slice(0, 16)}
                   />
                 </CCol>
 
@@ -544,7 +600,7 @@ const Form = observer((props) => {
                       className="form"
                       size="lg"
                       id="popular_homepage"
-                      checked={formik.values.campaign.popular_homepage}
+                      checked={formik.values.campaign.popular_homepage || false}
                       onChange={(e) => {
                         formik.setFieldValue('campaign.popular_homepage', e.target.checked)
                       }}
@@ -558,7 +614,7 @@ const Form = observer((props) => {
                       className="form"
                       size="lg"
                       id="collection"
-                      checked={formik.values.campaign.collection}
+                      checked={formik.values.campaign.collection || false}
                       onChange={(e) => {
                         formik.setFieldValue('campaign.collection', e.target.checked)
                       }}
@@ -572,7 +628,7 @@ const Form = observer((props) => {
                       className="form"
                       size="lg"
                       id="popular_search"
-                      checked={formik.values.campaign.popular_search}
+                      checked={formik.values.campaign.popular_search || false}
                       onChange={(e) => {
                         formik.setFieldValue('campaign.popular_search', e.target.checked)
                       }}
@@ -585,7 +641,7 @@ const Form = observer((props) => {
                     <CFormSwitch
                       className="form"
                       size="lg"
-                      checked={formik.values.campaign.footer}
+                      checked={formik.values.campaign.footer || false}
                       onChange={(e) => {
                         formik.setFieldValue('campaign.footer', e.target.checked)
                       }}
@@ -603,7 +659,7 @@ const Form = observer((props) => {
                       data-on-text="YES"
                       data-off-text="NO"
                       color="success"
-                      checked={formik.values.campaign.top_menu}
+                      checked={formik.values.campaign.top_menu || false}
                       onChange={(e) => {
                         formik.setFieldValue('campaign.top_menu', e.target.checked)
                       }}
@@ -621,7 +677,7 @@ const Form = observer((props) => {
                       data-on-text="YES"
                       data-off-text="NO"
                       color="success"
-                      checked={formik.values.campaign.homepage}
+                      checked={formik.values.campaign.homepage || false}
                       onChange={(e) => {
                         formik.setFieldValue('campaign.homepage', e.target.checked)
                       }}
@@ -632,9 +688,11 @@ const Form = observer((props) => {
                 </CRow>
 
                 <CCol xs={12}>
-                  <CButton type="submit" className="create-button formik-btn">
-                    {t('submit')}
-                  </CButton>
+                  <div className="button-container">
+                    <CButton type="submit" className="create-form-button formik-btn">
+                      {t('submit')}
+                    </CButton>
+                  </div>
                 </CCol>
               </CForm>
             </CCardBody>

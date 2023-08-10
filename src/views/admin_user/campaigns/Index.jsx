@@ -51,22 +51,9 @@ const Index = () => {
 
   const columns = [
     { header: t('title'), key: 'title', td: (row) => row.title ?? 'N/A' },
-    { header: t('region'), key: 'region', td: (row) => row.region ?? 'N/A' },
     { header: t('country'), key: 'country', td: (row) => row.country ?? 'N/A' },
-    {
-      header: t('campaigns_trans.url'),
-      key: 'url',
-      td: (row) => {
-        return row.url ? (
-          <a href={row.url} target="_blank" rel="noopener noreferrer">
-            {row.url}
-          </a>
-        ) : (
-          'N/A'
-        )
-      },
-    },
-
+    { header: t('region'), key: 'region', td: (row) => row.region ?? 'N/A' },
+    { header: t('campaigns_trans.url'), key: 'url', td: (row) => row.url ?? 'N/A' },
     {
       header: t('campaigns_trans.auto_complete'),
       key: 'popular_homepage',

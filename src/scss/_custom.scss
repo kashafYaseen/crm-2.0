@@ -271,7 +271,37 @@ margin-bottom: 5px;
 
 }
 
-.category-button {
+.button-container .category-button {
   background-color: #323f54;
 }
 
+.button-container .category-button:hover {
+  background-color: #3c4b64;
+}
+
+.button-container .category-button:focus {
+  background-color: #3c4b64;
+}
+
+.remove-icon {
+  position: absolute;
+  right: 30px;
+  color: rgb(226, 12, 12);
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+
+}
+
+.button-container .create-form-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #586f94;
+  color: #fff;
+  font-size: 14px;
+}
+
+.button-container .create-form-button:focus {
+  background-color: #303c50;
+}

@@ -172,9 +172,11 @@ const Form = (props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CButton type="submit" className="create-button">
-                    {t('submit')}
-                  </CButton>
+                  <div className="button-container">
+                    <CButton type="submit" className="create-form-button formik-btn">
+                      {t('submit')}
+                    </CButton>
+                  </div>
                 </CCol>
               </CForm>
             </CCardBody>
