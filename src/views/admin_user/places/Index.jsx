@@ -61,7 +61,7 @@ const Index = observer(() => {
       td: (row) => (
         <>
           <Link
-            to={`/${i18next.language}/admin-user/places/edit-place`}
+            to={`/${i18next.language}/admin-user/places/edit`}
             state={{ record: row }}
             className="custom-link"
           >
@@ -121,7 +121,7 @@ const Index = observer(() => {
 
       <h2 className="mb-3">{t('Places')}</h2>
       <div className="create-button-div">
-        <Link to={`/${i18next.language}/admin-user/places/new-place`}>
+        <Link to={`/${i18next.language}/admin-user/places/new`}>
           <button className="create-button">{t('create_new_place')}</button>
         </Link>
       </div>

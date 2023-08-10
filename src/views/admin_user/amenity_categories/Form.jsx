@@ -18,6 +18,7 @@ import '@/scss/_custom.scss'
 import { amenity_categories_data } from '@/api/admin_user/config/resources/amenityCategories'
 import { useStores } from '@/context/storeContext'
 import { useTranslation } from 'react-i18next'
+import { Alert } from 'reactstrap'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)
@@ -27,6 +28,7 @@ const Form = (props) => {
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
   const { t } = useTranslation()
+  const [visible, setVisible] = useState(true)
 
   const initialValues = {
     amenity_category: {
@@ -46,12 +48,12 @@ const Form = (props) => {
     if (error.response && error.response.data && error.response.data.errors) {
       const nameError = error.response.data.errors.name
       if (nameError && nameError.length > 0) {
+        setVisible(true)
         setServerError('Naam ' + nameError[0])
-        formik.resetForm()
       }
     } else {
+      setVisible(true)
       setServerError('An error occurred. Please try again: ' + error.toString())
-      formik.resetForm()
     }
   }
 
@@ -105,26 +107,20 @@ const Form = (props) => {
     setShowToast(false)
   }
 
+  const onDismiss = () => {
+    setVisible(false)
+  }
+
   return (
     <div className="display">
-      {serverError && <div className="server-error-message">{serverError}</div>}
-      <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
-      </div>
+      {serverError && (
+        <Alert color="danger" isOpen={visible} toggle={onDismiss}>
+          <div className="server-error-message">{serverError}</div>
+        </Alert>
+      )}
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            {props.amenity_category_to_update ? (
-              <CCardHeader>
-                <strong>
-                  {t('edit')} {t('amenity_category')}
-                </strong>
-              </CCardHeader>
-            ) : (
-              <CCardHeader>
-                <strong> {t('create_new_amenity_category')}</strong>
-              </CCardHeader>
-            )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol xs={12}>

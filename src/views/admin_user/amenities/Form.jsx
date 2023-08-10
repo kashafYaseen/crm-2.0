@@ -20,6 +20,7 @@ import '@/scss/_custom.scss'
 import { amenities_data } from '@/api/admin_user/config/resources/amenities'
 import { useStores } from '@/context/storeContext'
 import { useTranslation } from 'react-i18next'
+import { Alert } from 'reactstrap'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)
@@ -29,6 +30,7 @@ const Form = (props) => {
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
   const { t } = useTranslation()
+  const [visible, setVisible] = useState(true)
 
   const initialValues = {
     amenity: {
@@ -51,16 +53,8 @@ const Form = (props) => {
   })
 
   const serverErrorHandler = (error) => {
-    if (error.response && error.response.data && error.response.data.errors) {
-      const nameError = error.response.data.errors.name
-      if (nameError && nameError.length > 0) {
-        setServerError('Naam ' + nameError[0])
-        formik.resetForm()
-      }
-    } else {
-      setServerError('An error occurred. Please try again: ' + error.toString())
-      formik.resetForm()
-    }
+    setVisible(true)
+    setServerError('An error occurred. Please try again: ' + error.toString())
   }
 
   const formik = useFormik({
@@ -111,26 +105,23 @@ const Form = (props) => {
     setShowToast(false)
   }
 
+  const onDismiss = () => {
+    setVisible(false)
+  }
+
   return (
     <div className="display">
-      {serverError && <div className="server-error-message">{serverError}</div>}
+      {serverError && (
+        <Alert color="danger" isOpen={visible} toggle={onDismiss}>
+          <div className="server-error-message">{serverError}</div>
+        </Alert>
+      )}
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            {props.amenity_to_update ? (
-              <CCardHeader>
-                <strong>
-                  {t('edit')} {t('edit_amenity')}
-                </strong>
-              </CCardHeader>
-            ) : (
-              <CCardHeader>
-                <strong>{t('create_new_amenity')} </strong>
-              </CCardHeader>
-            )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol xs={12}>
@@ -208,7 +199,7 @@ const Form = (props) => {
 
                 <CCol xs={12}>
                   <CFormLabel htmlFor="selectSearchFilter">
-                    {'amenity.add_to_search_filters'}
+                    {t('amenity.add_to_search_filters')}
                   </CFormLabel>
                   <CFormSelect
                     id="filter_enabled"
