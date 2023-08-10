@@ -54,16 +54,16 @@ const Index = () => {
 
   const openEditModal = (record) => {
     setSelectedRecord(record)
-    handleCreateNewAmenity()
+    handleCreateNewAmenity(`${record.id}/edit`)
   }
 
   const openNewModel = () => {
-    handleCreateNewAmenity()
+    handleCreateNewAmenity('new')
     setSelectedRecord(null)
   }
 
-  const handleCreateNewAmenity = async () => {
-    const response = await amenities_data('get', 'amenities/new', null, {}, authToken)
+  const handleCreateNewAmenity = async (endpoint) => {
+    const response = await amenities_data('get', `amenities/${endpoint}`, null, {}, authToken)
     setAmenityCategories(response.data)
     setModal(true)
   }
