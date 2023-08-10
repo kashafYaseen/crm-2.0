@@ -416,7 +416,7 @@ const Form = observer((props) => {
                           loadingCategory[selectedAdditionalCategories[index]]
                         }
                         value={
-                          set.value !== undefined
+                          set.value
                             ? set.value
                             : props.campaign_to_update
                             ? Object.values(props.campaign_to_update?.category)[index]
