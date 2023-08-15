@@ -380,7 +380,7 @@ const Form = observer((props) => {
                 {additionalCategorySets.map((set, index) => (
                   <CCard>
                     <CCardBody className="category-card">
-                      <div className="row" key={index}>
+                      <div className="row" key={set.id}>
                         <CCol md={6}>
                           <CFormLabel htmlFor={`selectPublish4_${set.id}`}>
                             {t('category')}

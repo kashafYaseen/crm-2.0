@@ -29,7 +29,7 @@ const Regions = observer(() => {
         'regions',
         null,
         {
-          page: pageNumber,
+          page: pageNumber || 1,
           per_page: perPageNumber,
           query: searchQuery,
         },

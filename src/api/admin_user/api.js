@@ -18,8 +18,14 @@ export async function request(method, endpoint, data, params = {}, auth_token) {
     }
 
     if (method.toUpperCase() === 'GET' && Object.keys(params).length > 0) {
-      const { per_page = 10, page = 1, query, category } = params
-      requestConfig.params = { per_page, page, ...(query && { query }), category }
+      const { query, category, page, per_page } = params
+
+      Object.assign(requestConfig.params, {
+        ...(category && { category }),
+        ...(query && { query }),
+        ...(page && { page }),
+        ...(per_page && { per_page }),
+      })
     }
 
     const response = await axios(requestConfig)

@@ -86,7 +86,7 @@ const Index = observer(() => {
         'place_categories',
         null,
         {
-          page: pageNumber,
+          page: pageNumber || 1,
           per_page: perPageNumber,
           query: searchQuery,
         },

@@ -103,7 +103,7 @@ const Index = () => {
         'amenities',
         null,
         {
-          page: pageNumber,
+          page: pageNumber || 1,
           per_page: perPageNumber,
           query: searchQuery,
         },

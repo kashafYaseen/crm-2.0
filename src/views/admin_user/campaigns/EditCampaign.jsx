@@ -16,7 +16,13 @@ const EditCampaign = () => {
   useEffect(() => {
     const handleCreateNewRecord = async () => {
       try {
-        const response = await campaigns_data('get', 'campaigns/new', null, {}, authToken)
+        const response = await campaigns_data(
+          'get',
+          `campaigns/${campaign_to_update.id}/edit`,
+          null,
+          {},
+          authToken,
+        )
         setCountries(response.countries)
       } catch (error) {
         console.error('Error fetching Countries:', error)
