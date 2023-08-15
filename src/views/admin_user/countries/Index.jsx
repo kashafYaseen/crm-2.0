@@ -64,7 +64,7 @@ const Countries = observer(() => {
       td: (row) => (
         <>
           <Link
-            to={`/${i18next.language}/admin-user/countries/country-form`}
+            to={`/${i18next.language}/admin-user/countries/edit`}
             state={{ record: row }}
             className="custom-link"
           >
@@ -94,7 +94,7 @@ const Countries = observer(() => {
     <div className="display">
       <h2 className="mb-3">{t('Countries')}</h2>
       <div className="create-button-div">
-        <Link to={`/${i18next.language}/admin-user/countries/country-form`}>
+        <Link to={`/${i18next.language}/admin-user/countries/new`}>
           <button className="create-button">{t('create_new_country')}</button>
         </Link>
       </div>

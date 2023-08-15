@@ -53,11 +53,9 @@ const Form = observer((props) => {
       const nameError = error.response.data.errors.name
       if (nameError && nameError.length > 0) {
         setServerError('Naam ' + nameError[0])
-        formik.resetForm()
       }
     } else {
       setServerError('An error occurred. Please try again: ' + error.toString())
-      formik.resetForm()
     }
     setShowToast(true)
     setErrorType('danger')

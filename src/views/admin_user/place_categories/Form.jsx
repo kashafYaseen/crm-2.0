@@ -19,6 +19,7 @@ import { place_categories_data } from '@/api/admin_user/config/resources/placeCa
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
 import { useTranslation } from 'react-i18next'
+import { Alert } from 'reactstrap'
 
 const Form = observer((props) => {
   const authStore = useStores()
@@ -28,6 +29,7 @@ const Form = observer((props) => {
   const [serverError, setServerError] = useState('')
   const authToken = authStore((state) => state.token)
   const { t } = useTranslation()
+  const [visible, setVisible] = useState(true)
 
   const initialValues = {
     place_category: {
@@ -48,12 +50,12 @@ const Form = observer((props) => {
     if (error.response && error.response.data && error.response.data.errors) {
       const nameError = error.response.data.errors.name
       if (nameError && nameError.length > 0) {
+        setVisible(true)
         setServerError('Naam ' + nameError[0])
-        formik.resetForm()
       }
     } else {
+      setVisible(true)
       setServerError('An error occurred. Please try again: ' + error.toString())
-      formik.resetForm()
     }
   }
 
@@ -110,26 +112,23 @@ const Form = observer((props) => {
     setShowToast(false)
   }
 
+  const onDismiss = () => {
+    setVisible(false)
+  }
+
   return (
     <div className="display">
-      {serverError && <div className="server-error-message">{serverError}</div>}
+      {serverError && (
+        <Alert color="danger" isOpen={visible} toggle={onDismiss}>
+          <div className="server-error-message">{serverError}</div>
+        </Alert>
+      )}
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            {props.place_category_to_update ? (
-              <CCardHeader>
-                <strong>
-                  {t('edit')} {t('place_category')}
-                </strong>
-              </CCardHeader>
-            ) : (
-              <CCardHeader>
-                <strong> {t('create_new_place_category')} </strong>
-              </CCardHeader>
-            )}
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>

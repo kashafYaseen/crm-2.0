@@ -15,7 +15,13 @@ const NewRegion = () => {
   useEffect(() => {
     const handleCreateNewRecord = async () => {
       try {
-        const response = await regions_data('get', 'regions/new', null, {}, authToken)
+        const response = await regions_data(
+          'get',
+          `regions/${region_to_update.id}/edit`,
+          null,
+          {},
+          authToken,
+        )
         setCountriesData(response.data)
       } catch (error) {
         console.error('Error fetching Countries', error)

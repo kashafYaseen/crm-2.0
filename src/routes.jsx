@@ -6,7 +6,8 @@ const Regions = React.lazy(() => import('@admin_user_views/regions/Index'))
 const EditRegion = React.lazy(() => import('@admin_user_views/regions/EditRegion'))
 const NewRegion = React.lazy(() => import('@admin_user_views/regions/NewRegion'))
 
-const CountryForm = React.lazy(() => import('@admin_user_views/countries/Form'))
+const NewCountry = React.lazy(() => import('@admin_user_views/countries/NewCountry'))
+const EditCountry = React.lazy(() => import('@admin_user_views/countries/EditCountry'))
 const Places = React.lazy(() => import('@admin_user_views/places/Index'))
 const NewPlace = React.lazy(() => import('@admin_user_views/places/NewPlace'))
 const EditPlace = React.lazy(() => import('@admin_user_views/places/EditPlace'))
@@ -41,27 +42,32 @@ const admin_routes = [
     element: EditPartner,
   },
   {
-    path: '/countries/country-form', // Nested path under '/countries'
-    name: 'Country Form',
-    element: CountryForm,
+    path: '/countries/new', // Nested path under '/countries'
+    name: 'New Country',
+    element: NewCountry,
   },
   {
-    path: '/regions/edit-region',
+    path: '/countries/edit', // Nested path under '/countries'
+    name: 'Edit Country',
+    element: EditCountry,
+  },
+  {
+    path: '/regions/edit',
     name: 'EditRegion',
     element: EditRegion,
   },
   {
-    path: '/regions/new-region',
+    path: '/regions/new',
     name: 'NewRegion',
     element: NewRegion,
   },
   {
-    path: '/places/new-place',
+    path: '/places/new',
     name: 'New Place',
     element: NewPlace,
   },
   {
-    path: '/places/edit-place',
+    path: '/places/edit',
     name: 'Edit Place',
     element: EditPlace,
   },
