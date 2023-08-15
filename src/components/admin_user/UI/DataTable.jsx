@@ -72,7 +72,8 @@ export const DataTable = ({
           sortable
           pageSize={rowsPerPage}
           columns={columns}
-          className="custom-table table table-striped table-bordered"
+          showPagination={false}
+          className="custom-table table table-striped table-bordered hide-tfoot"
         />
       )}
 
