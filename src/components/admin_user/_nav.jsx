@@ -34,13 +34,33 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'New Partner Page',
-        to: '/admin-user/new-partner',
+        name: 'Active Partners',
+        to: '/admin-user/active-partner',
+      },
+      {
+        component: CNavItem,
+        name: 'Inactive Partners',
+        to: '/admin-user/inactive-partner',
       },
       {
         component: CNavItem,
         name: 'Exact Partner Account',
-        to: '/admin-user/partners',
+        to: '/admin-user/exact-partner-account',
+      },
+      {
+        component: CNavItem,
+        name: 'Statistics/Inventory',
+        to: '/admin-user/dashboard',
+      },
+      {
+        component: CNavItem,
+        name: 'New Partner Page',
+        to: '/admin-user/new-partners-page',
+      },
+      {
+        component: CNavItem,
+        name: 'Partner Promotions',
+        to: '/admin-user/dashboard',
       },
     ],
   },
@@ -84,11 +104,6 @@ const _nav = [
         component: CNavItem,
         name: 'Experiences',
         to: '/admin-user/experiences',
-      },
-      {
-        component: CNavItem,
-        name: 'New Partner',
-        to: '/admin-user/business-owner',
       },
     ],
   },
