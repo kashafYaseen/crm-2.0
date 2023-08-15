@@ -17,6 +17,7 @@ import {
 } from '@coreui/react'
 import { Toast } from '@admin_user_components/UI/Toast/Toast'
 import { useFormik } from 'formik'
+import { Alert } from 'reactstrap'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import { useNavigate, Link } from 'react-router-dom'
@@ -37,6 +38,7 @@ const Form = observer((props) => {
   const authToken = authStore((state) => state.token)
   const [fetchingRegionsByCountry, setFetchingRegionsByCountry] = useState(false)
   const [regionsData, setRegionsData] = useState([])
+  const [visible, setVisible] = useState(true)
 
   const { t } = useTranslation()
 
@@ -98,16 +100,13 @@ const Form = observer((props) => {
     if (error.response && error.response.data && error.response.data.errors) {
       const nameError = error.response.data.errors.name
       if (nameError && nameError.length > 0) {
+        setVisible(true)
         setServerError('Naam ' + nameError[0])
-        formik.resetForm()
       }
     } else {
+      setVisible(true)
       setServerError('An error occurred. Please try again: ' + error.toString())
-      formik.resetForm()
     }
-    setShowToast(true)
-    setErrorType('danger')
-    setError('Something went wrong')
   }
 
   const validationSchema = Yup.object().shape({
@@ -168,19 +167,27 @@ const Form = observer((props) => {
     setShowToast(false)
   }
 
+  const onDismiss = () => {
+    setVisible(false)
+  }
+
   return (
     <div className="display">
+      {serverError && (
+        <Alert color="danger" isOpen={visible} toggle={onDismiss}>
+          <div className="server-error-message">{serverError}</div>
+        </Alert>
+      )}
       <CBreadcrumb>
         <CBreadcrumbItem>
           <Link onClick={handleBreadcrumbClick}>{t('partners')}</Link>
         </CBreadcrumbItem>
         {props.owner_data ? (
-          <CBreadcrumbItem active>{t('edit_partner')}</CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('edit')}</CBreadcrumbItem>
         ) : (
-          <CBreadcrumbItem active>{t('new_partner')}</CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('new')}</CBreadcrumbItem>
         )}
       </CBreadcrumb>
-      {serverError && <div className="server-error-message">{serverError}</div>}
 
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
@@ -188,9 +195,6 @@ const Form = observer((props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>{t('new_partner')}</strong>
-            </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
