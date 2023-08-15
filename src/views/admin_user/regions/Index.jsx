@@ -29,7 +29,7 @@ const Regions = observer(() => {
         'regions',
         null,
         {
-          page: pageNumber,
+          page: pageNumber || 1,
           per_page: perPageNumber,
           query: searchQuery,
         },
@@ -64,7 +64,7 @@ const Regions = observer(() => {
       td: (row) => (
         <>
           <Link
-            to={`/${i18next.language}/admin-user/regions/edit-region`}
+            to={`/${i18next.language}/admin-user/regions/edit`}
             state={{ record: row }}
             className="custom-link"
           >
@@ -95,7 +95,7 @@ const Regions = observer(() => {
     <div className="display">
       <h2 className="mb-3">{t('Regions')}</h2>
       <div className="create-button-div">
-        <Link to={`/${i18next.language}/admin-user/regions/new-region`}>
+        <Link to={`/${i18next.language}/admin-user/regions/new`}>
           <button className="create-button">{t('create_new_region')}</button>
         </Link>
       </div>

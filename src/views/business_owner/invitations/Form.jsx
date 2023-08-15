@@ -57,13 +57,11 @@ const Form = observer((props) => {
         setShowToast(true)
         setErrorType('danger')
         setError(nameError.error)
-        formik.resetForm()
       }
     } else {
       setShowToast(true)
       setErrorType('danger')
       setError('Something went wrong')
-      formik.resetForm()
     }
   }
 

@@ -6,7 +6,8 @@ const Regions = React.lazy(() => import('@admin_user_views/regions/Index'))
 const EditRegion = React.lazy(() => import('@admin_user_views/regions/EditRegion'))
 const NewRegion = React.lazy(() => import('@admin_user_views/regions/NewRegion'))
 
-const CountryForm = React.lazy(() => import('@admin_user_views/countries/Form'))
+const NewCountry = React.lazy(() => import('@admin_user_views/countries/NewCountry'))
+const EditCountry = React.lazy(() => import('@admin_user_views/countries/EditCountry'))
 const Places = React.lazy(() => import('@admin_user_views/places/Index'))
 const NewPlace = React.lazy(() => import('@admin_user_views/places/NewPlace'))
 const EditPlace = React.lazy(() => import('@admin_user_views/places/EditPlace'))
@@ -28,6 +29,9 @@ const EditPartner = React.lazy(() =>
 const NewPartner = React.lazy(() =>
   import('@admin_user_views/partners/new_partner_page/NewPartner'),
 )
+const Campaigns = React.lazy(() => import('@admin_user_views/campaigns/Index'))
+const NewCampaign = React.lazy(() => import('@admin_user_views/campaigns/NewCampaign'))
+const EditCampaign = React.lazy(() => import('@admin_user_views/campaigns/EditCampaign'))
 
 const OwnerDashboard = React.lazy(() => import('@business_owner_views/dashboard/Dashboard'))
 
@@ -53,30 +57,38 @@ const admin_routes = [
     element: EditPartner,
   },
   {
-    path: '/countries/country-form', // Nested path under '/countries'
-    name: 'Country Form',
-    element: CountryForm,
+    path: '/countries/new', // Nested path under '/countries'
+    name: 'New Country',
+    element: NewCountry,
   },
   {
-    path: '/regions/edit-region',
+    path: '/countries/edit', // Nested path under '/countries'
+    name: 'Edit Country',
+    element: EditCountry,
+  },
+  {
+    path: '/regions/edit',
     name: 'EditRegion',
     element: EditRegion,
   },
   {
-    path: '/regions/new-region',
+    path: '/regions/new',
     name: 'NewRegion',
     element: NewRegion,
   },
   {
-    path: '/places/new-place',
+    path: '/places/new',
     name: 'New Place',
     element: NewPlace,
   },
   {
-    path: '/places/edit-place',
+    path: '/places/edit',
     name: 'Edit Place',
     element: EditPlace,
   },
+  { path: '/campaigns', name: 'Campaigns', element: Campaigns },
+  { path: '/campaigns/new', name: 'New Campaign', element: NewCampaign },
+  { path: '/campaigns/edit', name: 'Edit Campaign', element: EditCampaign },
 ]
 
 const owner_routes = [{ path: '/dashboard', name: 'Dashboard', element: OwnerDashboard }]

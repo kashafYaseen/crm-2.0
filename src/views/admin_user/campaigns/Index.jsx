@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react'
 import 'react-flexy-table/dist/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Modal, ModalHeader, ModalBody } from 'reactstrap'
-import Form from './Form'
+import { Link } from 'react-router-dom'
 import { CSpinner } from '@coreui/react'
 import '@/scss/_custom.scss'
-import { DataTable } from '@admin_user_components/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
-import { place_categories_data } from '@/api/admin_user/config/resources/placeCategories'
+import { campaigns_data } from '@/api/admin_user/config/resources/campaigns'
+import { DataTable } from '@admin_user_components/UI/DataTable'
 import { useStores } from '@/context/storeContext'
-import { observer } from 'mobx-react'
+import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
 
-const Index = observer(() => {
+const Index = () => {
   const authStore = useStores()
+
   const [data, setData] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showToast, setShowToast] = useState(false)
@@ -23,10 +23,6 @@ const Index = observer(() => {
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
-
-  const [modal, setModal] = useState(false)
-  const [selectedRecord, setSelectedRecord] = useState(null)
-
   const authToken = authStore((state) => state.token)
   const { t } = useTranslation()
 
@@ -35,55 +31,106 @@ const Index = observer(() => {
   }
 
   const searchQueryHandler = async () => {
-    fetch_place_categories_data()
+    fetch_campaigns_data()
   }
 
-  const deletePlace = async (id) => {
+  const deleteCampaign = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this record?')
     if (confirmDelete) {
       try {
-        const response = await place_categories_data(
-          'DELETE',
-          `place_categories/${id}`,
-          null,
-          {},
-          authToken,
-        )
+        const response = await campaigns_data('DELETE', `campaigns/${id}`, null, {}, authToken)
+        fetch_campaigns_data()
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
-        fetch_place_categories_data()
       } catch (error) {
-        console.error('Error Deleting Place Category', error)
+        console.error('Error Deleting Campaign:', error)
       }
     }
   }
 
-  const openEditModal = (record) => {
-    setSelectedRecord(record)
-    setModal(true)
-  }
-
   const columns = [
-    { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
+    { header: t('title'), key: 'title', td: (row) => row.title ?? 'N/A' },
+    { header: t('country'), key: 'country', td: (row) => row.country ?? 'N/A' },
+    { header: t('region'), key: 'region', td: (row) => row.region ?? 'N/A' },
+    { header: t('campaigns_trans.url'), key: 'url', td: (row) => row.url ?? 'N/A' },
+    {
+      header: t('campaigns_trans.auto_complete'),
+      key: 'popular_homepage',
+      td: (row) => {
+        return (
+          <span
+            className={`badge ${row.popular_homepage ? 'badge bg-success' : 'badge bg-danger'}`}
+          >
+            {row.popular_homepage ? 'True' : 'False'}
+          </span>
+        )
+      },
+    },
+    {
+      header: t('campaigns_trans.collection'),
+      key: 'collection',
+      td: (row) => {
+        return (
+          <span className={`badge ${row.collection ? 'badge bg-success' : 'badge bg-danger'}`}>
+            {row.collection ? 'True' : 'False'}
+          </span>
+        )
+      },
+    },
+    {
+      header: t('campaigns_trans.footer'),
+      key: 'footer',
+      td: (row) => {
+        return (
+          <span className={`badge ${row.footer ? 'badge bg-success' : 'badge bg-danger'}`}>
+            {row.footer ? 'True' : 'False'}
+          </span>
+        )
+      },
+    },
+    {
+      header: t('campaigns_trans.top_menu'),
+      key: 'top_menu',
+      td: (row) => {
+        return (
+          <span className={`badge ${row.top_menu ? 'badge bg-success' : 'badge bg-danger'}`}>
+            {row.top_menu ? 'True' : 'False'}
+          </span>
+        )
+      },
+    },
+    {
+      header: t('campaigns_trans.homepage'),
+      key: 'homepage',
+      td: (row) => {
+        return (
+          <span className={`badge ${row.homepage ? 'badge bg-success' : 'badge bg-danger'}`}>
+            {row.homepage ? 'True' : 'False'}
+          </span>
+        )
+      },
+    },
+
     {
       header: t('actions'),
       td: (row) => (
         <>
-          <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
-          <FontAwesomeIcon onClick={() => deletePlace(row.id)} icon={faTrash} />
+          <Link to={`/${i18next.language}/admin-user/campaigns/edit`} state={{ record: row }}>
+            <FontAwesomeIcon icon={faEdit} />
+          </Link>
+          <FontAwesomeIcon onClick={() => deleteCampaign(row.id)} icon={faTrash} />
         </>
       ),
     },
   ]
 
-  const fetch_place_categories_data = async (pageNumber) => {
+  const fetch_campaigns_data = async (pageNumber) => {
     setLoading(true)
-
     try {
-      const { data, totalRecords } = await place_categories_data(
+      const { data, totalRecords } = await campaigns_data(
         'get',
-        'place_categories',
+        'campaigns',
         null,
         {
           page: pageNumber || 1,
@@ -103,7 +150,7 @@ const Index = observer(() => {
   }
 
   useEffect(() => {
-    fetch_place_categories_data()
+    fetch_campaigns_data()
   }, [perPageNumber])
 
   const handleToastHide = () => {
@@ -111,42 +158,25 @@ const Index = observer(() => {
   }
 
   const onPageChangeHandler = (value) => {
-    fetch_place_categories_data(value)
+    fetch_campaigns_data(value)
   }
 
   const onPerPageChangeHandler = (value) => {
     setPerPageNumber(value)
   }
 
-  const handleFormSubmit = async () => {
-    await fetch_place_categories_data()
-    setModal(false)
-    setSelectedRecord(null)
-  }
-
   return (
     <div className="display">
-      <Modal size="lg" isOpen={modal} toggle={() => setModal(!modal)}>
-        <ModalHeader toggle={() => setModal(!modal)}>{t('Place Category')}</ModalHeader>
-        <ModalBody>
-          <Form place_category_to_update={selectedRecord} onSubmitCallback={handleFormSubmit} />
-        </ModalBody>
-      </Modal>
-
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <h2 className="mb-3">{t('place_categories')}</h2>
+
+      <h2 className="mb-3">{t('campaigns')}</h2>
+
       <div className="create-button-div">
-        <button
-          className="create-button"
-          onClick={() => {
-            setModal(true)
-            setSelectedRecord(null)
-          }}
-        >
-          {t('create_new_place_category')}
-        </button>
+        <Link to={`/${i18next.language}/admin-user/campaigns/new`}>
+          <button className="create-button">{t('create_new_campaign')}</button>
+        </Link>
       </div>
 
       <div className="search-container">
@@ -177,6 +207,6 @@ const Index = observer(() => {
       )}
     </div>
   )
-})
+}
 
 export default Index

@@ -26,6 +26,7 @@ import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
+import { Alert } from 'reactstrap'
 
 const Form = observer((props) => {
   const authStore = useStores()
@@ -41,6 +42,7 @@ const Form = observer((props) => {
   const authToken = authStore((state) => state.token)
   const [serverError, setServerError] = useState('')
   const { t } = useTranslation()
+  const [visible, setVisible] = useState(true)
 
   const defaultValues = {
     place: {
@@ -75,8 +77,8 @@ const Form = observer((props) => {
   })
 
   const serverErrorHandler = (error) => {
+    setVisible(true)
     setServerError('An error occurred. Please try again: ' + error.toString())
-    formik.resetForm()
   }
 
   const formik = useFormik({
@@ -160,20 +162,26 @@ const Form = observer((props) => {
     fetchRegionsForEdit()
   }, [props.place_to_update])
 
+  const onDismiss = () => {
+    setVisible(false)
+  }
+
   return (
     <div className="display">
-      {serverError && <div className="server-error-message">{serverError}</div>}
+      {serverError && (
+        <Alert color="danger" isOpen={visible} toggle={onDismiss}>
+          <div className="server-error-message">{serverError}</div>
+        </Alert>
+      )}
 
       <CBreadcrumb>
         <CBreadcrumbItem>
           <Link to={`/${i18next.language}/admin-user/places`}>{t('place')}</Link>
         </CBreadcrumbItem>
         {props.place_to_update ? (
-          <CBreadcrumbItem active>
-            {t('edit')} {t('place')}
-          </CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('edit')}</CBreadcrumbItem>
         ) : (
-          <CBreadcrumbItem active>{t('create_new_place')}</CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('new')}</CBreadcrumbItem>
         )}
       </CBreadcrumb>
       <div className="toast-container">
@@ -182,9 +190,6 @@ const Form = observer((props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>{t('create_new_place')} </strong>
-            </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
@@ -470,9 +475,11 @@ const Form = observer((props) => {
                 </CRow>
 
                 <CCol xs={12}>
-                  <CButton type="submit" className="create-button formik-btn">
-                    {t('submit')}
-                  </CButton>
+                  <div className="button-container">
+                    <CButton type="submit" className="create-form-button formik-btn">
+                      {t('submit')}
+                    </CButton>
+                  </div>
                 </CCol>
               </CForm>
             </CCardBody>

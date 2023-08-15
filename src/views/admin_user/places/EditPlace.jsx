@@ -16,7 +16,13 @@ const NewPlace = () => {
   useEffect(() => {
     const handleCreateNewRecord = async () => {
       try {
-        const response = await places_data('get', 'places/new', null, {}, authToken)
+        const response = await places_data(
+          'get',
+          `places/${place_to_update.id}/edit`,
+          null,
+          {},
+          authToken,
+        )
         setPlaceCategories(response.place_categories)
         setCountriesData(response.countries)
       } catch (error) {

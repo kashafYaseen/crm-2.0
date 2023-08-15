@@ -105,6 +105,16 @@ const _nav = [
         name: 'Experiences',
         to: '/admin-user/experiences',
       },
+      {
+        component: CNavItem,
+        name: 'Campaigns',
+        to: '/admin-user/campaigns',
+      },
+      {
+        component: CNavItem,
+        name: 'New Partner',
+        to: '/admin-user/business-owner',
+      },
     ],
   },
 ]

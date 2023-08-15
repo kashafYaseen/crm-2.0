@@ -21,17 +21,16 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
 import JoditEditor from 'jodit-react'
-import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
+import { Alert } from 'reactstrap'
 
 const Form = observer((props) => {
   const authStore = useStores()
-  const location = useLocation()
   const navigate = useNavigate()
-  const country_data = location.state && location.state.record
   const [showToast, setShowToast] = useState(false)
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
@@ -40,25 +39,26 @@ const Form = observer((props) => {
   const content_en_editor = useRef(null)
   const content_nl_editor = useRef(null)
   const { t } = useTranslation()
+  const [visible, setVisible] = useState(true)
 
   const initialValues = {
     country: {
-      name_en: country_data?.name_en || '',
-      name_nl: country_data?.name_nl || '',
-      slug_en: country_data?.slug_en || '',
-      slug_nl: country_data?.slug_nl || '',
-      content_en: country_data?.content_en || '',
-      content_nl: country_data?.content_nl || '',
-      title_en: country_data?.title_en || '',
-      title_nl: country_data?.title_nl || '',
-      meta_title_en: country_data?.meta_title_en || '',
-      meta_title_nl: country_data?.meta_title_nl || '',
-      disable: country_data?.disable || '',
-      villas_desc: country_data?.villas_desc || '',
-      apartment_desc: country_data?.apartment_desc || '',
-      bb_desc: country_data?.bb_desc || '',
-      dropdown: country_data?.dropdown || '',
-      sidebar: country_data?.sidebar || '',
+      name_en: props.country_to_update?.name_en || '',
+      name_nl: props.country_to_update?.name_nl || '',
+      slug_en: props.country_to_update?.slug_en || '',
+      slug_nl: props.country_to_update?.slug_nl || '',
+      content_en: props.country_to_update?.content_en || '',
+      content_nl: props.country_to_update?.content_nl || '',
+      title_en: props.country_to_update?.title_en || '',
+      title_nl: props.country_to_update?.title_nl || '',
+      meta_title_en: props.country_to_update?.meta_title_en || '',
+      meta_title_nl: props.country_to_update?.meta_title_nl || '',
+      disable: props.country_to_update?.disable || '',
+      villas_desc: props.country_to_update?.villas_desc || '',
+      apartment_desc: props.country_to_update?.apartment_desc || '',
+      bb_desc: props.country_to_update?.bb_desc || '',
+      dropdown: props.country_to_update?.dropdown || '',
+      sidebar: props.country_to_update?.sidebar || '',
     },
   }
 
@@ -70,19 +70,8 @@ const Form = observer((props) => {
   }, [])
 
   const serverErrorHandler = (error) => {
-    if (error.response && error.response.data && error.response.data.errors) {
-      const nameError = error.response.data.errors.name
-      if (nameError && nameError.length > 0) {
-        setServerError('Naam ' + nameError[0])
-        formik.resetForm()
-      }
-    } else {
-      setServerError('An error occurred. Please try again: ' + error.toString())
-      formik.resetForm()
-    }
-    setShowToast(true)
-    setErrorType('danger')
-    setError('Something went wrong')
+    setVisible(true)
+    setServerError('An error occurred. Please try again: ' + error.toString())
   }
 
   const validationSchema = Yup.object().shape({
@@ -98,11 +87,11 @@ const Form = observer((props) => {
     onSubmit: async (values) => {
       await formik.validateForm()
       if (formik.isValid) {
-        if (country_data) {
+        if (props.country_to_update) {
           try {
             const extractedData = await countries_data(
               'put',
-              `countries/${country_data.id}`,
+              `countries/${props.country_to_update.id}`,
               values,
               {},
               authToken,
@@ -138,22 +127,28 @@ const Form = observer((props) => {
     setShowToast(false)
   }
 
+  const onDismiss = () => {
+    setVisible(false)
+  }
+
   return (
     <div className="display">
+      {serverError && (
+        <Alert color="danger" isOpen={visible} toggle={onDismiss}>
+          <div className="server-error-message">{serverError}</div>
+        </Alert>
+      )}
+
       <CBreadcrumb>
         <CBreadcrumbItem>
           <Link to={`/${i18next.language}/admin-user/countries`}>{t('country')}</Link>
         </CBreadcrumbItem>
-        {country_data ? (
-          <CBreadcrumbItem active>
-            {' '}
-            {t('edit')} {t('country')}
-          </CBreadcrumbItem>
+        {props.country_to_update ? (
+          <CBreadcrumbItem active>{t('edit')}</CBreadcrumbItem>
         ) : (
-          <CBreadcrumbItem active>{t('create_new_country')}</CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('new')}</CBreadcrumbItem>
         )}
       </CBreadcrumb>
-      {serverError && <div className="server-error-message">{serverError}</div>}
 
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
@@ -161,9 +156,6 @@ const Form = observer((props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>{t('create_new_country')}</strong>
-            </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
@@ -488,9 +480,11 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CButton color="dark" type="submit" className="create-button">
-                    {t('submit')}
-                  </CButton>
+                  <div className="button-container">
+                    <CButton type="submit" className="create-form-button formik-btn">
+                      {t('submit')}
+                    </CButton>
+                  </div>
                 </CCol>
               </CForm>
             </CCardBody>

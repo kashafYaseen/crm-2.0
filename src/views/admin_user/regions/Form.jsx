@@ -26,6 +26,7 @@ import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
+import { Alert } from 'reactstrap'
 
 const Form = observer((props) => {
   const authStore = useStores()
@@ -38,6 +39,7 @@ const Form = observer((props) => {
   const content_en_editor = useRef(null)
   const content_nl_editor = useRef(null)
   const { t } = useTranslation()
+  const [visible, setVisible] = useState(true)
 
   const initialValues = {
     region: {
@@ -64,16 +66,13 @@ const Form = observer((props) => {
     if (error.response && error.response.data && error.response.data.errors) {
       const nameError = error.response.data.errors.name
       if (nameError && nameError.length > 0) {
+        setVisible(true)
         setServerError('Naam ' + nameError[0])
-        formik.resetForm()
       }
     } else {
+      setVisible(true)
       setServerError('An error occurred. Please try again: ' + error.toString())
-      formik.resetForm()
     }
-    setShowToast(true)
-    setErrorType('danger')
-    setError('Something went wrong')
   }
 
   const validationSchema = Yup.object().shape({
@@ -129,22 +128,27 @@ const Form = observer((props) => {
   const handleToastHide = () => {
     setShowToast(false)
   }
+  const onDismiss = () => {
+    setVisible(false)
+  }
 
   return (
     <div className="display">
+      {serverError && (
+        <Alert color="danger" isOpen={visible} toggle={onDismiss}>
+          <div className="server-error-message">{serverError}</div>
+        </Alert>
+      )}
       <CBreadcrumb>
         <CBreadcrumbItem>
           <Link to={`/${i18next.language}/admin-user/regions`}>{t('region')}</Link>
         </CBreadcrumbItem>
         {props.region_data ? (
-          <CBreadcrumbItem active>
-            {t('edit')} {t('region')}
-          </CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('edit')}</CBreadcrumbItem>
         ) : (
-          <CBreadcrumbItem active>{t('create_new_region')}</CBreadcrumbItem>
+          <CBreadcrumbItem active>{t('new')}</CBreadcrumbItem>
         )}
       </CBreadcrumb>
-      {serverError && <div className="server-error-message">{serverError}</div>}
 
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
@@ -152,9 +156,6 @@ const Form = observer((props) => {
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-4">
-            <CCardHeader>
-              <strong>{t('create_new_region')}</strong>
-            </CCardHeader>
             <CCardBody>
               <CForm className="row g-3" onSubmit={formik.handleSubmit}>
                 <CCol md={6}>
@@ -501,9 +502,11 @@ const Form = observer((props) => {
                 </CCol>
 
                 <CCol xs={12}>
-                  <CButton color="dark" type="submit" className="create-button">
-                    {t('submit')}
-                  </CButton>
+                  <div className="button-container">
+                    <CButton type="submit" className="create-form-button formik-btn">
+                      {t('submit')}
+                    </CButton>
+                  </div>
                 </CCol>
               </CForm>
             </CCardBody>
