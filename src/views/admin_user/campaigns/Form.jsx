@@ -378,79 +378,84 @@ const Form = observer((props) => {
                 </CCol>
 
                 {additionalCategorySets.map((set, index) => (
-                  <div key={index} className="row">
-                    <CCol md={6}>
-                      <CFormLabel htmlFor={`selectPublish4_${set.id}`}>{t('category')}</CFormLabel>
-                      <CFormSelect
-                        onChange={(event) => handleAdditionalCategoryChange(index, event)}
-                        value={set.category}
-                      >
-                        <option value="">Select</option>
-                        {Object.entries(CATEGORY).map(([key, value]) => (
-                          <option key={key} value={key}>
-                            {value}
-                          </option>
-                        ))}
-                      </CFormSelect>
-                    </CCol>
-
-                    {/* ... Subsequent Dropdown field ... */}
-                    <CCol md={6}>
-                      <CFormLabel htmlFor={`selectPublish4_${set.id}`}>
-                        {CATEGORY[additionalCategorySets[index].category]
-                          ? CATEGORY[additionalCategorySets[index].category]
-                          : 'Please select a category first'}
-                      </CFormLabel>
-
-                      {index > 0 && (
-                        <FontAwesomeIcon
-                          icon={faTimes}
-                          className="remove-icon"
-                          onClick={() => handleRemoveCategory(index)}
-                        />
-                      )}
-
-                      <CFormSelect
-                        disabled={
-                          !formik.values.campaign.category ||
-                          loadingCategory[selectedAdditionalCategories[index]]
-                        }
-                        value={
-                          set.value
-                            ? set.value
-                            : props.campaign_to_update
-                            ? Object.values(props.campaign_to_update?.category)[index]
-                            : ''
-                        }
-                        onChange={(event) => {
-                          const selectedValue = event.target.value
-                          const newCategorySets = [...additionalCategorySets]
-                          newCategorySets[index].value = selectedValue
-                          setAdditionalCategorySets(newCategorySets)
-                        }}
-                      >
-                        {loadingCategory[selectedAdditionalCategories[index]] ? (
-                          // Show "Loading" when fetching is in progress
-                          <option value="">Loading...</option>
-                        ) : (
-                          <>
+                  <CCard>
+                    <CCardBody className="category-card">
+                      <div className="row" key={index}>
+                        <CCol md={6}>
+                          <CFormLabel htmlFor={`selectPublish4_${set.id}`}>
+                            {t('category')}
+                          </CFormLabel>
+                          <CFormSelect
+                            onChange={(event) => handleAdditionalCategoryChange(index, event)}
+                            value={set.category}
+                          >
                             <option value="">Select</option>
-                            {categoryResponses[selectedAdditionalCategories[index]]?.length > 0 ? (
-                              categoryResponses[selectedAdditionalCategories[index]].map(
-                                ({ id, name }) => (
-                                  <option key={id} value={id}>
-                                    {name}
-                                  </option>
-                                ),
-                              )
+                            {Object.entries(CATEGORY).map(([key, value]) => (
+                              <option key={key} value={key}>
+                                {value}
+                              </option>
+                            ))}
+                          </CFormSelect>
+                        </CCol>
+
+                        {/* ... Subsequent Dropdown field ... */}
+                        <CCol md={6}>
+                          <CFormLabel htmlFor={`selectPublish4_${set.id}`}>
+                            {CATEGORY[additionalCategorySets[index].category]
+                              ? CATEGORY[additionalCategorySets[index].category]
+                              : 'Please select a category first'}
+                          </CFormLabel>
+
+                          <FontAwesomeIcon
+                            icon={faTimes}
+                            className="remove-icon"
+                            onClick={() => handleRemoveCategory(index)}
+                          />
+
+                          <CFormSelect
+                            disabled={
+                              !formik.values.campaign.category ||
+                              loadingCategory[selectedAdditionalCategories[index]]
+                            }
+                            value={
+                              set.value
+                                ? set.value
+                                : props.campaign_to_update
+                                ? Object.values(props.campaign_to_update?.category)[index]
+                                : ''
+                            }
+                            onChange={(event) => {
+                              const selectedValue = event.target.value
+                              const newCategorySets = [...additionalCategorySets]
+                              newCategorySets[index].value = selectedValue
+                              setAdditionalCategorySets(newCategorySets)
+                            }}
+                          >
+                            {loadingCategory[selectedAdditionalCategories[index]] ? (
+                              // Show "Loading" when fetching is in progress
+                              <option value="">Loading...</option>
                             ) : (
-                              <option value="">No options available</option>
+                              <>
+                                <option value="">Select</option>
+                                {categoryResponses[selectedAdditionalCategories[index]]?.length >
+                                0 ? (
+                                  categoryResponses[selectedAdditionalCategories[index]].map(
+                                    ({ id, name }) => (
+                                      <option key={id} value={id}>
+                                        {name}
+                                      </option>
+                                    ),
+                                  )
+                                ) : (
+                                  <option value="">No options available</option>
+                                )}
+                              </>
                             )}
-                          </>
-                        )}
-                      </CFormSelect>
-                    </CCol>
-                  </div>
+                          </CFormSelect>
+                        </CCol>
+                      </div>
+                    </CCardBody>
+                  </CCard>
                 ))}
 
                 <CCol xs={12}>
