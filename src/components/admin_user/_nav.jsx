@@ -54,8 +54,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'New Partner Page',
-        to: '/admin-user/new-partners-page',
+        name: 'New Partners',
+        to: '/admin-user/new-partners',
       },
       {
         component: CNavItem,

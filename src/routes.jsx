@@ -14,7 +14,7 @@ const EditPlace = React.lazy(() => import('@admin_user_views/places/EditPlace'))
 const PlaceCategories = React.lazy(() => import('@admin_user_views/place_categories/Index'))
 const Amenities = React.lazy(() => import('@admin_user_views/amenities/Index'))
 const AmenityCategories = React.lazy(() => import('@admin_user_views/amenity_categories/Index'))
-const Partners = React.lazy(() => import('@admin_user_views/partners/new_partner_page/Index'))
+const Partners = React.lazy(() => import('@admin_user_views/partners/new_partner/Index'))
 const ActivePartners = React.lazy(() => import('@admin_user_views/partners/active_partner/Index'))
 const InactivePartners = React.lazy(() =>
   import('@admin_user_views/partners/inactive_partner/Index'),
@@ -23,12 +23,8 @@ const ExactPartners = React.lazy(() =>
   import('@admin_user_views/partners/exact_partner_account/Index'),
 )
 const Experiences = React.lazy(() => import('@admin_user_views/experiences/Index'))
-const EditPartner = React.lazy(() =>
-  import('@admin_user_views/partners/new_partner_page/EditPartner'),
-)
-const NewPartner = React.lazy(() =>
-  import('@admin_user_views/partners/new_partner_page/NewPartner'),
-)
+const EditPartner = React.lazy(() => import('@admin_user_views/partners/new_partner/EditPartner'))
+const NewPartner = React.lazy(() => import('@admin_user_views/partners/new_partner/NewPartner'))
 const Campaigns = React.lazy(() => import('@admin_user_views/campaigns/Index'))
 const NewCampaign = React.lazy(() => import('@admin_user_views/campaigns/NewCampaign'))
 const EditCampaign = React.lazy(() => import('@admin_user_views/campaigns/EditCampaign'))
@@ -49,7 +45,7 @@ const admin_routes = [
   { path: '/inactive-partner', name: 'Inactive Partners', element: InactivePartners },
   { path: '/active-partner', name: 'Active Partners', element: ActivePartners },
 
-  { path: '/new-partners-page', name: 'Partners', element: Partners },
+  { path: '/new-partners', name: 'Partners', element: Partners },
   { path: '/new', name: 'New Partner', element: NewPartner },
   {
     path: '/edit',

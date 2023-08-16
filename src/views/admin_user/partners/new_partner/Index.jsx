@@ -71,27 +71,6 @@ const Partners = observer(() => {
           </CCard>
         </CCol>
       </CRow>
-      <CRow className="mt-4">
-        <CCard>
-          <CCardHeader>
-            <strong>Pre Aquisition Fase</strong>
-          </CCardHeader>
-          <CCardBody>
-            <div className="custom-search-container">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearchInputChange}
-                placeholder="Search..."
-                className="custom-search-input"
-              />
-              <button className="create-button" onClick={searchQueryHandler}>
-                {t('search')}
-              </button>
-            </div>
-          </CCardBody>
-        </CCard>
-      </CRow>
     </div>
   )
 })

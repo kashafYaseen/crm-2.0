@@ -140,7 +140,7 @@ const Form = observer((props) => {
             setErrorType('success')
             setError('Record Updated Successfully')
             setTimeout(() => {
-              handleBreadcrumbClick()
+              window.history.back()
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -153,7 +153,7 @@ const Form = observer((props) => {
             setErrorType('success')
             setError('Record Created Successfully')
             setTimeout(() => {
-              handleBreadcrumbClick()
+              window.history.back()
             }, 1000)
           } catch (error) {
             serverErrorHandler(error)
@@ -209,7 +209,6 @@ const Form = observer((props) => {
                     }}
                   />
                 </CCol>
-
                 <CCol md={6}>
                   <CFormCheck
                     id="inputNotInterested"
@@ -222,7 +221,6 @@ const Form = observer((props) => {
                     }}
                   />
                 </CCol>
-
                 <CCol md={6}>
                   <CFormCheck
                     id="inputUpdatingAvailability"
@@ -235,7 +233,6 @@ const Form = observer((props) => {
                     }}
                   />
                 </CCol>
-
                 <CCol md={6}>
                   <CFormCheck
                     id="inputAutomatedAvailability"
@@ -248,7 +245,6 @@ const Form = observer((props) => {
                     }}
                   />
                 </CCol>
-
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputCountryId">{t('country')}</CFormLabel>
                   <CFormSelect
@@ -268,6 +264,9 @@ const Form = observer((props) => {
                       </option>
                     ))}
                   </CFormSelect>
+                  {formik.touched.owner?.country_id && formik.errors.owner?.country_id && (
+                    <div className="formik-errors">{formik.errors.owner?.country_id}</div>
+                  )}
                 </CCol>
 
                 <CCol md={6}>
@@ -309,7 +308,6 @@ const Form = observer((props) => {
                     <div className="formik-errors">{formik.errors.owner.region_id}</div>
                   )}
                 </CCol>
-
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputAdminUserId">{t('visited_by')}</CFormLabel>
                   <CFormSelect
@@ -330,7 +328,6 @@ const Form = observer((props) => {
                     ))}
                   </CFormSelect>
                 </CCol>
-
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputEmail">{t('email_translation')}</CFormLabel>
                   <CFormInput
@@ -348,7 +345,6 @@ const Form = observer((props) => {
                     <div className="formik-errors">{formik.errors.owner?.email}</div>
                   )}
                 </CCol>
-
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputFirstName">{t('first_name')}</CFormLabel>
                   <CFormInput
@@ -368,7 +364,6 @@ const Form = observer((props) => {
                     <div className="formik-errors">{formik.errors.owner?.first_name}</div>
                   )}
                 </CCol>
-
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputLastName">{t('last_name')}</CFormLabel>
                   <CFormInput
@@ -388,7 +383,6 @@ const Form = observer((props) => {
                     <div className="formik-errors">{formik.errors.owner?.last_name}</div>
                   )}
                 </CCol>
-
                 <CCol md={12}>
                   <CFormLabel htmlFor="inputLanguage">{t('language')}</CFormLabel>
                   <CFormSelect
@@ -403,7 +397,6 @@ const Form = observer((props) => {
                     <option value="nl">nl</option>
                   </CFormSelect>
                 </CCol>
-
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputBusinessName">{t('business_name')}</CFormLabel>
                   <CFormInput
@@ -423,7 +416,6 @@ const Form = observer((props) => {
                     <div className="formik-errors">{formik.errors.owner?.business_name}</div>
                   )}
                 </CCol>
-
                 <CCol md={6}>
                   <CFormLabel htmlFor="inputAccountId">{t('account_id')}</CFormLabel>
                   <CFormInput
@@ -443,7 +435,6 @@ const Form = observer((props) => {
                     <div className="formik-errors">{formik.errors.owner?.account_id}</div>
                   )}
                 </CCol>
-
                 <CCol xs={12}>
                   <CButton color="dark" type="submit" className="create-button">
                     {t('submit')}

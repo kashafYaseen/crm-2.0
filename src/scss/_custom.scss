@@ -90,7 +90,6 @@
 
 .create-button-div {
   display: flex;
-  // align-items: center;
   justify-content: flex-end;
   margin-bottom: 10px;
 }
@@ -331,4 +330,41 @@ margin-bottom: 5px;
   top: 10px;
   right: 5px;
   color: #303c50;
+}
+
+
+
+.delete-modal-container .confirm-button {
+  background-color: #C41E3A;
+  color: white;
+  border-color: #C41E3A;
+}
+
+.delete-modal-container .confirm-button:hover{
+  background-color: #d43145;
+  color: white;
+  border-color: #d43145;
+}
+
+.delete-modal-container .close-button {
+  color: white;
+}
+.delete-modal-container .close-button:hover {
+  color: white;
+}
+
+.button-div {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  margin-left: calc(-0.5 * 1.5rem) !important;
+  margin-right: calc(-0.5 * 1.5rem) !important;
+}
+
+.card-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  margin-left: calc(-0.5 * 1.5rem) !important;
+  margin-right: calc(-0.5 * 1.5rem) !important;
 }
