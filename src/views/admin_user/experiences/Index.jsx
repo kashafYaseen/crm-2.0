@@ -7,7 +7,7 @@ import { DataTable } from '@/components/admin_user/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
 import Form from './Form'
-import { CSpinner } from '@coreui/react'
+import { CModal, CModalFooter, CModalBody, CButton, CSpinner } from '@coreui/react'
 import { experiences_data } from '@/api/admin_user/config/resources/experiences'
 import { useStores } from '@/context/storeContext'
 import { useTranslation } from 'react-i18next'
@@ -25,6 +25,9 @@ const Index = () => {
   const [loading, setLoading] = useState(true)
   const authToken = authStore((state) => state.token)
 
+  const [visible, setVisible] = useState(false)
+  const [deleteExperienceId, setDeleteExperienceId] = useState('')
+
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
   const { t } = useTranslation()
@@ -37,17 +40,23 @@ const Index = () => {
     fetch_experiences_data()
   }
 
+  const handleDelete = (id) => {
+    setVisible(true)
+    setDeleteExperienceId(id)
+  }
+
   const deleteExperience = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
-    if (confirmDelete) {
+    if (visible) {
       try {
         const response = await experiences_data('DELETE', `experiences/${id}`, null, {}, authToken)
+        setVisible(false)
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
         fetch_experiences_data()
       } catch (error) {
         console.error('Error Deleting Experience Category', error)
+        setVisible(false)
       }
     }
   }
@@ -78,7 +87,7 @@ const Index = () => {
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
-          <FontAwesomeIcon onClick={() => deleteExperience(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => handleDelete(row.id)} icon={faTrash} />
         </>
       ),
     },
@@ -143,6 +152,24 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
+
+      <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
+        <CModalBody>Are you sure you want to delete this record !!</CModalBody>
+        <div className="delete-modal-container">
+          <CModalFooter>
+            <CButton color="secondary" className="close-button" onClick={() => setVisible(false)}>
+              Close
+            </CButton>
+            <CButton
+              className="confirm-button"
+              onClick={() => deleteExperience(deleteExperienceId)}
+            >
+              Delete
+            </CButton>
+          </CModalFooter>
+        </div>
+      </CModal>
+
       <h2 className="mb-3">{t('experiences')}</h2>
       <div className="create-button-div">
         <button

@@ -14,8 +14,11 @@ import {
   CButton,
   CRow,
   CCard,
+  CModal,
   CCardBody,
   CCardHeader,
+  CModalFooter,
+  CModalBody,
 } from '@coreui/react'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
@@ -34,6 +37,9 @@ const InactivePartners = observer(() => {
   const [error, setError] = useState('')
   const [errorType, setErrorType] = useState('')
   const { t } = useTranslation()
+
+  const [visible, setVisible] = useState(false)
+  const [deleteOwnerId, setDeleteOwnerId] = useState('')
 
   const fetchPartners = async (pageNumber) => {
     setLoading(true)
@@ -67,17 +73,23 @@ const InactivePartners = observer(() => {
     setShowToast(false)
   }
 
+  const handleDelete = (id) => {
+    setVisible(true)
+    setDeleteOwnerId(id)
+  }
+
   const deleteOwner = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
-    if (confirmDelete) {
+    if (visible) {
       try {
         const response = await partners_data('DELETE', `owners/${id}`, null, {}, authToken)
+        setVisible(false)
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
         fetchPartners()
       } catch (error) {
         console.error('Error deleting the record', error)
+        setVisible(false)
       }
     }
   }
@@ -147,7 +159,7 @@ const InactivePartners = observer(() => {
           >
             <FontAwesomeIcon icon={faEdit} />
           </Link>
-          <FontAwesomeIcon onClick={() => deleteOwner(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => handleDelete(row.id)} icon={faTrash} />
         </>
       ),
     },
@@ -174,7 +186,22 @@ const InactivePartners = observer(() => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
-      <div className="create-button-div">
+
+      <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
+        <CModalBody>Are you sure you want to delete this record !!</CModalBody>
+        <div className="delete-modal-container">
+          <CModalFooter>
+            <CButton color="secondary" className="close-button" onClick={() => setVisible(false)}>
+              Close
+            </CButton>
+            <CButton className="confirm-button" onClick={() => deleteOwner(deleteOwnerId)}>
+              Delete
+            </CButton>
+          </CModalFooter>
+        </div>
+      </CModal>
+
+      <div className="button-div">
         <Link to={`/${i18next.language}/admin-user/new`}>
           <button className="create-button">{t('create_new_house_owner')}</button>
         </Link>

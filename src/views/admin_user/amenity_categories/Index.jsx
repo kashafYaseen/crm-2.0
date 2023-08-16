@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
 import Form from './Form'
-import { CSpinner } from '@coreui/react'
+import { CModal, CModalFooter, CModalBody, CButton, CSpinner } from '@coreui/react'
 import '@/scss/_custom.scss'
 import { DataTable } from '@admin_user_components/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
@@ -26,6 +26,8 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState(null)
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
+  const [visible, setVisible] = useState(false)
+  const [deleteAmenityCategoryId, setDeleteAmenityCategoryId] = useState('')
 
   const { t } = useTranslation()
 
@@ -37,9 +39,13 @@ const Index = () => {
     fetch_amenity_categories_data()
   }
 
+  const handleDelete = (id) => {
+    setVisible(true)
+    setDeleteAmenityCategoryId(id)
+  }
+
   const deleteAmenity = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
-    if (confirmDelete) {
+    if (visible) {
       try {
         const response = await amenity_categories_data(
           'DELETE',
@@ -48,12 +54,14 @@ const Index = () => {
           {},
           authToken,
         )
+        setVisible(false)
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
         fetch_amenity_categories_data()
       } catch (error) {
         console.error('Error Deleting Amenity Category', error)
+        setVisible(false)
       }
     }
   }
@@ -70,7 +78,7 @@ const Index = () => {
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
-          <FontAwesomeIcon onClick={() => deleteAmenity(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => handleDelete(row.id)} icon={faTrash} />
         </>
       ),
     },
@@ -135,6 +143,24 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
+
+      <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
+        <CModalBody>Are you sure you want to delete this record !!</CModalBody>
+        <div className="delete-modal-container">
+          <CModalFooter>
+            <CButton color="secondary" className="close-button" onClick={() => setVisible(false)}>
+              Close
+            </CButton>
+            <CButton
+              className="confirm-button"
+              onClick={() => deleteAmenity(deleteAmenityCategoryId)}
+            >
+              Delete
+            </CButton>
+          </CModalFooter>
+        </div>
+      </CModal>
+
       <h2 className="mb-3">{t('Amenity Categories')}</h2>
       <div className="create-button-div">
         <button

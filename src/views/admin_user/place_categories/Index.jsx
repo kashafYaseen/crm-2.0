@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
 import Form from './Form'
-import { CSpinner } from '@coreui/react'
+import { CModal, CModalFooter, CModalBody, CButton, CSpinner } from '@coreui/react'
 import '@/scss/_custom.scss'
 import { DataTable } from '@admin_user_components/UI/DataTable'
 import { Toast } from '@admin_user_components/UI/Toast'
@@ -24,6 +24,9 @@ const Index = observer(() => {
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
 
+  const [visible, setVisible] = useState(false)
+  const [deletePlaceCategoryId, setDeletePlaceCategoryId] = useState('')
+
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
 
@@ -39,8 +42,7 @@ const Index = observer(() => {
   }
 
   const deletePlace = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
-    if (confirmDelete) {
+    if (visible) {
       try {
         const response = await place_categories_data(
           'DELETE',
@@ -49,12 +51,14 @@ const Index = observer(() => {
           {},
           authToken,
         )
+        setVisible(false)
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
         fetch_place_categories_data()
       } catch (error) {
         console.error('Error Deleting Place Category', error)
+        setVisible(false)
       }
     }
   }
@@ -64,6 +68,11 @@ const Index = observer(() => {
     setModal(true)
   }
 
+  const handleDelete = (id) => {
+    setVisible(true)
+    setDeletePlaceCategoryId(id)
+  }
+
   const columns = [
     { header: t('name'), key: 'name', td: (row) => row.name ?? 'N/A' },
     {
@@ -71,7 +80,7 @@ const Index = observer(() => {
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
-          <FontAwesomeIcon onClick={() => deletePlace(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => handleDelete(row.id)} icon={faTrash} />
         </>
       ),
     },
@@ -136,6 +145,20 @@ const Index = observer(() => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
+
+      <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
+        <CModalBody>Are you sure you want to delete this record !!</CModalBody>
+        <div className="delete-modal-container">
+          <CModalFooter>
+            <CButton color="secondary" className="close-button" onClick={() => setVisible(false)}>
+              Close
+            </CButton>
+            <CButton className="confirm-button" onClick={() => deletePlace(deletePlaceCategoryId)}>
+              Delete
+            </CButton>
+          </CModalFooter>
+        </div>
+      </CModal>
       <h2 className="mb-3">{t('place_categories')}</h2>
       <div className="create-button-div">
         <button

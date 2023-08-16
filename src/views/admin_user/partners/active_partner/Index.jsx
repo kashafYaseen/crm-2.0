@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import 'react-flexy-table/dist/index.css'
 import '@/scss/_custom.scss'
 import { Link } from 'react-router-dom'
+import { CModal, CModalFooter, CModalBody, CButton, CRow } from '@coreui/react'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
@@ -24,6 +25,9 @@ const ActivePartners = observer(() => {
   const [salesPerPageNumber, setSalesPerPageNumber] = useState(10)
   const [salesSearchQuery, setSalesSearchQuery] = useState('')
 
+  const [visible, setVisible] = useState(false)
+  const [deleteOwnerId, setDeleteOwnerId] = useState('')
+
   const [loading, setLoading] = useState(true)
   const [salesLoading, setSalesLoading] = useState(true)
   const authToken = authStore((state) => state.token)
@@ -35,7 +39,7 @@ const ActivePartners = observer(() => {
   const fetchSalesPartners = async (pageNumber) => {
     setSalesLoading(true)
     try {
-      const { data, salesTotalRecords } = await partners_data(
+      const { data, totalRecords } = await partners_data(
         'GET',
         'owners?active=true',
         null,
@@ -48,7 +52,7 @@ const ActivePartners = observer(() => {
       )
 
       setSalesPartners(data)
-      setSalesTotalRecords(salesTotalRecords)
+      setSalesTotalRecords(totalRecords)
       setSalesLoading(false)
     } catch (error) {
       setSalesLoading(false)
@@ -92,17 +96,23 @@ const ActivePartners = observer(() => {
     setShowToast(false)
   }
 
+  const handleDelete = (id) => {
+    setVisible(true)
+    setDeleteOwnerId(id)
+  }
+
   const deleteOwner = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
-    if (confirmDelete) {
+    if (visible) {
       try {
         const response = await partners_data('DELETE', `owners/${id}`, null, {}, authToken)
+        setVisible(false)
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
         fetchSalesPartners()
       } catch (error) {
         console.error('Error deleting the record', error)
+        setVisible(false)
       }
     }
   }
@@ -141,10 +151,7 @@ const ActivePartners = observer(() => {
 
   return (
     <div className="display">
-      <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
-      </div>
-      <div className="create-button-div">
+      <div className="button-div">
         <Link to={`/${i18next.language}/admin-user/new`}>
           <button className="create-button">{t('create_new_house_owner')}</button>
         </Link>
@@ -152,6 +159,24 @@ const ActivePartners = observer(() => {
           <button className="send-email-button">{t('send_email_for_price_update')}</button>
         </Link>
       </div>
+
+      <div className="toast-container">
+        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+      </div>
+
+      <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
+        <CModalBody>Are you sure you want to delete this record !!</CModalBody>
+        <div className="delete-modal-container">
+          <CModalFooter>
+            <CButton color="secondary" className="close-button" onClick={() => setVisible(false)}>
+              Close
+            </CButton>
+            <CButton className="confirm-button" onClick={() => deleteOwner(deleteOwnerId)}>
+              Delete
+            </CButton>
+          </CModalFooter>
+        </div>
+      </CModal>
 
       <SalesCommission
         salesPartners={salesPartners}
@@ -163,7 +188,7 @@ const ActivePartners = observer(() => {
         salesSearchQueryHandler={salesSearchQueryHandler}
         onSalesPageChangeHandler={onSalesPageChangeHandler}
         onSalesPerPageChangeHandler={onSalesPerPageChangeHandler}
-        deleteOwner={deleteOwner}
+        handleDelete={handleDelete}
       />
 
       <CommissionArrival
@@ -176,7 +201,6 @@ const ActivePartners = observer(() => {
         searchQueryHandler={searchQueryHandler}
         onPageChangeHandler={onPageChangeHandler}
         onPerPageChangeHandler={onPerPageChangeHandler}
-        deleteOwner={deleteOwner}
       />
     </div>
   )

@@ -8,7 +8,7 @@ import { Toast } from '@/components/admin_user/UI/Toast'
 import { amenities_data } from '@/api/admin_user/config/resources/amenities'
 import { Modal, ModalHeader, ModalBody, Badge } from 'reactstrap'
 import Form from './Form'
-import { CSpinner } from '@coreui/react'
+import { CModal, CModalFooter, CModalBody, CButton, CSpinner } from '@coreui/react'
 import { useStores } from '@/context/storeContext'
 import { useTranslation } from 'react-i18next'
 
@@ -22,6 +22,9 @@ const Index = () => {
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
   const [amenityCategories, setAmenityCategories] = useState([])
+
+  const [visible, setVisible] = useState(false)
+  const [deleteAmenityId, setDeleteAmenityId] = useState('')
 
   const [modal, setModal] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
@@ -37,17 +40,23 @@ const Index = () => {
     fetch_amenities_data()
   }
 
+  const handleDelete = (id) => {
+    setVisible(true)
+    setDeleteAmenityId(id)
+  }
+
   const deleteAmenity = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
-    if (confirmDelete) {
+    if (visible) {
       try {
         const response = await amenities_data('DELETE', `amenities/${id}`, null, {}, authToken)
+        setVisible(false)
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
         fetch_amenities_data()
       } catch (error) {
         console.error('Error Deleting Amenity', error)
+        setVisible(false)
       }
     }
   }
@@ -88,7 +97,7 @@ const Index = () => {
       td: (row) => (
         <>
           <FontAwesomeIcon onClick={() => openEditModal(row)} icon={faEdit} />
-          <FontAwesomeIcon onClick={() => deleteAmenity(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => handleDelete(row.id)} icon={faTrash} />
         </>
       ),
     },
@@ -157,6 +166,21 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
+
+      <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
+        <CModalBody>Are you sure you want to delete this record !!</CModalBody>
+        <div className="delete-modal-container">
+          <CModalFooter>
+            <CButton color="secondary" className="close-button" onClick={() => setVisible(false)}>
+              Close
+            </CButton>
+            <CButton className="confirm-button" onClick={() => deleteAmenity(deleteAmenityId)}>
+              Delete
+            </CButton>
+          </CModalFooter>
+        </div>
+      </CModal>
+
       <h2 className="mb-3">{t('amenities')}</h2>
       <div className="create-button-div">
         <button id="createNewRecord" className="create-button" onClick={openNewModel}>

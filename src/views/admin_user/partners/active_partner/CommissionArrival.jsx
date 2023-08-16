@@ -15,7 +15,6 @@ const CommissionArrival = ({
   searchQueryHandler,
   onPageChangeHandler,
   onPerPageChangeHandler,
-  deleteOwner,
 }) => {
   const { t } = useTranslation()
   const commissionArrivalColumns = [

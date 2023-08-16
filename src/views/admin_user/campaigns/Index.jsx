@@ -3,7 +3,7 @@ import 'react-flexy-table/dist/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
-import { CSpinner } from '@coreui/react'
+import { CModal, CModalFooter, CModalBody, CButton, CSpinner } from '@coreui/react'
 import '@/scss/_custom.scss'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { campaigns_data } from '@/api/admin_user/config/resources/campaigns'
@@ -26,6 +26,9 @@ const Index = () => {
   const authToken = authStore((state) => state.token)
   const { t } = useTranslation()
 
+  const [visible, setVisible] = useState(false)
+  const [deleteCampaignId, setDeleteCampaignId] = useState('')
+
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value)
   }
@@ -34,17 +37,23 @@ const Index = () => {
     fetch_campaigns_data()
   }
 
+  const handleDelete = (id) => {
+    setVisible(true)
+    setDeleteCampaignId(id)
+  }
+
   const deleteCampaign = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
-    if (confirmDelete) {
+    if (visible) {
       try {
         const response = await campaigns_data('DELETE', `campaigns/${id}`, null, {}, authToken)
         fetch_campaigns_data()
+        setVisible(false)
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
       } catch (error) {
         console.error('Error Deleting Campaign:', error)
+        setVisible(false)
       }
     }
   }
@@ -119,7 +128,7 @@ const Index = () => {
           <Link to={`/${i18next.language}/admin-user/campaigns/edit`} state={{ record: row }}>
             <FontAwesomeIcon icon={faEdit} />
           </Link>
-          <FontAwesomeIcon onClick={() => deleteCampaign(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => handleDelete(row.id)} icon={faTrash} />
         </>
       ),
     },
@@ -170,6 +179,20 @@ const Index = () => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
+
+      <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
+        <CModalBody>Are you sure you want to delete this record !!</CModalBody>
+        <div className="delete-modal-container">
+          <CModalFooter>
+            <CButton color="secondary" className="close-button" onClick={() => setVisible(false)}>
+              Close
+            </CButton>
+            <CButton className="confirm-button" onClick={() => deleteCampaign(deleteCampaignId)}>
+              Delete
+            </CButton>
+          </CModalFooter>
+        </div>
+      </CModal>
 
       <h2 className="mb-3">{t('campaigns')}</h2>
 

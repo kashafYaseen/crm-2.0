@@ -3,7 +3,7 @@ import 'react-flexy-table/dist/index.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
-import { CSpinner } from '@coreui/react'
+import { CModal, CModalFooter, CModalBody, CButton, CSpinner } from '@coreui/react'
 import '@/scss/_custom.scss'
 import { Toast } from '@admin_user_components/UI/Toast'
 import { places_data } from '@/api/admin_user/config/resources/places'
@@ -24,6 +24,9 @@ const Index = observer(() => {
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
   const authToken = authStore((state) => state.token)
+  const [visible, setVisible] = useState(false)
+  const [deletePlaceId, setDeletePlaceId] = useState('')
+
   const { t } = useTranslation()
 
   const handleSearchInputChange = (event) => {
@@ -34,17 +37,23 @@ const Index = observer(() => {
     fetch_places_data()
   }
 
+  const handleDelete = (id) => {
+    setVisible(true)
+    setDeletePlaceId(id)
+  }
+
   const deletePlace = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?')
-    if (confirmDelete) {
+    if (visible) {
       try {
         const response = await places_data('DELETE', `places/${id}`, null, {}, authToken)
         fetch_places_data()
+        setVisible(false)
         setShowToast(true)
         setErrorType('success')
         setError(t('record_deleted_successfully'))
       } catch (error) {
         console.error('Error Deleting place:', error)
+        setVisible(false)
       }
     }
   }
@@ -67,7 +76,7 @@ const Index = observer(() => {
           >
             <FontAwesomeIcon icon={faEdit} />
           </Link>
-          <FontAwesomeIcon onClick={() => deletePlace(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => handleDelete(row.id)} icon={faTrash} />
         </>
       ),
     },
@@ -118,6 +127,19 @@ const Index = observer(() => {
       <div className="toast-container">
         {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
       </div>
+      <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
+        <CModalBody>Are you sure you want to delete this record !!</CModalBody>
+        <div className="delete-modal-container">
+          <CModalFooter>
+            <CButton color="secondary" className="close-button" onClick={() => setVisible(false)}>
+              Close
+            </CButton>
+            <CButton className="confirm-button" onClick={() => deletePlace(deletePlaceId)}>
+              Delete
+            </CButton>
+          </CModalFooter>
+        </div>
+      </CModal>
 
       <h2 className="mb-3">{t('Places')}</h2>
       <div className="create-button-div">

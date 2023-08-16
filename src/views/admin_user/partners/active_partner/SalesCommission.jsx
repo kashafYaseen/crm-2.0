@@ -17,7 +17,7 @@ const SalesCommission = ({
   salesSearchQueryHandler,
   onSalesPageChangeHandler,
   onSalesPerPageChangeHandler,
-  deleteOwner,
+  handleDelete,
 }) => {
   const { t } = useTranslation()
 
@@ -106,7 +106,7 @@ const SalesCommission = ({
           >
             <FontAwesomeIcon icon={faEdit} />
           </Link>
-          <FontAwesomeIcon onClick={() => deleteOwner(row.id)} icon={faTrash} />
+          <FontAwesomeIcon onClick={() => handleDelete(row.id)} icon={faTrash} />
         </>
       ),
     },
