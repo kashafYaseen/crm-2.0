@@ -1,6 +1,7 @@
 import moment from 'moment'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { dispatchEvent } from '@/eventDispatcher'
 
 const authStore = create(
   persist(
@@ -8,7 +9,10 @@ const authStore = create(
       token: null,
       targetTime: null,
       setToken: (token, targetTime) => set(() => ({ token, targetTime })),
-      logout: () => set(() => ({ token: null, targetTime: null })),
+      logout: () => {
+        set(() => ({ token: null, targetTime: null }))
+        dispatchEvent('triggerNavigationToLogin')
+      },
       startTimeTracker: () => {
         const interval = setInterval(() => {
           const targetTime = get().targetTime
@@ -19,7 +23,7 @@ const authStore = create(
             const isTokenExpired = currentTime.isAfter(expireDate)
 
             if (isTokenExpired) {
-              set(() => ({ token: null, targetTime: null }))
+              get().logout()
               clearInterval(interval)
             }
           }
