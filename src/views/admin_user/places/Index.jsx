@@ -18,8 +18,8 @@ const Index = observer(() => {
   const [data, setData] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showToast, setShowToast] = useState(false)
-  const [errorType, setErrorType] = useState()
-  const [error, setError] = useState()
+  const [alertType, setAlertType] = useState()
+  const [alert, setAlert] = useState()
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
@@ -49,8 +49,8 @@ const Index = observer(() => {
         fetch_places_data()
         setVisible(false)
         setShowToast(true)
-        setErrorType('success')
-        setError(t('record_deleted_successfully'))
+        setAlertType('success')
+        setAlert(t('record_deleted_successfully'))
       } catch (error) {
         console.error('Error Deleting place:', error)
         setVisible(false)
@@ -125,7 +125,7 @@ const Index = observer(() => {
   return (
     <div className="display">
       <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+        {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
       </div>
       <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>
         <CModalBody>Are you sure you want to delete this record !!</CModalBody>

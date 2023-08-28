@@ -16,8 +16,8 @@ const Index = () => {
   const [data, setData] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showToast, setShowToast] = useState(false)
-  const [errorType, setErrorType] = useState()
-  const [error, setError] = useState()
+  const [alertType, setAlertType] = useState()
+  const [alert, setAlert] = useState()
   const [totalRecords, setTotalRecords] = useState(0)
   const [perPageNumber, setPerPageNumber] = useState(10)
   const [loading, setLoading] = useState(true)
@@ -51,8 +51,8 @@ const Index = () => {
         const response = await amenities_data('DELETE', `amenities/${id}`, null, {}, authToken)
         setVisible(false)
         setShowToast(true)
-        setErrorType('success')
-        setError(t('record_deleted_successfully'))
+        setAlertType('success')
+        setAlert(t('record_deleted_successfully'))
         fetch_amenities_data()
       } catch (error) {
         console.error('Error Deleting Amenity', error)
@@ -164,7 +164,7 @@ const Index = () => {
       </Modal>
 
       <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+        {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
       </div>
 
       <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>

@@ -27,8 +27,8 @@ import i18next from 'i18next'
 const Form = observer((props) => {
   const authStore = useStores()
   const [showToast, setShowToast] = useState(false)
-  const [error, setError] = useState('')
-  const [errorType, setErrorType] = useState('')
+  const [alert, setAlert] = useState('')
+  const [alertType, setAlertType] = useState('')
   const [serverError, setServerError] = useState('')
   const navigate = useNavigate()
 
@@ -55,13 +55,13 @@ const Form = observer((props) => {
       const nameError = error.response.data
       if (nameError) {
         setShowToast(true)
-        setErrorType('danger')
-        setError(nameError.error)
+        setAlertType('danger')
+        setAlert(nameError.error)
       }
     } else {
       setShowToast(true)
-      setErrorType('danger')
-      setError('Something went wrong')
+      setAlertType('danger')
+      setAlert('Something went wrong')
     }
   }
 
@@ -81,15 +81,15 @@ const Form = observer((props) => {
             authStore.getState().setToken(auth_token, token_expires_at)
             authStore.getState().startTimeTracker()
             setShowToast(true)
-            setErrorType('success')
-            setError('Login Successfully')
+            setAlertType('success')
+            setAlert('Login Successfully')
             setTimeout(() => {
               navigate(`/${i18next.language}/business-owner/dashboard`)
             }, 2000)
           } else {
             setShowToast(true)
-            setErrorType('danger')
-            setError('Something went wrong')
+            setAlertType('danger')
+            setAlert('Something went wrong')
           }
         } catch (error) {
           serverErrorHandler(error)
@@ -105,7 +105,7 @@ const Form = observer((props) => {
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+        {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
       </div>
       <CRow className="justify-content-center">
         <CCol md={8}>

@@ -32,8 +32,8 @@ const Form = observer((props) => {
   const authStore = useStores()
   const navigate = useNavigate()
   const [showToast, setShowToast] = useState(false)
-  const [error, setError] = useState('')
-  const [errorType, setErrorType] = useState('')
+  const [alert, setAlert] = useState('')
+  const [alertType, setAlertType] = useState('')
   const [serverError, setServerError] = useState('')
   const authToken = authStore((state) => state.token)
   const content_en_editor = useRef(null)
@@ -97,8 +97,8 @@ const Form = observer((props) => {
               authToken,
             )
             setShowToast(true)
-            setErrorType('success')
-            setError(t('record_updated_successfully'))
+            setAlertType('success')
+            setAlert(t('record_updated_successfully'))
             setTimeout(() => {
               navigate(`/${i18next.language}/admin-user/countries`)
             }, 1000)
@@ -110,8 +110,8 @@ const Form = observer((props) => {
             const extractedData = await countries_data('post', 'countries', values, {}, authToken)
 
             setShowToast(true)
-            setErrorType('success')
-            setError(t('record_created_successfully'))
+            setAlertType('success')
+            setAlert(t('record_created_successfully'))
             setTimeout(() => {
               navigate(`/${i18next.language}/admin-user/countries`)
             }, 1000)
@@ -151,7 +151,7 @@ const Form = observer((props) => {
       </CBreadcrumb>
 
       <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+        {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
       </div>
       <CRow>
         <CCol xs={12}>

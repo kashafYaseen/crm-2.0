@@ -32,8 +32,8 @@ const ActivePartners = observer(() => {
   const [salesLoading, setSalesLoading] = useState(true)
   const authToken = authStore((state) => state.token)
   const [showToast, setShowToast] = useState(false)
-  const [error, setError] = useState('')
-  const [errorType, setErrorType] = useState('')
+  const [alert, setAlert] = useState('')
+  const [alertType, setAlertType] = useState('')
   const { t } = useTranslation()
 
   const fetchSalesPartners = async (pageNumber) => {
@@ -107,8 +107,8 @@ const ActivePartners = observer(() => {
         const response = await partners_data('DELETE', `owners/${id}`, null, {}, authToken)
         setVisible(false)
         setShowToast(true)
-        setErrorType('success')
-        setError(t('record_deleted_successfully'))
+        setAlertType('success')
+        setAlert(t('record_deleted_successfully'))
         fetchSalesPartners()
       } catch (error) {
         console.error('Error deleting the record', error)
@@ -161,7 +161,7 @@ const ActivePartners = observer(() => {
       </div>
 
       <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+        {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
       </div>
 
       <CModal alignment="top" visible={visible} onClose={() => setVisible(false)}>

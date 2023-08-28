@@ -31,8 +31,8 @@ import initializeI18n from '@/initializeI18n'
 const Login = () => {
   const navigate = useNavigate()
   const [showToast, setShowToast] = useState(false)
-  const [error, setError] = useState('')
-  const [errorType, setErrorType] = useState('')
+  const [alert, setAlert] = useState('')
+  const [alertType, setAlertType] = useState('')
   const authStore = useStores()
   const { t } = useTranslation()
 
@@ -66,14 +66,14 @@ const Login = () => {
           if (res) {
             authStore.getState().setToken(res.auth_token, res.token_expires_at)
             authStore.getState().startTimeTracker()
-            setErrorType('success')
-            setError('Login Successfully')
+            setAlertType('success')
+            setAlert('Login Successfully')
             navigate('/admin-user/dashboard')
           }
         } catch (error) {
           setShowToast(true)
-          setErrorType('danger')
-          setError('Invalid Credentials')
+          setAlertType('danger')
+          setAlert('Invalid Credentials')
         }
       }
     },
@@ -87,7 +87,7 @@ const Login = () => {
     <Suspense fallback="Loading translations...">
       <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
         <div className="toast-container">
-          {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+          {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
         </div>
         <CContainer>
           <CRow className="justify-content-center">

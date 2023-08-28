@@ -22,8 +22,8 @@ import { Alert } from 'reactstrap'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)
-  const [error, setError] = useState('')
-  const [errorType, setErrorType] = useState('')
+  const [alert, setAlert] = useState('')
+  const [alertType, setAlertType] = useState('')
   const [serverError, setServerError] = useState('')
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
@@ -73,8 +73,8 @@ const Form = (props) => {
               authToken,
             )
             setShowToast(true)
-            setErrorType('success')
-            setError(t('record_updated_successfully'))
+            setAlertType('success')
+            setAlert(t('record_updated_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -92,8 +92,8 @@ const Form = (props) => {
               authToken,
             )
             setShowToast(true)
-            setErrorType('success')
-            setError(t('record_created_successfully'))
+            setAlertType('success')
+            setAlert(t('record_created_successfully'))
             props.onSubmitCallback()
           } catch (error) {
             serverErrorHandler(error)

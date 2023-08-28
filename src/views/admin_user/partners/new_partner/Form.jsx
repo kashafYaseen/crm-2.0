@@ -32,8 +32,8 @@ const Form = observer((props) => {
   const authStore = useStores()
   const navigate = useNavigate()
   const [showToast, setShowToast] = useState(false)
-  const [error, setError] = useState('')
-  const [errorType, setErrorType] = useState('')
+  const [alert, setAlert] = useState('')
+  const [alertType, setAlertType] = useState('')
   const [serverError, setServerError] = useState('')
   const authToken = authStore((state) => state.token)
   const [fetchingRegionsByCountry, setFetchingRegionsByCountry] = useState(false)
@@ -137,8 +137,8 @@ const Form = observer((props) => {
               authToken,
             )
             setShowToast(true)
-            setErrorType('success')
-            setError('Record Updated Successfully')
+            setAlertType('success')
+            setAlert('Record Updated Successfully')
             setTimeout(() => {
               window.history.back()
             }, 1000)
@@ -150,8 +150,8 @@ const Form = observer((props) => {
             const extractedData = await partners_data('post', 'owners', values, {}, authToken)
 
             setShowToast(true)
-            setErrorType('success')
-            setError('Record Created Successfully')
+            setAlertType('success')
+            setAlert('Record Created Successfully')
             setTimeout(() => {
               window.history.back()
             }, 1000)
@@ -190,7 +190,7 @@ const Form = observer((props) => {
       </CBreadcrumb>
 
       <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+        {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
       </div>
       <CRow>
         <CCol xs={12}>

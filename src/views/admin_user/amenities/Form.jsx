@@ -24,8 +24,8 @@ import { Alert } from 'reactstrap'
 
 const Form = (props) => {
   const [showToast, setShowToast] = useState(false)
-  const [error, setError] = useState('')
-  const [errorType, setErrorType] = useState('')
+  const [alert, setAlert] = useState('')
+  const [alertType, setAlertType] = useState('')
   const [serverError, setServerError] = useState('')
   const authStore = useStores()
   const authToken = authStore((state) => state.token)
@@ -73,8 +73,8 @@ const Form = (props) => {
               authToken,
             )
             setShowToast(true)
-            setErrorType('success')
-            setError(t('record_updated_successfully'))
+            setAlertType('success')
+            setAlert(t('record_updated_successfully'))
             setTimeout(() => {
               setShowToast(false)
               props.onSubmitCallback()
@@ -86,8 +86,8 @@ const Form = (props) => {
           try {
             const extractedData = await amenities_data('post', 'amenities', values, {}, authToken)
             setShowToast(true)
-            setErrorType('success')
-            setError(t('record_created_successfully'))
+            setAlertType('success')
+            setAlert(t('record_created_successfully'))
 
             setTimeout(() => {
               setShowToast(false)
@@ -117,7 +117,7 @@ const Form = (props) => {
         </Alert>
       )}
       <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+        {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
       </div>
       <CRow>
         <CCol xs={12}>

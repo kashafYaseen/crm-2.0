@@ -22,8 +22,8 @@ const ExactPartners = observer(() => {
   const [loading, setLoading] = useState(true)
   const authToken = authStore((state) => state.token)
   const [showToast, setShowToast] = useState(false)
-  const [error, setError] = useState('')
-  const [errorType, setErrorType] = useState('')
+  const [alert, setAlert] = useState('')
+  const [alertType, setAlertType] = useState('')
   const { t } = useTranslation()
 
   const fetchPartners = async (pageNumber) => {
@@ -99,7 +99,7 @@ const ExactPartners = observer(() => {
   return (
     <div className="display">
       <div className="toast-container">
-        {showToast && <Toast error={error} onExited={handleToastHide} type={errorType} />}
+        {showToast && <Toast error={alert} onExited={handleToastHide} type={alertType} />}
       </div>
       <h2 className="mb-3">{t('exact_partner_account')}</h2>
       <div className="custom-search-container ">
