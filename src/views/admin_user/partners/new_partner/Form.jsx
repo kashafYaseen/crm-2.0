@@ -15,7 +15,7 @@ import {
   CBreadcrumb,
   CBreadcrumbItem,
 } from '@coreui/react'
-import { Toast } from '@admin_user_components/UI/Toast/Toast'
+import { Toast } from '@/components/UI/Toast/Toast'
 import { useFormik } from 'formik'
 import { Alert } from 'reactstrap'
 import * as Yup from 'yup'

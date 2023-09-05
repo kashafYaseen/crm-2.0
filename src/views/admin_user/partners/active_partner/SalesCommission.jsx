@@ -3,7 +3,7 @@ import { CSpinner, CPopover, CRow, CCard, CCardTitle } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
-import { DataTable } from '@admin_user_components/UI/DataTable'
+import { DataTable } from '@/components/UI/DataTable'
 import { Link } from 'react-router-dom'
 import i18next from 'i18next'
 

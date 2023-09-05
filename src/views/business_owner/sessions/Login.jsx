@@ -15,7 +15,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { login_data } from '@/api/business_owner/config/resources/sessions'
-import { Toast } from '@business_owner_components/UI/Toast/Toast'
+import { Toast } from '@/components/UI/Toast/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'
@@ -59,7 +59,9 @@ const Login = () => {
         try {
           const res = await login_data('post', 'sessions', values)
           if (res) {
-            authStore.getState().setToken(res.auth_token, res.token_expires_at)
+            authStore
+              .getState()
+              .setToken(res.auth_token, res.token_expires_at, 'Owner', res.id, res.full_name)
             authStore.getState().startTimeTracker()
             setAlertType('success')
             setAlert('Login Successfully')

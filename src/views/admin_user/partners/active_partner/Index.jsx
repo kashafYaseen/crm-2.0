@@ -3,7 +3,7 @@ import 'react-flexy-table/dist/index.css'
 import '@/scss/_custom.scss'
 import { Link } from 'react-router-dom'
 import { CModal, CModalFooter, CModalBody, CButton, CRow } from '@coreui/react'
-import { Toast } from '@admin_user_components/UI/Toast'
+import { Toast } from '@/components/UI/Toast'
 import { useStores } from '@/context/storeContext'
 import { observer } from 'mobx-react'
 import i18next from 'i18next'
@@ -65,7 +65,7 @@ const ActivePartners = observer(() => {
     try {
       const { data, totalRecords } = await partners_commission(
         'GET',
-        'owners/owners_commissions',
+        'owners/commissions',
         null,
         {
           page: pageNumber,

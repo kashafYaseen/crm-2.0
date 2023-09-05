@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import 'react-flexy-table/dist/index.css'
 import '@/scss/_custom.scss'
 import { Link } from 'react-router-dom'
-import { Toast } from '@admin_user_components/UI/Toast'
+import { Toast } from '@/components/UI/Toast'
 
-import { DataTable } from '@admin_user_components/UI/DataTable'
+import { DataTable } from '@/components/UI/DataTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CSpinner, CButton } from '@coreui/react'
@@ -31,7 +31,7 @@ const ExactPartners = observer(() => {
     try {
       const { data, totalRecords } = await partners_data(
         'GET',
-        'owners/exact_partner_accounts',
+        'owners/active_partners',
         null,
         {
           page: pageNumber,

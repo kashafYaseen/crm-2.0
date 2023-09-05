@@ -11,7 +11,7 @@ import {
   CRow,
 } from '@coreui/react'
 
-import { Toast } from '@admin_user_components/UI/Toast'
+import { Toast } from '@/components/UI/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'

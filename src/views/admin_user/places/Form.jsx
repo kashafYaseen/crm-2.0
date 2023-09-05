@@ -17,7 +17,7 @@ import {
 } from '@coreui/react'
 import { regions_data } from '@/api/admin_user/config/resources/regions'
 import { places_data } from '@/api/admin_user/config/resources/places'
-import { Toast } from '@admin_user_components/UI/Toast/Toast'
+import { Toast } from '@/components/UI/Toast/Toast'
 import JoditEditor from 'jodit-react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'

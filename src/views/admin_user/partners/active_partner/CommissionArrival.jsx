@@ -1,6 +1,6 @@
 import React from 'react'
 import { CSpinner, CRow, CCard, CCardTitle } from '@coreui/react'
-import { DataTable } from '@admin_user_components/UI/DataTable'
+import { DataTable } from '@/components/UI/DataTable'
 import { Link } from 'react-router-dom'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'

@@ -16,7 +16,7 @@ import {
   CBreadcrumbItem,
 } from '@coreui/react'
 import { regions_data } from '@/api/admin_user/config/resources/regions'
-import { Toast } from '@admin_user_components/UI/Toast/Toast'
+import { Toast } from '@/components/UI/Toast/Toast'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import '@/scss/_custom.scss'

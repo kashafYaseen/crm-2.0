@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import 'react-flexy-table/dist/index.css'
 import '@/scss/_custom.scss'
 import { Link } from 'react-router-dom'
-import { Toast } from '@admin_user_components/UI/Toast'
+import { Toast } from '@/components/UI/Toast'
 
 import { CSpinner, CButton, CCardHeader, CCard, CCardBody, CCol, CRow } from '@coreui/react'
 import { useStores } from '@/context/storeContext'
