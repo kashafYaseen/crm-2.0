@@ -8,9 +8,13 @@ const authStore = create(
     (set, get) => ({
       token: null,
       targetTime: null,
-      setToken: (token, targetTime) => set(() => ({ token, targetTime })),
+      userType: null,
+      userId: null,
+      userName: null,
+      setToken: (token, targetTime, userType, userId, userName) =>
+        set(() => ({ token, targetTime, userType, userId, userName })),
       logout: () => {
-        set(() => ({ token: null, targetTime: null }))
+        set(() => ({ token: null, targetTime: null, userType: null, userId: null, userName: null }))
         dispatchEvent('triggerNavigationToLogin')
       },
       startTimeTracker: () => {

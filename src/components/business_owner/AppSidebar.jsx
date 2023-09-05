@@ -12,13 +12,33 @@ import { sygnet } from '@/assets/brand/sygnet'
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 
-// sidebar nav config
 import navigation from '@business_owner_components/_nav'
+import i18next from 'i18next'
+import initializeI18n from '@/initializeI18n'
+
+const appendLanguageToRoutes = (routes) => {
+  const language = i18next.language
+
+  return routes.map((route) => {
+    const modifiedRoute = { ...route }
+
+    modifiedRoute.to = `/${language}${route.to}`
+
+    if (modifiedRoute.items) {
+      modifiedRoute.items = appendLanguageToRoutes(modifiedRoute.items)
+    }
+
+    return modifiedRoute
+  })
+}
 
 const AppSidebar = () => {
+  initializeI18n()
+
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
+  const modifiedNavigation = appendLanguageToRoutes(navigation)
 
   return (
     <CSidebar
@@ -35,7 +55,8 @@ const AppSidebar = () => {
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
-          <AppSidebarNav items={navigation} />
+          {/* Use the modified navigation array */}
+          <AppSidebarNav items={modifiedNavigation} />
         </SimpleBar>
       </CSidebarNav>
       <CSidebarToggler

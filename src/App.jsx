@@ -15,6 +15,7 @@ import InvitationForm from '@business_owner_views/invitations/Form'
 const App = () => {
   const authStore = useStores()
   const isLoggedIn = authStore((state) => state.token)
+  const userType = authStore((state) => state.userType)
   const [locale, setLocale] = useState(i18next.language)
   const navigate = useNavigate()
   const location = useLocation()
@@ -28,8 +29,15 @@ const App = () => {
       setLocale(lng)
 
       if (isLoggedIn) {
+        let newPath
         const currentPath = location.pathname
-        const newPath = `/${lng}${currentPath.substring(currentPath.indexOf('/admin-user'))}`
+
+        if (userType == 'Admin') {
+          newPath = `/${lng}${currentPath.substring(currentPath.indexOf('/admin-user'))}`
+        } else if (userType == 'Owner') {
+          newPath = `/${lng}${currentPath.substring(currentPath.indexOf('/business-owner'))}`
+        }
+
         navigate(newPath, { replace: true })
       }
     }

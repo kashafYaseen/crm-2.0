@@ -5,13 +5,17 @@ import {
   CContainer,
   CHeader,
   CHeaderBrand,
+  CHeaderDivider,
   CHeaderNav,
   CHeaderToggler,
   CNavLink,
   CNavItem,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilMenu } from '@coreui/icons'
+import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
+import LanguageSelector from '@/components/UI/LanguageSelector'
+import i18next from 'i18next'
+
 import { AppHeaderDropdown } from '@business_owner_components/header/index'
 import { logo } from '@/assets/brand/logo'
 
@@ -33,7 +37,7 @@ const AppHeader = () => {
         </CHeaderBrand>
         <CHeaderNav className="d-none d-md-flex me-auto">
           <CNavItem>
-            <CNavLink to="/business-owner/dashboard" component={NavLink}>
+            <CNavLink to={`/${i18next.language}/business-owner/dashboard`} component={NavLink}>
               Dashboard
             </CNavLink>
           </CNavItem>
@@ -42,6 +46,11 @@ const AppHeader = () => {
           </CNavItem>
           <CNavItem>
             <CNavLink href="#">Settings</CNavLink>
+          </CNavItem>
+        </CHeaderNav>
+        <CHeaderNav>
+          <CNavItem>
+            <LanguageSelector />
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-3">

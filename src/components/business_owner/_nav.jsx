@@ -1,6 +1,6 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import { cilCursor, cilSpeedometer } from '@coreui/icons'
+import { cilCursor, cilSpeedometer, cilTag, cilNotes, cilBook } from '@coreui/icons'
 import { CNavGroup, CNavItem } from '@coreui/react'
 
 const _nav = [
@@ -9,17 +9,53 @@ const _nav = [
     name: 'Dashboard',
     to: '/business-owner/dashboard',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
+  },
+  {
+    component: CNavItem,
+    name: 'Promotions',
+    to: '/business-owner/promotions',
+    icon: <CIcon icon={cilTag} customClassName="nav-icon" />,
   },
   {
     component: CNavGroup,
-    name: 'Content',
+    name: 'Bookings',
     to: '/content',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
-    items: [],
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: '2024',
+        to: '/business-owner/dashboard',
+      },
+      {
+        component: CNavItem,
+        name: '2023',
+        to: '/business-owner/dashboard',
+      },
+      {
+        component: CNavItem,
+        name: '2022',
+        to: '/business-owner/dashboard',
+      },
+      {
+        component: CNavItem,
+        name: '2021',
+        to: '/business-owner/dashboard',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Pending Requests',
+    to: '/content',
+    icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Request Details',
+        to: '/business-owner/dashboard',
+      },
+    ],
   },
 ]
 
