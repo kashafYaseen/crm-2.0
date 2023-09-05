@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
-import LanguageSelector from './UI/LanguageSelector'
+import LanguageSelector from '@/components/UI/LanguageSelector'
 import i18next from 'i18next'
 
 import { AppHeaderDropdown } from '@admin_user_components/header/index'
