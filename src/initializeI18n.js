@@ -10,6 +10,7 @@ const initializeI18n = () => {
       .use(LanguageDetector)
       .use(HttpApi)
       .init({
+        lng: 'en',
         supportedLngs: ['en', 'nl'],
         fallbackLng: 'en',
         detection: {
