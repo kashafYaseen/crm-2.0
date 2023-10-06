@@ -98,11 +98,7 @@ const App = () => {
 
         <Route path={`/${locale}/business-owner/invitation-form`} element={<InvitationForm />} />
 
-        {/* Catch-all route for admin and owner pages */}
-        <Route
-          path="*"
-          element={location.pathname.startsWith(`/${locale}/admin-user/*`) && <Page404 />}
-        />
+        <Route path="*" element={<Navigate to="/en/admin-user-login" />} />
 
         <Route
           path="*"
