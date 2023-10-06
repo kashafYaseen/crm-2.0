@@ -158,9 +158,6 @@ const Login = () => {
                               Login
                             </CButton>
                           </CCol>
-                          <CCol xs={6} className="text-right">
-                            <Link>Forgot password?</Link>
-                          </CCol>
                         </CRow>
                       </CForm>
                     </CCardBody>

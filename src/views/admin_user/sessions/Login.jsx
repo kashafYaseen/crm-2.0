@@ -164,9 +164,6 @@ const Login = () => {
                                 {t('login')}
                               </CButton>
                             </CCol>
-                            <CCol xs={6} className="text-right">
-                              <Link>{t('forgot_password')}</Link>
-                            </CCol>
                           </CRow>
                         </CForm>
                       </CCardBody>
