@@ -66,6 +66,7 @@
     "simplebar-react": "^2.4.3",
     "vite": "^4.3.9",
     "vite-plugin-env-compatible": "^1.1.1",
+    "vite-plugin-static-copy": "^0.17.0",
     "vite-plugin-svgr": "^3.2.0",
     "yup": "^1.2.0",
     "zustand": "^4.3.9"

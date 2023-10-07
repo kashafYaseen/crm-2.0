@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import svgrPlugin from 'vite-plugin-svgr'
 import envCompatible from 'vite-plugin-env-compatible'
 import path from 'path'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // see all documentation here https://vitejs.dev/config/
 export default defineConfig({
@@ -27,6 +28,14 @@ export default defineConfig({
       svgrOptions: {
         icon: true,
       },
+    }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'locales',
+          dest: 'build',
+        },
+      ],
     }),
   ],
 })

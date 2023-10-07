@@ -16,7 +16,7 @@ const initializeI18n = () => {
           order: ['path', 'cookie', 'htmlTag', 'localStorage', 'subdomain'],
         },
         backend: {
-          loadPath: '/src/locale/{{lng}}.json',
+          loadPath: '/build/locales/{{lng}}.json',
         },
         react: { useSuspense: false },
       })
